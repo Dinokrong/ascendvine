@@ -721,3 +721,49 @@ a { text-decoration: none; }
   border-color: var(--orange);
   color: var(--text);
 }
+
+/* --- Download Button Styles --- */
+.download-section {
+  margin-top: 40px;
+  padding-top: 30px;
+  border-top: 1px solid var(--border); /* Matches your existing divider lines */
+}
+
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  background-color: transparent; 
+  border: 1px solid var(--border);
+  border-radius: 4px; /* Swapped from 30px to 4px to match your other cards */
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+/* Add the underline to the text specifically, with a slight offset so it looks clean */
+.download-text {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
+.download-btn:hover {
+  background-color: var(--orange-pale); /* Uses your custom pale orange on hover */
+  border-color: var(--orange);
+}
+
+.paperclip-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--text-muted); /* Uses your muted gray */
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.download-btn:hover .paperclip-icon {
+  color: var(--orange-dark);
+  transform: rotate(-10deg); /* Keeps the cute wiggle */
+}
