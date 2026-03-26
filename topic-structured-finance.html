@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ascend — Structured Finance</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">Ascend</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right"></div>
+  </nav>
+
+  <div class="article-page">
+    <a href="studyguide.html" class="article-back">&#8592; Study Guide</a>
+    <span class="article-tag">Capital Markets</span>
+    <h1 class="article-title">Structured Finance</h1>
+    <p class="article-intro">Structured Finance is often viewed as the "rocket science" of the capital markets, but at its core, it is about efficient risk management and capital recycling. For an investment banking analyst, understanding structured finance is not just about memorizing acronyms like ABS, MBS, or CLO. It is about understanding how financial institutions move assets off their balance sheets to free up capital, and how they manufacture specific risk profiles to meet investor demand.</p>
+
+    <div class="article-section">
+      <h2>Basic — What is Structured Finance?</h2>
+      <p>"Structured Finance" is a broad umbrella term used to describe financial transactions that involve complex legal entities and risk-transfer mechanisms.</p>
+      <ul>
+        <li><strong>Securitization</strong> is the specific process of pooling liquid cash-flow-generating assets (like mortgages) and selling securities backed by them.</li>
+        <li><strong>Structured Finance</strong> can also include non-securitized transactions, such as complex Project Finance deals or customized credit facilities that use Special Purpose Vehicles (SPVs) to ring-fence assets.</li>
+      </ul>
+      <h3>The "Why": Motivation for Securitization</h3>
+      <ul>
+        <li><strong>Liquidity &amp; Capital Relief (The Originator's View):</strong> Banks and lending institutions have limited regulatory capital. If a bank issues a mortgage, its capital is tied up for 30 years. By securitizing (selling) that mortgage, the bank gets cash back immediately, which it can use to issue a new loan. This turns the bank from a "storage house" of loans into a "factory" of loans.</li>
+        <li><strong>Tailored Investment Products (The Investor's View):</strong> Different investors have different appetites for risk. A pension fund might want a safe, low-yield asset (AAA), while a hedge fund might want high risk, high return (Equity). Securitization takes a pool of generic loans and slices them into different products to suit these diverse needs.</li>
+        <li><strong>Lower Cost of Funding:</strong> Often, a pool of assets separated from the bank's bankruptcy risk (via an SPV) can achieve a higher credit rating than the bank itself, allowing for cheaper borrowing costs.</li>
+      </ul>
+      <div class="article-callout">💡 Key Insight: Securitization is fundamentally about arbitrage. It bridges the gap between borrowers who need standardized loans and investors who need specialized risk-return profiles.</div>
+    </div>
+
+    <div class="article-section">
+      <h2>The Mechanics of Securitization</h2>
+      <h3>The Players</h3>
+      <ul>
+        <li><strong>Originator:</strong> The entity that originally lends the money (e.g., Ford Motor Credit lending money to buy a car, or Wells Fargo issuing a mortgage).</li>
+        <li><strong>Issuer / SPV (Special Purpose Vehicle):</strong> A separate legal entity created specifically for the transaction. The SPV buys the loans from the Originator.</li>
+        <li><strong>Underwriter / Arranger:</strong> The investment bank that structures the deal, models the cash flows, and sells the securities to investors.</li>
+        <li><strong>Rating Agencies:</strong> Firms like Moody's or S&amp;P that analyze the pool of assets and assign credit ratings to the different slices (tranches) of the deal.</li>
+        <li><strong>Servicer:</strong> The company that collects the monthly payments from borrowers and distributes them to the trust. Often the Originator continues to act as the Servicer.</li>
+      </ul>
+      <h3>The Bankruptcy Remote Concept</h3>
+      <p>A critical concept in structured finance is Bankruptcy Remoteness. When the Originator sells the loans to the SPV, it must be a "true sale." If the Originator goes bankrupt, the creditors of the Originator cannot seize the assets in the SPV. This separation allows the securities to be rated based on the quality of the assets, not the financial health of the Originator.</p>
+      <div class="article-callout">💡 Interview Tip: If asked "Why use an SPV?", the answer is "To isolate the financial risk of the assets from the bankruptcy risk of the originator."</div>
+    </div>
+
+    <div class="article-section">
+      <h2>Tranching and The Waterfall</h2>
+      <p>This is the technical heart of structured finance. How do you turn a pool of risky loans (e.g., BBB quality) into a AAA-rated bond? You use Tranching.</p>
+      <ol>
+        <li>Borrowers make their monthly payments (principal + interest).</li>
+        <li>This cash flows into the SPV.</li>
+        <li>The SPV pays fees (servicing fees, trustee fees) first.</li>
+        <li>The remaining cash flows down to the investors based on seniority.</li>
+      </ol>
+      <ul>
+        <li><strong>Senior Tranche (AAA rated):</strong> Gets paid first. Lowest yield but highest safety. The last to suffer a loss if borrowers default.</li>
+        <li><strong>Mezzanine Tranches (AA to BB rated):</strong> Get paid after the Senior tranche is fully satisfied. Higher yields to compensate for moderate risk.</li>
+        <li><strong>Equity / Junior Tranche (Unrated):</strong> Gets paid last ("residual cash flow"). If there are defaults, the Equity tranche loses money first. However, if the loans perform well, the Equity tranche keeps all the excess profit.</li>
+      </ul>
+      <div class="article-callout">💡 Key Insight: Tranching does not reduce the total amount of risk in a pool of loans; it merely redistributes it. It concentrates risk in the Equity tranche and effectively removes it from the Senior tranche.</div>
+    </div>
+
+    <div class="article-section">
+      <h2>Credit Enhancement</h2>
+      <h3>Internal Credit Enhancement</h3>
+      <ul>
+        <li><strong>Subordination:</strong> Junior tranches absorb losses for senior tranches.</li>
+        <li><strong>Overcollateralization (OC):</strong> The value of the assets in the pool exceeds the value of the bonds issued. If you have &gt;$105M of loans backing $100M of bonds, you have $5M of OC acting as a buffer against defaults.</li>
+        <li><strong>Excess Spread:</strong> The interest rate received from borrowers (e.g., 8%) is higher than the interest rate paid to investors (e.g., 5%) plus fees (e.g., 1%). The difference (2%) is "excess spread" which can be trapped in a reserve account to cover future losses.</li>
+      </ul>
+      <h3>External Credit Enhancement</h3>
+      <ul>
+        <li><strong>Monoline Insurance / Wraps:</strong> An insurance company guarantees the payments on the bonds for a fee.</li>
+        <li><strong>Letter of Credit (LOC):</strong> A bank provides a guarantee to cover a certain amount of losses.</li>
+        <li><strong>Surety Bonds:</strong> Performance bonds that reimburse the issuer if the collateral underperforms.</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Common Asset Classes</h2>
+      <h3>Standard Asset Classes</h3>
+      <ul>
+        <li><strong>MBS (Mortgage-Backed Securities):</strong> RMBS (Residential): Home mortgages. CMBS (Commercial): Loans on office buildings, malls, hotels.</li>
+        <li><strong>ABS (Asset-Backed Securities):</strong> Auto Loan ABS (backed by car loans), Credit Card ABS (backed by credit card receivables), Student Loan ABS (backed by student loans).</li>
+        <li><strong>CLO (Collateralized Loan Obligations):</strong> Backed by corporate leveraged loans.</li>
+      </ul>
+      <h3>Esoteric Asset Classes</h3>
+      <p>Once you understand the math of securitization, you can securitize anything with a predictable cash flow:</p>
+      <ul>
+        <li><strong>Whole Business Securitization (WBS):</strong> A restaurant chain (like Domino's or Taco Bell) securitizes its future franchise fees.</li>
+        <li><strong>Music Royalties:</strong> Securitizing the future streaming revenue of a song catalog (e.g., David Bowie bonds).</li>
+        <li><strong>Aircraft Leases:</strong> Securitizing the lease payments airlines pay to lease planes.</li>
+        <li><strong>Solar ABS:</strong> Backed by monthly payments from residential solar panel leases.</li>
+      </ul>
+      <div class="article-callout">💡 Interview Tip: Mentioning an interest in "Esoteric ABS" demonstrates a deeper curiosity about the market than just reciting "MBS and CLOs."</div>
+    </div>
+
+    <!-- ADVANCED SECTION -->
+    <div class="article-section">
+      <h2>Advanced — Waterfall Mechanics &amp; Triggers</h2>
+      <h3>Sequential vs. Pro-Rata Pay</h3>
+      <ul>
+        <li><strong>Sequential Pay (The Standard):</strong> Principal is paid to the most senior tranche until it is retired, then the next, and so on. This maximizes the weighted average life (WAL) of the subordinated tranches and minimizes it for the senior tranches.</li>
+        <li><strong>Pro-Rata with Triggers:</strong> Some structures allow pro-rata principal paydowns to junior tranches as long as specific credit tests are met. If credit performance deteriorates (e.g., delinquencies exceed a threshold), a "Turbo Trigger" or "Sequential Switch" flips payment priority back to strict sequential pay.</li>
+      </ul>
+      <div class="article-callout">💡 Key Insight: Junior noteholders prefer pro-rata pay because it returns their principal faster, reducing their exposure duration. Senior noteholders prefer sequential pay because it deleverages the deal from the top down, increasing their credit enhancement over time.</div>
+      <h3>Turbo Features</h3>
+      <p>A Turbo feature redirects "excess spread" to pay down the principal of senior notes rather than flowing to the equity holder.</p>
+      <ul>
+        <li><strong>Soft Turbo:</strong> Often used if a coverage test fails; it cures the breach by deleveraging the deal.</li>
+        <li><strong>Hard Turbo:</strong> Used upon an Event of Default (EoD), where all available cash is used to retire debt immediately.</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced — Collateralized Loan Obligations (CLOs)</h2>
+      <p>CLOs are actively managed vehicles holding portfolios of Leveraged Loans (corporate debt rated BB+ or lower). Unlike RMBS or Auto ABS, which rely on static pools of homogeneous consumer assets, CLOs are actively managed.</p>
+      <h3>The CLO Lifecycle</h3>
+      <ul>
+        <li><strong>Warehousing:</strong> The manager buys the initial loans using a credit line.</li>
+        <li><strong>Ramp-Up:</strong> The deal closes, and the manager fills the remaining portfolio to reach the target par amount.</li>
+        <li><strong>Reinvestment Period (typically 4–5 years):</strong> The manager actively trades the portfolio. If a loan prepays or matures, the manager reinvests the proceeds into new loans rather than paying down noteholders.</li>
+        <li><strong>Amortization:</strong> Once the reinvestment period ends, principal repayments are used to pay down the notes sequentially.</li>
+      </ul>
+      <h3>Coverage Tests: OC and IC</h3>
+      <ul>
+        <li><strong>Overcollateralization (OC) Test:</strong> Formula: (Par Value of Assets) / (Par Value of Tranche + Senior Tranches). Measures whether the assets still exceed the liabilities. Defaulted assets (rated CCC or below) are often carried at a "haircut" value for this calculation.</li>
+        <li><strong>Interest Coverage (IC) Test:</strong> Formula: (Interest Income from Assets) / (Interest Due on Tranche + Senior Tranches). Ensures there is enough cash flow to service the debt coupons.</li>
+      </ul>
+      <div class="article-callout">💡 Interview Tip: If asked "What happens when a CLO fails its OC test?", the correct answer is not "It defaults." The answer is: "Cash flows normally destined for the equity tranche are diverted to pay down the principal of the senior-most notes until the test is brought back into compliance."</div>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced — MBS &amp; Prepayment Risk</h2>
+      <p>MBS introduce a critical risk factor absent in non-callable corporate bonds: Prepayment Risk. When interest rates fall, homeowners refinance (prepay) their mortgages. The investor gets their principal back at par just when they want to hold onto the high-yielding asset. This caps the price appreciation of the MBS (Negative Convexity). Conversely, when rates rise, prepayments slow down ("extension"), and the investor is stuck holding a below-market yielding asset for longer.</p>
+      <h3>IO and PO Strips</h3>
+      <ul>
+        <li><strong>Interest Only (IO):</strong> Receives only the interest portion. Highly sensitive to prepayments — if prepayments skyrocket, the principal disappears and interest payments stop. Value falls when rates drop.</li>
+        <li><strong>Principal Only (PO):</strong> Receives only the principal. Sold at a deep discount. Benefits from fast prepayments. Value rises when rates drop.</li>
+      </ul>
+      <div class="article-callout">💡 Key Insight: IO strips are one of the few fixed-income instruments that can have a negative duration (price falls when rates fall). They are often used by hedge funds to hedge interest rate risk in a portfolio.</div>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced — Valuation: Z-Spread vs. OAS &amp; Quantitative Metrics</h2>
+      <ul>
+        <li><strong>Z-Spread (Zero-Volatility Spread):</strong> The constant spread added to the Treasury yield curve to discount the security's cash flows back to its current price. It assumes zero volatility in interest rates (no change in prepayment speeds).</li>
+        <li><strong>OAS (Option-Adjusted Spread):</strong> The spread added to the yield curve after accounting for the embedded options (prepayment risk). Z-Spread = OAS + Option Cost.</li>
+      </ul>
+      <div class="article-callout">💡 Common Mistake: Candidates sometimes assume Z-spread is the best measure of relative value. For MBS, Z-spread is misleading because it ignores the fact that cash flows change when rates change. OAS is the correct metric for comparing callable bonds or MBS.</div>
+      <h3>Quantitative Metrics: CPR, CDR, and SMM</h3>
+      <ul>
+        <li><strong>SMM (Single Monthly Mortality):</strong> The percentage of the outstanding principal balance that is prepaid in a specific month, over and above the scheduled principal.</li>
+        <li><strong>CPR (Conditional Prepayment Rate):</strong> The SMM annualized. Formula: CPR = 1 - (1 - SMM)^12.</li>
+        <li><strong>CDR (Conditional Default Rate):</strong> Measures defaults instead of prepayments. Formula: CDR = 1 - (1 - Monthly Default Rate)^12.</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced — Correlation, Synthetic Structures &amp; Risk Retention</h2>
+      <h3>Correlation and Tranche Risk</h3>
+      <ul>
+        <li><strong>Low Correlation (Diversification):</strong> If you pool 100 loans with low correlation (borrowers in different industries/geographies), it is highly unlikely they all default at once. This makes it easier to create a very safe Senior Tranche (AAA).</li>
+        <li><strong>High Correlation (Systemic Risk):</strong> If the loans are highly correlated (e.g., all subprime mortgages in Florida during a housing crash), the diversification benefit vanishes. High correlation is bad for Senior tranches — if everyone defaults at once, the subordination buffer is blown through.</li>
+      </ul>
+      <h3>Synthetic Structures</h3>
+      <ul>
+        <li><strong>Mechanics:</strong> The SPV does not buy loans. Instead, it sells protection via a Credit Default Swap (CDS) on a reference portfolio of loans. The SPV receives insurance premiums (spread) from the CDS counterparty.</li>
+        <li><strong>Purpose:</strong> This allows banks to transfer credit risk off their balance sheet without actually selling the underlying client relationships/loans.</li>
+      </ul>
+      <h3>Regulatory Considerations: Risk Retention</h3>
+      <p>Post-2008 crisis (Dodd-Frank in the US), issuers are required to hold "Skin in the Game." Sponsors must retain at least 5% of the credit risk of the assets they securitize.</p>
+      <ul>
+        <li><strong>Vertical Slice:</strong> Holding 5% of every single tranche (AAA to Equity).</li>
+        <li><strong>Horizontal Slice:</strong> Holding the bottom 5% (the Equity/First-Loss piece).</li>
+        <li><strong>Implication:</strong> This alignment of interest prevents originators from packaging "garbage" loans and selling them off entirely to unsuspecting investors.</li>
+      </ul>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

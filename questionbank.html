@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emory Ascend — Question Bank</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-left">
+      <a href="home.html" class="navbar-logo">Ascend</a>
+    </div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right"></div>
+  </nav>
+
+  <!-- Filter Bar -->
+  <div class="qb-filterbar">
+
+    <div class="filter-group">
+      <label for="filter-type">Type</label>
+      <select id="filter-type" class="qb-select">
+        <option value="all">All Questions</option>
+        <option value="technical">Technical</option>
+        <option value="behavioral">Behavioral</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="filter-topic">Topic</label>
+      <select id="filter-topic" class="qb-select">
+        <option value="all">All Topics</option>
+        <option value="Accounting">Accounting</option>
+        <option value="Enterprise &amp; Equity Value">Enterprise &amp; Equity Value</option>
+        <option value="Valuation">Valuation</option>
+        <option value="DCF">DCF</option>
+        <option value="Merger Model (M&amp;A)">Merger Model (M&amp;A)</option>
+        <option value="Leveraged Buyouts (LBOs)">Leveraged Buyouts (LBOs)</option>
+        <option value="Market Knowledge">Market Knowledge</option>
+        <option value="Finance Brain Teasers">Finance Brain Teasers</option>
+        <option value="General Brain Teasers">General Brain Teasers</option>
+        <option value="Restructuring / Distressed M&amp;A">Restructuring / Distressed M&amp;A</option>
+        <option value="Technology Banking">Technology Banking</option>
+        <option value="Financial Institutions Group">Financial Institutions Group</option>
+        <option value="Healthcare Group">Healthcare Group</option>
+        <option value="Industrials Group">Industrials Group</option>
+        <option value="Media &amp; Telecom Group">Media &amp; Telecom Group</option>
+        <option value="Natural Resources Group">Natural Resources Group</option>
+        <optgroup label="─── Behavioral ───────────">
+        <option value="Background &amp; Fit">Background &amp; Fit</option>
+        <option value="Career Vision &amp; Future">Career Vision &amp; Future</option>
+        <option value="Conflict &amp; Difficult Situations">Conflict &amp; Difficult Situations</option>
+        <option value="Strengths, Weaknesses &amp; Feedback">Strengths, Weaknesses &amp; Feedback</option>
+        <option value="Team &amp; Leadership">Team &amp; Leadership</option>
+        <option value="Work Ethic &amp; Commitment">Work Ethic &amp; Commitment</option>
+        <option value="General Banking Knowledge">General Banking Knowledge</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="filter-difficulty">Difficulty</label>
+      <select id="filter-difficulty" class="qb-select">
+        <option value="all">All Levels</option>
+        <option value="Basic">Basic</option>
+        <option value="Advanced">Advanced</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label for="filter-firm">Reported At</label>
+      <select id="filter-firm" class="qb-select">
+        <option value="all">All Firms</option>
+        <option value="Goldman Sachs">Goldman Sachs</option>
+        <option value="J.P. Morgan">J.P. Morgan</option>
+        <option value="Morgan Stanley">Morgan Stanley</option>
+        <option value="Bank of America">Bank of America</option>
+        <option value="Citi">Citi</option>
+        <option value="Barclays">Barclays</option>
+        <option value="Credit Suisse">Credit Suisse</option>
+        <option value="Deutsche Bank">Deutsche Bank</option>
+        <option value="UBS">UBS</option>
+        <option value="Wells Fargo">Wells Fargo</option>
+        <option value="RBC">RBC</option>
+        <option value="BMO">BMO</option>
+        <option value="Jefferies">Jefferies</option>
+        <option value="Evercore">Evercore</option>
+        <option value="Lazard">Lazard</option>
+        <option value="Centerview Partners">Centerview Partners</option>
+        <option value="PJT Partners">PJT Partners</option>
+        <option value="Moelis &amp; Co.">Moelis &amp; Co.</option>
+        <option value="Perella Weinberg">Perella Weinberg</option>
+        <option value="Guggenheim Partners">Guggenheim Partners</option>
+        <option value="Greenhill &amp; Co.">Greenhill &amp; Co.</option>
+        <option value="Houlihan Lokey">Houlihan Lokey</option>
+        <option value="LionTree">LionTree</option>
+        <option value="Qatalyst Partners">Qatalyst Partners</option>
+        <option value="Rothschild">Rothschild</option>
+        <option value="Raine Group">Raine Group</option>
+        <option value="Allen &amp; Company">Allen &amp; Company</option>
+        <option value="Ares Management">Ares Management</option>
+        <option value="M. Klein &amp; Co.">M. Klein &amp; Co.</option>
+        <option value="Miller Buckfire">Miller Buckfire</option>
+        <option value="William Blair">William Blair</option>
+        <option value="Piper Sandler">Piper Sandler</option>
+        <option value="FT Partners">FT Partners</option>
+        <option value="Ardea Partners">Ardea Partners</option>
+        <option value="Unspecified">Unspecified</option>
+      </select>
+    </div>
+
+    <button class="btn-reset-filters" id="btn-reset-filters" title="Clear all filters">&#10005; Reset</button>
+    <span class="qb-count" id="qb-count"></span>
+
+  </div>
+
+  <!-- Card Area -->
+  <div class="qb-page">
+    <main class="qb-main">
+
+      <div class="flashcard-nav" id="flashcard-nav">
+        <button class="arrow-btn" id="prev-btn" aria-label="Previous">&#8592;</button>
+
+        <div class="card-container">
+          <div class="flashcard-card" id="flashcard-card">
+            <span class="card-topic-badge" id="card-topic-badge">Topic</span>
+            <span class="card-label">Question</span>
+            <p class="card-question" id="card-question">Loading...</p>
+            <div class="card-actions">
+              <button class="btn-show-answer" id="show-answer-btn">Show Answer</button>
+              <button class="btn-hide-answer" id="hide-answer-btn" style="display:none;">Hide Answer</button>
+            </div>
+            <div class="card-answer-section" id="card-answer-section">
+              <div class="card-answer-label">Answer</div>
+              <p class="card-answer-text" id="card-answer-text"></p>
+            </div>
+          </div>
+        </div>
+
+        <button class="arrow-btn" id="next-btn" aria-label="Next">&#8594;</button>
+      </div>
+
+      <div class="card-counter" id="card-counter"></div>
+      <div class="no-results" id="no-results" style="display:none;">
+        No questions match the selected filters.
+      </div>
+
+    </main>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

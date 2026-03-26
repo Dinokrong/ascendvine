@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ascend — Enterprise Value &amp; Equity Value</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">Ascend</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right"></div>
+  </nav>
+
+  <div class="article-page">
+    <a href="studyguide.html" class="article-back">&#8592; Study Guide</a>
+    <span class="article-tag">IB Fundamentals</span>
+    <h1 class="article-title">Enterprise Value &amp; Equity Value</h1>
+    <p class="article-intro">Enterprise Value and Equity Value are two lenses for measuring a company's worth. Understanding the difference — and how to move between them — is essential for every valuation and deal analysis.</p>
+
+    <div class="article-section">
+      <h2>Equity Value (Market Capitalization)</h2>
+      <p>Equity Value represents the value of the company attributable to equity shareholders only.</p>
+      <p><strong>Basic Equity Value = Share Price × Basic Shares Outstanding</strong></p>
+      <p><strong>Fully Diluted Equity Value = Share Price × Diluted Shares Outstanding</strong></p>
+      <p>Diluted shares include the dilutive effect of in-the-money options, warrants, and convertible securities, calculated via the Treasury Stock Method (TSM).</p>
+      <div class="article-callout">
+        <strong>Treasury Stock Method (TSM):</strong> Assume all in-the-money options are exercised. The proceeds received are used to repurchase shares at the current price. Net new shares = Shares issued − Shares repurchased.
+      </div>
+    </div>
+
+    <div class="article-section">
+      <h2>Enterprise Value</h2>
+      <p>Enterprise Value (EV) represents the total value of the business to <em>all</em> capital providers — debt holders, preferred shareholders, minority interest holders, and equity shareholders.</p>
+      <p><strong>EV = Equity Value + Debt + Preferred Stock + Minority Interest − Cash &amp; Cash Equivalents</strong></p>
+      <h3>Why Each Item Is Added or Subtracted</h3>
+      <ul>
+        <li><strong>+ Debt:</strong> An acquirer must repay or assume the debt — it's part of the acquisition cost</li>
+        <li><strong>+ Preferred Stock:</strong> Has a senior claim; must be satisfied before common equity</li>
+        <li><strong>+ Minority Interest:</strong> The company consolidates 100% of subsidiaries it controls (&gt;50%), so EV must reflect the portion not owned by the parent</li>
+        <li><strong>− Cash:</strong> An acquirer effectively gets the cash — it offsets the purchase price</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Enterprise Value vs. Equity Value Multiples</h2>
+      <p>You must match the value metric to the financial metric — use Enterprise Value with metrics that belong to all capital providers (before interest), and Equity Value with metrics that belong to shareholders (after interest).</p>
+      <ul>
+        <li><strong>EV/Revenue, EV/EBITDA, EV/EBIT, EV/NOPAT</strong> — these are pre-debt metrics</li>
+        <li><strong>P/E (Equity Value / Net Income), P/Book</strong> — these are post-debt (equity) metrics</li>
+      </ul>
+      <div class="article-callout orange">
+        A common mistake: using Net Income with Enterprise Value. Net Income is after interest expense, so it belongs to equity holders only — pair it with Equity Value (P/E ratio).
+      </div>
+    </div>
+
+    <div class="article-section">
+      <h2>Moving from Equity Value to Enterprise Value</h2>
+      <p>The "bridge" between Equity Value and Enterprise Value is the net debt position (Debt − Cash). If a company has more cash than debt, it has "net cash" and EV &lt; Equity Value. If it has more debt, EV &gt; Equity Value.</p>
+    </div>
+
+    <div class="article-section">
+      <h2>Diluted Shares Worked Example</h2>
+      <p>Company has 100 shares at $10, and 10 in-the-money options with a $5 strike.</p>
+      <ul>
+        <li>Options exercise → company receives $50 in proceeds (10 × $5)</li>
+        <li>Company uses $50 to repurchase 5 shares at $10 each</li>
+        <li>Net new shares = 10 − 5 = 5</li>
+        <li>Diluted shares = 105 → Fully Diluted Equity Value = 105 × $10 = $1,050</li>
+      </ul>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

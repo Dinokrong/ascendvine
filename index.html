@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emory Ascend — Login</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="login-page">
+    <div class="login-card">
+
+      <div class="login-lock-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="#4472C4">
+          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10
+                   c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z
+                   m-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z
+                   m3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+        </svg>
+      </div>
+
+      <h1>Emory Ascend</h1>
+      <p class="subtitle">Sign in to continue</p>
+
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="Enter your username"
+            autocomplete="username"
+            spellcheck="false"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="passcode">Passcode</label>
+          <input
+            type="password"
+            id="passcode"
+            name="passcode"
+            placeholder="Enter your passcode"
+            autocomplete="current-password"
+          >
+        </div>
+
+        <button type="submit" class="btn-submit">Sign In</button>
+
+        <div class="error-msg" id="error-msg" role="alert">
+          Incorrect username or passcode. Please try again.
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

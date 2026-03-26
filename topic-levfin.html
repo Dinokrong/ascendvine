@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ascend — Leveraged Finance (LevFin)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">Ascend</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right"></div>
+  </nav>
+
+  <div class="article-page">
+    <a href="studyguide.html" class="article-back">&#8592; Study Guide</a>
+    <span class="article-tag">Capital Markets</span>
+    <h1 class="article-title">Leveraged Finance (LevFin)</h1>
+    <p class="article-intro">Leveraged Finance (LevFin) is one of the most technical and market-oriented groups within investment banking. Sitting at the intersection of traditional Investment Banking (like M&amp;A) and Capital Markets, the LevFin team structures, originates, and syndicates debt for companies with non-investment grade credit ratings or those undertaking highly leveraged transactions, such as Leveraged Buyouts (LBOs). These companies are typically rated "Speculative Grade" (BB+ / Ba1 or below). LevFin is distinct from DCM: DCM handles Investment Grade debt, while LevFin handles High Yield debt with deeper credit work.</p>
+
+    <div class="article-section">
+      <h2>Basic — The Capital Structure Hierarchy &amp; Liens</h2>
+      <p>Understanding priority of payment is critical in LevFin. If a company goes bankrupt, who gets paid first? A Lien represents a legal claim on assets used as collateral.</p>
+      <ul>
+        <li><strong>First Lien (1L):</strong> The highest priority. In a liquidation, 1L lenders get the proceeds from the sale of collateral (e.g., factories, inventory) before anyone else. Typically includes Revolvers and Term Loan Bs.</li>
+        <li><strong>Second Lien (2L):</strong> Junior to 1L but senior to unsecured debt. They only get paid from collateral proceeds if there is value left over after 1L is fully repaid.</li>
+        <li><strong>Senior Unsecured:</strong> No specific claim on collateral, but a general claim on the company's assets.</li>
+        <li><strong>Subordinated / Mezzanine:</strong> Contractually junior to senior debt.</li>
+        <li><strong>Equity:</strong> Residual claim.</li>
+      </ul>
+      <div class="article-callout">💡 Interview Tip: In an interview, always emphasize that Bank Debt (Loans) is generally Senior Secured (1st Lien), while High Yield Bonds are generally Senior Unsecured. This structural difference explains why bonds carry higher interest rates than loans — they take more risk.</div>
+    </div>
+
+    <div class="article-section">
+      <h2>Leveraged Loans (Bank Debt)</h2>
+      <h3>A. The Revolving Credit Facility ("Revolver")</h3>
+      <p>Think of this as the company's corporate credit card.</p>
+      <ul>
+        <li><strong>Purpose:</strong> Used for short-term working capital needs (e.g., paying employees before customers pay their invoices) or bridging liquidity gaps.</li>
+        <li><strong>Structure:</strong> The company can draw down, repay, and re-draw funds as needed up to a limit.</li>
+        <li><strong>Tenor:</strong> Typically 3–5 years.</li>
+        <li><strong>Undrawn Fees:</strong> Borrowers pay a commitment fee (e.g., 0.50%) on the unused portion of the revolver.</li>
+      </ul>
+      <h3>B. Term Loan A (TLA)</h3>
+      <ul>
+        <li><strong>Amortization:</strong> Significant. The company must pay back principal gradually every year (e.g., 5–10% per year).</li>
+        <li><strong>Lenders:</strong> Commercial banks who hold the debt on their balance sheet.</li>
+        <li><strong>Risk:</strong> Lower risk due to high amortization; rarely seen in aggressive LBOs today.</li>
+      </ul>
+      <h3>C. Term Loan B (TLB)</h3>
+      <p>This is the bread and butter of modern leveraged finance.</p>
+      <ul>
+        <li><strong>Amortization:</strong> Minimal (typically 1% per year). The vast majority of the principal is paid at maturity ("Bullet" payment).</li>
+        <li><strong>Tenor:</strong> Longer than TLAs (typically 5–7 years).</li>
+        <li><strong>Lenders:</strong> Institutional Investors — primarily CLOs, Hedge Funds, and Mutual Funds. Banks arrange these loans but do not hold them long-term.</li>
+        <li><strong>Interest Rate:</strong> Floating (e.g., SOFR + Spread).</li>
+      </ul>
+      <h3>D. Unitranche Debt</h3>
+      <p>A hybrid structure increasingly common in the middle market. It combines Senior and Subordinated debt into a single tranche with a blended interest rate. Benefit: One set of documents, one lender (usually a Private Credit fund), and faster execution ("One-stop shop").</p>
+    </div>
+
+    <div class="article-section">
+      <h2>High Yield Bonds</h2>
+      <p>High Yield Bonds are securities, not loans. They are registered and traded like stocks, but they represent debt obligations.</p>
+      <ul>
+        <li><strong>Interest Rate:</strong> Fixed (e.g., 8.0% coupon). This locks in the cost of capital for the company.</li>
+        <li><strong>Tenor:</strong> Longer term (typically 7–10 years).</li>
+        <li><strong>Amortization:</strong> None. The entire principal is due at maturity (Bullet).</li>
+        <li><strong>Call Protection:</strong> Companies cannot just pay these off early without a penalty. This protects the investor's yield.</li>
+        <li><strong>Covenants:</strong> "Incurrence" covenants.</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Loans vs. Bonds: The Comparison Matrix</h2>
+      <p>This is the single most common technical question topic in LevFin interviews. You must know the differences by heart.</p>
+      <h3>Leveraged Loans (TLB)</h3>
+      <ul>
+        <li>Interest Rate: Floating (SOFR + Margin)</li>
+        <li>Security: Senior Secured (1st Lien)</li>
+        <li>Tenor: 5–7 Years</li>
+        <li>Amortization: Minimal (1% / year)</li>
+        <li>Call Protection: Soft (small penalty for ~6 months)</li>
+        <li>Covenants: Maintenance (historically)</li>
+        <li>Investors: Banks, CLOs, Hedge Funds</li>
+      </ul>
+      <h3>High Yield Bonds</h3>
+      <ul>
+        <li>Interest Rate: Fixed Coupon</li>
+        <li>Security: Senior Unsecured (usually)</li>
+        <li>Tenor: 7–10 Years</li>
+        <li>Amortization: None (Bullet)</li>
+        <li>Call Protection: Hard (Make-Whole / High penalties)</li>
+        <li>Covenants: Incurrence</li>
+        <li>Investors: Mutual Funds, Pensions, Insurers</li>
+      </ul>
+      <div class="article-callout">💡 Key Insight: Why would a company choose Bonds over Loans? To lock in a fixed interest rate (protection against rising rates). To avoid amortization (preserves cash flow). To extend maturity (push the repayment date further out).</div>
+    </div>
+
+    <div class="article-section">
+      <h2>Pricing Mechanics</h2>
+      <ul>
+        <li><strong>Base Rate:</strong> Historically LIBOR, now SOFR (Secured Overnight Financing Rate).</li>
+        <li><strong>Spread:</strong> The risk premium (e.g., 400 basis points or 4.00%).</li>
+        <li><strong>Total Cost:</strong> If SOFR is 3.00% and the spread is 4.00%, the borrower pays 7.00%.</li>
+        <li><strong>SOFR Floor:</strong> Lenders often protect themselves with a Floor. If the floor is 1.00% and SOFR falls to 0.10%, the borrower still pays based on 1.00%.</li>
+        <li><strong>OID (Original Issue Discount):</strong> Often, to entice investors, debt is issued at a discount to par (e.g., 98 cents on the dollar). The borrower receives $98 but owes $100. This effectively increases the yield for the lender without changing the nominal coupon.</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Credit Analysis Fundamentals</h2>
+      <h3>A. Leverage Ratios</h3>
+      <p>How much debt does the company have relative to its earnings? Formula: Total Debt / EBITDA</p>
+      <ul>
+        <li>&lt; 2.0x = Conservative (Investment Grade usually)</li>
+        <li>4.0x – 6.0x = Highly Leveraged (LBO territory)</li>
+        <li>&gt; 7.0x = Very Aggressive / Distressed</li>
+      </ul>
+      <h3>B. Coverage Ratios</h3>
+      <p>Can the company afford its interest payments? Formula: EBITDA / Interest Expense or (EBITDA - CapEx) / Interest Expense</p>
+      <ul>
+        <li>&gt; 3.0x = Healthy</li>
+        <li>&lt; 1.5x = Dangerous (Cash flow is barely covering interest)</li>
+      </ul>
+      <div class="article-callout">💡 Interview Tip: If asked "What is a good leverage ratio?", the answer is "It depends on the industry." Stable industries with predictable cash flows (like Utilities or Software) can sustain higher leverage (5.0x–6.0x) than cyclical industries like Mining or Retail (2.0x–3.0x).</div>
+    </div>
+
+    <!-- ADVANCED SECTION -->
+    <div class="article-section">
+      <h2>Advanced — Strategic Capital Structure Decisions</h2>
+      <h3>The "Profile" Test</h3>
+      <ul>
+        <li><strong>100% Debt Candidate:</strong> Utility Company. Highly predictable cash flows, local monopoly, heavy assets. Can sustain high leverage because bankruptcy risk is low.</li>
+        <li><strong>50/50 Candidate:</strong> Railroad / Industrial. Cyclical but asset-heavy. Needs some equity cushion to absorb economic downturns.</li>
+        <li><strong>100% Equity Candidate:</strong> Early-stage Biotech. Zero revenue, high burn rate, binary outcome. Cannot service any debt.</li>
+      </ul>
+      <h3>Selecting the Instrument: Loans vs. Subordinated Notes</h3>
+      <ul>
+        <li>Start with Senior Debt (Term Loans): It's the cheapest.</li>
+        <li>Check Constraints: Can the company meet the maintenance covenants and amortization?</li>
+        <li>Add Junior Capital: If the company needs more leverage than banks will allow, or if it needs to avoid amortization, layer in Subordinated Notes or Mezzanine Debt.</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced — Structural Subordination &amp; Guarantees</h2>
+      <p>Structural Subordination arises from the corporate legal structure.</p>
+      <ul>
+        <li>Imagine a setup with a Parent HoldCo and an Operating Subsidiary (OpCo). The OpCo holds the actual assets and generates cash flow.</li>
+        <li>If the OpCo issues debt (OpCo Debt) and the HoldCo issues debt (HoldCo Debt), the OpCo Debt is structurally senior.</li>
+        <li>Why? In a liquidation, OpCo assets pay off OpCo creditors first. Only the residual equity value flows up to the HoldCo to pay HoldCo creditors.</li>
+      </ul>
+      <div class="article-callout">💡 Key Insight: High Yield Bonds are frequently issued at the HoldCo level to be structurally subordinated to the Bank Debt (Term Loans) which sits at the OpCo level. To mitigate this, HoldCo lenders demand Upstream Guarantees — the OpCo guarantees the debt of the HoldCo, putting HoldCo lenders on equal footing with OpCo unsecured creditors.</div>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced — Credit Documentation: The "Fine Print"</h2>
+      <h3>Covenant-Lite (Cov-Lite)</h3>
+      <p>The trend in the last decade has been the rise of Covenant-Lite loans — a Term Loan B that lacks maintenance covenants. It effectively acts like a bond but retains the floating rate and prepayability of a loan. Implication: The lender cannot default the borrower just because performance deteriorates; they can only act if the borrower misses a payment.</p>
+      <h3>The "Builder Basket" &amp; Restricted Payments</h3>
+      <ul>
+        <li><strong>Builder Basket:</strong> A cumulative pool of capacity that grows over time (usually 50% of Consolidated Net Income). Allows the borrower to pay dividends or make investments that would otherwise be restricted, provided they are in compliance with leverage ratios.</li>
+      </ul>
+      <h3>Incremental Facilities (Accordions) &amp; MFN</h3>
+      <ul>
+        <li><strong>Accordion Feature:</strong> Allows borrowers to issue more debt up to a cap (e.g., First Lien Leverage &lt; 4.5x) without asking for permission.</li>
+        <li><strong>MFN (Most Favored Nation):</strong> Protects existing lenders. If the new incremental debt has a yield &gt; 50bps higher than the existing debt, the existing debt's rate must be hiked to match it (minus 50bps). This prevents "priming" existing lenders with expensive new debt.</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced — Pricing Mechanics &amp; Syndication Risk</h2>
+      <h3>The "Flex" Concept</h3>
+      <p>When a bank underwrites a deal, they take on syndication risk. To mitigate this, banks require Market Flex.</p>
+      <ul>
+        <li><strong>Price Flex:</strong> The ability to increase the spread (e.g., +50bps) or the OID (e.g., from 99 to 98) to entice investors if demand is weak.</li>
+        <li><strong>Structure Flex:</strong> The ability to tighten covenants or add call protection.</li>
+      </ul>
+      <h3>"Story" Disconnect</h3>
+      <ul>
+        <li><strong>Equity Investors:</strong> Focus on the Upside. "If this works, we make 5x our money."</li>
+        <li><strong>Debt Investors:</strong> Focus on the Downside. "If this fails, do we lose our principal?"</li>
+        <li><strong>Implication:</strong> A "great story" for equity (high growth, unproven tech) is often a "bad story" for credit (negative cash flow). LevFin bankers must "credit-wash" the story to focus on asset protection and downside stability.</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced — LBO Modeling Nuances</h2>
+      <h3>1. The Cash Sweep</h3>
+      <p>A realistic model calculates Excess Cash Flow (ECF): ECF = EBITDA - Cash Interest - Cash Taxes - CapEx - Change in WC. Then, the ECF Sweep percentage applies (often 50% or 75%, stepping down if leverage falls). This is mandatory debt repayment.</p>
+      <h3>2. PIK Toggle Notes (Payment-in-Kind)</h3>
+      <p>Allows the borrower to choose: Pay cash interest (e.g., 8%) or pay in-kind (e.g., 9%) by adding interest to the principal. Preserves cash during liquidity crunches but increases the debt load significantly.</p>
+      <h3>3. Equity Kickers</h3>
+      <p>In risky deals (Mezzanine), lenders may demand upside participation via Warrants (options to buy equity at a fixed price) or Co-Invest rights. Increases the lender's IRR beyond just the interest payments.</p>
+      <h3>4. DSCR (Debt Service Coverage Ratio)</h3>
+      <p>Formula: (Free Cash Flow) / (Interest + Principal Amortization + Lease Payments). It accounts for mandatory principal payments. A company might cover interest easily (3.0x) but fail DSCR (&lt; 1.0x) if it has heavy amortization requirements.</p>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced — Relative Value Analysis</h2>
+      <p>How do you determine if a bond trading at 8% yield is "cheap"?</p>
+      <ul>
+        <li><strong>Spread per Turn of Leverage:</strong> Company A: 4.0x leverage, 400bps spread = 100bps per turn. Company B: 4.0x leverage, 600bps spread = 150bps per turn. Verdict: Company B offers better value (more yield for same leverage).</li>
+        <li><strong>Senior vs. Subordinated Spread:</strong> If the Term Loan is L+300 and the Bond is 8.0% fixed (swapped equivalent L+500), the "risk premium" for going junior is 200bps. If historical norms are 300bps, the junior bond might be "rich" (too expensive/low yield).</li>
+      </ul>
+      <div class="article-callout">💡 Advanced LevFin is about managing risk through structure and documentation. Structure: Using HoldCo/OpCo layers and Upstream Guarantees. Documentation: Negotiating baskets, accordions, and flex terms. Math: Calculating Yield to Worst (YTW), Duration risk, and DSCR. Mastery here means you can look at a company's profile and instantly engineer a capital structure that balances the aggression of the Sponsor with the conservatism of the Credit Committee.</div>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

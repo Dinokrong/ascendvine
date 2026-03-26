@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ascend — Valuation</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">Ascend</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right"></div>
+  </nav>
+
+  <div class="article-page">
+    <a href="studyguide.html" class="article-back">&#8592; Study Guide</a>
+    <span class="article-tag">IB Fundamentals</span>
+    <h1 class="article-title">Valuation Overview &amp; Comparable Companies</h1>
+    <p class="article-intro">There are three core valuation methodologies used in IB: Comparable Company Analysis (Comps), Precedent Transactions, and DCF. Each gives a different perspective on value, and they're used together to build a "football field" valuation range.</p>
+
+    <div class="article-section">
+      <h2>The Three Core Methodologies</h2>
+      <ul>
+        <li><strong>Comparable Company Analysis (Trading Comps):</strong> Value based on how similar public companies trade in the market today</li>
+        <li><strong>Precedent Transactions:</strong> Value based on prices paid in historical M&A deals for similar companies</li>
+        <li><strong>DCF (Discounted Cash Flow):</strong> Intrinsic value based on the present value of projected future cash flows</li>
+      </ul>
+      <div class="article-callout">
+        Precedent transactions typically yield higher values than trading comps because they include a <strong>control premium</strong> — the premium paid to acquire majority control of a company (typically 20–40%).
+      </div>
+    </div>
+
+    <div class="article-section">
+      <h2>Comparable Company Analysis (Comps)</h2>
+      <h3>Process</h3>
+      <ol>
+        <li>Select a universe of comparable public companies (similar size, sector, geography, business model)</li>
+        <li>Spread key financial metrics: Revenue, EBITDA, EBIT, Net Income (LTM and forward estimates)</li>
+        <li>Calculate EV and Equity Value multiples: EV/EBITDA, EV/Revenue, P/E</li>
+        <li>Apply the median/mean multiples to the subject company's financials</li>
+        <li>Derive an implied valuation range</li>
+      </ol>
+      <h3>Common Multiples</h3>
+      <ul>
+        <li><strong>EV/EBITDA:</strong> Most commonly used; capital-structure-neutral</li>
+        <li><strong>EV/Revenue:</strong> Used when EBITDA is negative or inconsistent (high-growth tech, early-stage)</li>
+        <li><strong>P/E:</strong> Useful for financial companies and mature businesses with stable earnings</li>
+        <li><strong>EV/EBIT:</strong> Useful when capex intensity differs significantly across peers</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Precedent Transactions</h2>
+      <p>Similar methodology to comps, but uses announced/closed M&A deals rather than current market prices. Key differences:</p>
+      <ul>
+        <li>Values are higher due to control premium and synergy expectations</li>
+        <li>Data may be less current (deals are historical)</li>
+        <li>Less information is often publicly available versus public company filings</li>
+        <li>Must carefully adjust for market conditions at the time of each deal</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Football Field Chart</h2>
+      <p>The football field overlays all three methodologies to show the implied valuation range. Bankers use this to advise clients on a fair range of value and to frame negotiation anchors in M&A discussions.</p>
+    </div>
+
+    <div class="article-section">
+      <h2>Key Concepts to Know</h2>
+      <ul>
+        <li><strong>LTM (Last Twelve Months):</strong> Trailing performance; calculated as most recent fiscal year + YTD current year − YTD prior year</li>
+        <li><strong>Calendarization:</strong> Adjusting financials so all comps use the same fiscal year-end for apples-to-apples comparison</li>
+        <li><strong>NTM (Next Twelve Months):</strong> Forward-looking estimates; generally trades at a discount to LTM (growth priced in)</li>
+        <li><strong>Street consensus:</strong> Analyst estimates from Bloomberg, FactSet, or Capital IQ used for NTM projections</li>
+      </ul>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

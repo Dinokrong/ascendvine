@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ascend — Accounting & The Three Statements</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">Ascend</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right"></div>
+  </nav>
+
+  <div class="article-page">
+    <a href="studyguide.html" class="article-back">&#8592; Study Guide</a>
+    <span class="article-tag">IB Fundamentals</span>
+    <h1 class="article-title">Accounting &amp; the Three Financial Statements</h1>
+    <p class="article-intro">The three financial statements — Income Statement, Balance Sheet, and Cash Flow Statement — are the backbone of every financial analysis. Understanding how they link together is the most fundamental skill tested in IB interviews.</p>
+
+    <div class="article-section">
+      <h2>The Income Statement</h2>
+      <p>The Income Statement (P&L) shows a company's revenues and expenses over a period of time, resulting in net income.</p>
+      <h3>Key Line Items (Top to Bottom)</h3>
+      <ul>
+        <li><strong>Revenue</strong> — total sales recognized during the period</li>
+        <li><strong>COGS</strong> — direct costs of producing goods/services; Revenue − COGS = Gross Profit</li>
+        <li><strong>Gross Profit</strong> — the profit after direct costs</li>
+        <li><strong>Operating Expenses (SG&A, R&D)</strong> — overhead costs</li>
+        <li><strong>EBIT (Operating Income)</strong> — Gross Profit − OpEx</li>
+        <li><strong>EBITDA</strong> = EBIT + D&amp;A (commonly used proxy for operating cash generation)</li>
+        <li><strong>Interest Expense / Income</strong> — cost of debt or return on cash</li>
+        <li><strong>Pre-Tax Income (EBT)</strong> — EBIT − Net Interest</li>
+        <li><strong>Tax Expense</strong> — EBT × effective tax rate</li>
+        <li><strong>Net Income</strong> — the "bottom line"</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>The Balance Sheet</h2>
+      <p>The Balance Sheet is a snapshot of what the company <em>owns</em> (assets) and what it <em>owes</em> (liabilities + equity) at a single point in time. Assets always equal Liabilities + Shareholders' Equity.</p>
+      <h3>Assets</h3>
+      <ul>
+        <li><strong>Current Assets:</strong> Cash, Accounts Receivable, Inventory, Prepaid Expenses</li>
+        <li><strong>Non-Current Assets:</strong> PP&amp;E (net), Goodwill, Intangibles, Long-Term Investments</li>
+      </ul>
+      <h3>Liabilities</h3>
+      <ul>
+        <li><strong>Current Liabilities:</strong> Accounts Payable, Accrued Expenses, Short-Term Debt, Deferred Revenue</li>
+        <li><strong>Non-Current Liabilities:</strong> Long-Term Debt, Deferred Tax Liabilities, Pension Obligations</li>
+      </ul>
+      <h3>Shareholders' Equity</h3>
+      <ul>
+        <li>Common Stock + APIC + Retained Earnings − Treasury Stock + AOCI</li>
+        <li>Retained Earnings changes each period by: Net Income − Dividends</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>The Cash Flow Statement</h2>
+      <p>The CFS reconciles net income to actual cash movement. It has three sections:</p>
+      <h3>Cash from Operations (CFO)</h3>
+      <p>Starts with Net Income, adds back non-cash items (D&amp;A, SBC), and adjusts for working capital changes (ΔAR, ΔInventory, ΔAP).</p>
+      <h3>Cash from Investing (CFI)</h3>
+      <p>Includes capital expenditures (negative), asset sales (positive), and acquisitions (negative).</p>
+      <h3>Cash from Financing (CFF)</h3>
+      <p>Includes debt issuances and repayments, equity issuances, share buybacks, and dividends paid.</p>
+      <div class="article-callout">
+        <strong>Key formula:</strong> Ending Cash = Beginning Cash + CFO + CFI + CFF. The ending cash balance on the CFS must match the cash line on the Balance Sheet.
+      </div>
+    </div>
+
+    <div class="article-section">
+      <h2>How the Three Statements Link</h2>
+      <ul>
+        <li>Net Income flows from the Income Statement to the CFS (top of CFO) and to Retained Earnings on the Balance Sheet</li>
+        <li>D&amp;A on the IS is added back on the CFS; accumulated depreciation reduces PP&amp;E on the Balance Sheet</li>
+        <li>CapEx on the CFS increases PP&amp;E on the Balance Sheet</li>
+        <li>Working capital changes on the CFS correspond to changes in current assets/liabilities on the Balance Sheet</li>
+        <li>Net change in cash on the CFS equals the change in the cash account on the Balance Sheet</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Key Concepts to Know Cold</h2>
+      <ul>
+        <li><strong>Accrual vs. Cash Accounting:</strong> Accrual recognizes revenue/expenses when earned/incurred, not when cash changes hands</li>
+        <li><strong>Working Capital = Current Assets − Current Liabilities</strong> (use operating NWC: exclude cash and debt)</li>
+        <li><strong>EBITDA limitations:</strong> Ignores CapEx, changes in working capital, interest, and taxes</li>
+        <li><strong>Deferred Tax Assets/Liabilities:</strong> Arise from timing differences between GAAP and tax reporting</li>
+        <li><strong>Goodwill:</strong> Purchase price − Fair Value of Net Assets in an acquisition; tested annually for impairment, not amortized under US GAAP</li>
+      </ul>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ascend — LBO Analysis</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">Ascend</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right"></div>
+  </nav>
+
+  <div class="article-page">
+    <a href="studyguide.html" class="article-back">&#8592; Study Guide</a>
+    <span class="article-tag">Transactions</span>
+    <h1 class="article-title">Leveraged Buyouts (LBOs)</h1>
+    <p class="article-intro">An LBO is an acquisition where a financial sponsor (private equity firm) acquires a company primarily using debt, with the target's own assets and cash flows serving as collateral. Returns are driven by debt paydown, EBITDA growth, and multiple expansion.</p>
+
+    <div class="article-section">
+      <h2>LBO Overview</h2>
+      <p>In an LBO, the private equity firm contributes ~30–40% of the purchase price as equity, and finances the rest with debt (senior secured, mezzanine, etc.). After a holding period (typically 3–7 years), the sponsor exits via IPO, sale to a strategic, or secondary buyout.</p>
+      <div class="article-callout">
+        PE firms target <strong>IRR of 20%+</strong> (or a 2–3x cash-on-cash multiple) over the holding period. IRR is the primary return metric.
+      </div>
+    </div>
+
+    <div class="article-section">
+      <h2>Ideal LBO Candidate Characteristics</h2>
+      <ul>
+        <li><strong>Stable, predictable cash flows</strong> — needed to service debt; low cyclicality preferred</li>
+        <li><strong>Strong free cash flow conversion</strong> — low CapEx relative to EBITDA</li>
+        <li><strong>Defensible market position / strong brand</strong></li>
+        <li><strong>Low existing leverage</strong> — room to add debt</li>
+        <li><strong>Clear operational improvement opportunities</strong> (cost cuts, margin improvement, add-ons)</li>
+        <li><strong>Multiple expansion potential</strong> — entering at a lower multiple and exiting at a higher one</li>
+        <li><strong>Tangible assets</strong> that can serve as collateral</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Sources of LBO Returns</h2>
+      <ol>
+        <li><strong>Debt Paydown (Deleveraging):</strong> As the company generates cash and repays debt, equity value grows; if EV is flat, equity value = EV − remaining debt</li>
+        <li><strong>EBITDA Growth:</strong> Revenue growth and margin expansion increase the company's exit EV</li>
+        <li><strong>Multiple Expansion:</strong> Exiting at a higher EV/EBITDA multiple than the entry multiple</li>
+      </ol>
+    </div>
+
+    <div class="article-section">
+      <h2>LBO Model Mechanics</h2>
+      <ol>
+        <li>Determine purchase price (entry EV = Entry Multiple × EBITDA)</li>
+        <li>Build sources &amp; uses — debt tranches, equity contribution, fees</li>
+        <li>Project operating financials (revenue, EBITDA, CapEx, changes in NWC)</li>
+        <li>Build debt schedule — model interest, mandatory amortization, cash sweep</li>
+        <li>Calculate free cash flow available to pay down debt each year</li>
+        <li>Determine exit value (exit multiple × exit EBITDA)</li>
+        <li>Calculate equity proceeds = Exit EV − Remaining Debt</li>
+        <li>Calculate IRR and MOIC (equity proceeds / equity invested)</li>
+      </ol>
+    </div>
+
+    <div class="article-section">
+      <h2>Debt Tranches</h2>
+      <ul>
+        <li><strong>Revolving Credit Facility (Revolver):</strong> Drawn as needed; lowest cost; first to be repaid</li>
+        <li><strong>Term Loan A (TLA):</strong> Amortizing bank debt</li>
+        <li><strong>Term Loan B (TLB):</strong> Institutional; minimal amortization (1%/year), repaid at maturity; most common in LBOs</li>
+        <li><strong>Senior Secured Notes:</strong> Bonds with hard assets as collateral</li>
+        <li><strong>Mezzanine / Subordinated Debt:</strong> Higher yield, lower seniority; sometimes includes warrants</li>
+        <li><strong>Preferred Equity:</strong> Hybrid; fixed return, senior to common equity</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Key Metrics</h2>
+      <ul>
+        <li><strong>Entry/Exit Multiple:</strong> Purchase price or exit price / EBITDA</li>
+        <li><strong>Leverage Multiple:</strong> Total Debt / EBITDA (typically 4–7x in LBOs)</li>
+        <li><strong>IRR:</strong> Internal rate of return on the equity investment</li>
+        <li><strong>MOIC / Cash-on-Cash:</strong> Total equity proceeds / equity invested (target: 2–3x in 5 years)</li>
+        <li><strong>Interest Coverage:</strong> EBITDA / Interest Expense (lenders want &gt;2–3x)</li>
+      </ul>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
