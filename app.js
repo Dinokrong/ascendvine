@@ -66,6 +66,7 @@
 
   var filteredCards = [];
   var currentIndex  = 0;
+  var viewMode      = 'single'; // 'single' | 'grid'
 
   // DOM refs
   var cardQuestion   = document.getElementById('card-question');
@@ -85,6 +86,8 @@
   var filterDiff     = document.getElementById('filter-difficulty');
   var filterFirm     = document.getElementById('filter-firm');
   var resetBtn       = document.getElementById('btn-reset-filters');
+  var viewToggle     = document.getElementById('view-mode-toggle');
+  var gridContainer  = document.getElementById('grid-cards-container');
 
   // ---- Hide / show answer ----
   function hideAnswer() {
@@ -134,6 +137,46 @@
     }
   }
 
+  // ---- Grid render ----
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderGrid() {
+    gridContainer.innerHTML = '';
+    if (filteredCards.length === 0) {
+      gridContainer.innerHTML = '<p class="no-results" style="padding:4rem 2.5rem;">No questions match the selected filters.</p>';
+      qbCount.textContent = '0 questions';
+      return;
+    }
+    qbCount.textContent = filteredCards.length.toLocaleString() + ' questions';
+
+    filteredCards.forEach(function(card) {
+      var isBehav   = card.type === 'behavioral';
+      var tagColor  = isBehav ? '#B8762A' : '#888888';
+      var tagBorder = isBehav ? '#D4C4A0' : '#DDD7CD';
+
+      var el = document.createElement('div');
+      el.className = 'gc-card';
+      el.innerHTML =
+        '<div class="gc-card-inner">' +
+          '<div class="gc-card-front">' +
+            '<span class="gc-badge" style="color:' + tagColor + ';border-color:' + tagBorder + '">' + escHtml(card.topic || 'General') + '</span>' +
+            '<p class="gc-question">' + escHtml(card.question) + '</p>' +
+            '<div class="gc-hint">Click to reveal answer</div>' +
+          '</div>' +
+          '<div class="gc-card-back">' +
+            '<span class="gc-badge" style="color:' + tagColor + ';border-color:' + tagBorder + '">' + escHtml(card.topic || 'General') + '</span>' +
+            '<p class="gc-answer-label">Answer</p>' +
+            '<p class="gc-answer">' + escHtml(card.answer || 'No answer provided.') + '</p>' +
+          '</div>' +
+        '</div>';
+
+      el.addEventListener('click', function() { el.classList.toggle('flipped'); });
+      gridContainer.appendChild(el);
+    });
+  }
+
   // ---- Apply filters ----
   function applyFilters() {
     var type  = filterType.value;
@@ -160,7 +203,11 @@
     }
 
     currentIndex = 0;
-    renderCard();
+    if (viewMode === 'grid') {
+      renderGrid();
+    } else {
+      renderCard();
+    }
   }
 
   // ---- Filter event listeners ----
@@ -225,6 +272,22 @@
     } else if (e.key === ' ') {
       e.preventDefault();
       cardAnswerSec.classList.contains('visible') ? hideAnswer() : showAnswer();
+    }
+  });
+
+  // ---- View mode toggle ----
+  viewToggle.addEventListener('change', function() {
+    viewMode = this.checked ? 'grid' : 'single';
+    if (viewMode === 'grid') {
+      flashcardNav.style.display  = 'none';
+      cardCounter.style.display   = 'none';
+      noResults.style.display     = 'none';
+      gridContainer.style.display = 'block';
+      renderGrid();
+    } else {
+      gridContainer.style.display = 'none';
+      cardCounter.style.display   = '';
+      renderCard();
     }
   });
 

@@ -115,6 +115,14 @@
     </div>
 
     <button class="btn-reset-filters" id="btn-reset-filters" title="Clear all filters">&#10005; Reset</button>
+
+    <div class="view-toggle-group">
+      <span class="view-toggle-label">Grid</span>
+      <label class="toggle-switch" title="Show all cards as grid">
+        <input type="checkbox" id="view-mode-toggle">
+        <span class="toggle-track"><span class="toggle-thumb"></span></span>
+      </label>
+    </div>
     <span class="qb-count" id="qb-count"></span>
 
   </div>
@@ -122,6 +130,9 @@
   <!-- Card Area -->
   <div class="qb-page">
     <main class="qb-main">
+
+      <!-- Grid mode -->
+      <div id="grid-cards-container" class="grid-cards-container" style="display:none;"></div>
 
       <div class="flashcard-nav" id="flashcard-nav">
         <button class="arrow-btn" id="prev-btn" aria-label="Previous">&#8592;</button>

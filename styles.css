@@ -322,11 +322,60 @@ a { text-decoration: none; }
 }
 
 .qb-count {
-  margin-left: auto;
   font-size: 0.8rem;
   color: var(--grey);
   letter-spacing: 0.01em;
 }
+
+/* ---- View mode toggle ---- */
+.view-toggle-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.view-toggle-label {
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+.toggle-switch input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.toggle-track {
+  width: 34px;
+  height: 19px;
+  background: var(--border);
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.2s;
+}
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+}
+.toggle-switch input:checked + .toggle-track { background: var(--text); }
+.toggle-switch input:checked + .toggle-track .toggle-thumb { transform: translateX(15px); }
 
 /* Card Area */
 .qb-main {
@@ -482,6 +531,101 @@ a { text-decoration: none; }
   color: var(--grey);
   text-align: center;
   letter-spacing: 0.02em;
+}
+
+/* ================================
+   GRID CARDS MODE
+================================ */
+.grid-cards-container {
+  columns: 3 260px;
+  column-gap: 1rem;
+  padding: 1.75rem 2.5rem 4rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.gc-card {
+  break-inside: avoid;
+  margin-bottom: 1rem;
+  perspective: 1200px;
+  cursor: pointer;
+}
+
+.gc-card-inner {
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 0.52s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.gc-card.flipped .gc-card-inner { transform: rotateY(180deg); }
+
+.gc-card-front,
+.gc-card-back {
+  grid-area: 1 / 1; /* same cell — container height = max(front, back) */
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1.2rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.gc-card-back {
+  transform: rotateY(180deg);
+}
+
+.gc-card:hover .gc-card-front { border-color: #C8C2B6; }
+.gc-card.flipped:hover .gc-card-front { border-color: var(--border); }
+
+.gc-badge {
+  display: inline-block;
+  font-size: 0.58rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: 1px solid;
+  border-radius: 2px;
+  padding: 2px 7px;
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.gc-question {
+  font-size: 0.87rem;
+  line-height: 1.65;
+  color: var(--text);
+  font-weight: 400;
+  flex: 1;
+  min-height: 60px;
+}
+
+.gc-hint {
+  font-size: 0.59rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--border);
+  opacity: 0.6;
+}
+
+.gc-answer-label {
+  font-size: 0.59rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.gc-answer {
+  font-size: 0.87rem;
+  line-height: 1.7;
+  color: var(--text);
+  font-weight: 400;
 }
 
 .no-results {
