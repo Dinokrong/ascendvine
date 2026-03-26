@@ -258,6 +258,23 @@
     renderCard();
   });
 
+  // Swipe to navigate (single card mode)
+  var touchStartX = 0;
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.touches[0].clientX;
+  }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    if (viewMode !== 'single' || !filteredCards.length) return;
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) < 50) return;
+    if (dx < 0) {
+      currentIndex = (currentIndex + 1) % filteredCards.length;
+    } else {
+      currentIndex = (currentIndex - 1 + filteredCards.length) % filteredCards.length;
+    }
+    renderCard();
+  }, { passive: true });
+
   // Keyboard shortcuts: ← → to navigate, Space to toggle answer
   document.addEventListener('keydown', function(e) {
     if (e.target.tagName === 'SELECT') return; // don't hijack dropdown keyboard nav
