@@ -186,7 +186,8 @@ a { text-decoration: none; }
 ================================ */
 .home-content {
   display: flex;
-  height: calc(100vh - 58px);
+  height: calc(100vh - 52px);
+  min-height: 560px;
 }
 
 .home-left {
@@ -390,13 +391,19 @@ a { text-decoration: none; }
 
 .flashcard-nav {
   display: flex;
-  align-items: flex-start;
-  gap: 1.75rem;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.card-nav-row {
+  display: flex;
+  gap: 0.75rem;
 }
 
 .arrow-btn {
-  width: 42px;
-  height: 42px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--bg-card);
@@ -407,7 +414,6 @@ a { text-decoration: none; }
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  margin-top: 1rem;
   transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 .arrow-btn:hover {
@@ -416,38 +422,64 @@ a { text-decoration: none; }
   color: #fff;
 }
 
+/* ================================
+   MOBILE RESPONSIVE
+================================ */
 @media (max-width: 600px) {
-  .qb-main { padding: 1.25rem; }
 
-  .flashcard-nav {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-    width: 100%;
+  /* Navbar */
+  .navbar { padding: 0 1.25rem; }
+
+  /* Home page */
+  .home-content {
+    flex-direction: column;
+    height: auto;
+    min-height: calc(100vh - 52px);
   }
-  .card-container {
-    grid-column: 1 / -1;
-    grid-row: 1;
-    width: 100%;
+  .home-left {
+    flex: none;
+    padding: 3rem 1.75rem 2.5rem;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
   }
-  #prev-btn {
-    grid-column: 1;
-    grid-row: 2;
-    width: 100%;
-    height: 48px;
-    border-radius: 6px;
-    margin-top: 0;
+  .home-left p { font-size: 1.85rem; }
+  .home-right {
+    flex: 1;
+    min-height: 240px;
   }
-  #next-btn {
-    grid-column: 2;
-    grid-row: 2;
-    width: 100%;
-    height: 48px;
-    border-radius: 6px;
-    margin-top: 0;
+
+  /* Filter bar — horizontal scroll */
+  .qb-filterbar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 0.75rem 1rem;
+    gap: 0.65rem;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
   }
+  .qb-filterbar::-webkit-scrollbar { display: none; }
+  .filter-group { flex-shrink: 0; }
+  .qb-select { min-width: 120px; font-size: 0.8rem; }
+  .view-toggle-group { margin-left: 0; flex-shrink: 0; }
+  .btn-reset-filters { flex-shrink: 0; }
+
+  /* Question bank card */
+  .qb-main { padding: 1.25rem; justify-content: flex-start; padding-top: 2rem; }
+  .card-container { width: 100%; }
   .flashcard-card { padding: 1.5rem 1.25rem; }
+  .card-nav-row { width: 100%; gap: 0.75rem; }
+  .arrow-btn { flex: 1; height: 48px; border-radius: 6px; width: auto; }
+
+  /* Grid mode */
   .grid-cards-container { padding: 1rem 1rem 3rem; columns: 1; }
+
+  /* Study guide */
+  .sg-page { padding: 2.5rem 1.25rem 4rem; }
+  .sg-hero h1 { font-size: 2.6rem; }
+
+  /* Article pages */
+  .article-page { padding: 2rem 1.25rem 4rem; }
+  .article-title { font-size: 2.1rem; }
 }
 
 /* Card (no flip) */

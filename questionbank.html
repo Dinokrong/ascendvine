@@ -135,8 +135,6 @@
       <div id="grid-cards-container" class="grid-cards-container" style="display:none;"></div>
 
       <div class="flashcard-nav" id="flashcard-nav">
-        <button class="arrow-btn" id="prev-btn" aria-label="Previous">&#8592;</button>
-
         <div class="card-container">
           <div class="flashcard-card" id="flashcard-card">
             <span class="card-topic-badge" id="card-topic-badge">Topic</span>
@@ -152,8 +150,10 @@
             </div>
           </div>
         </div>
-
-        <button class="arrow-btn" id="next-btn" aria-label="Next">&#8594;</button>
+        <div class="card-nav-row">
+          <button class="arrow-btn" id="prev-btn" aria-label="Previous">&#8592;</button>
+          <button class="arrow-btn" id="next-btn" aria-label="Next">&#8594;</button>
+        </div>
       </div>
 
       <div class="card-counter" id="card-counter"></div>
