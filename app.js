@@ -33,7 +33,13 @@
     var passcode = document.getElementById('passcode').value;
     var errorEl  = document.getElementById('error-msg');
 
-    if (username === 'ascend' && passcode === 'emory2025') {
+    var ACCOUNTS = {
+      'ascend':  'emory2025',
+      'ashley':  '1',
+      'aig': 'emory2026'
+    };
+
+    if (ACCOUNTS[username] && ACCOUNTS[username] === passcode) {
       sessionStorage.setItem('auth', '1');
       window.location.href = 'home.html';
     } else {
