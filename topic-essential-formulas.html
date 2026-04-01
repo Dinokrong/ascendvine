@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ascend — Essential Formulas</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">Avine</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right"></div>
+  </nav>
+
+  <div class="article-page">
+    <a href="studyguide.html" class="article-back">&#8592; Study Guide</a>
+    <span class="article-tag">IB Fundamentals</span>
+    <h1 class="article-title">Essential Formulas</h1>
+    <p class="article-intro">Formulas are the vocabulary of investment banking. This guide covers the essential equations you must memorize — not just for passing interviews, but because they are the tools you will use daily on the desk. Divided into Basic and Advanced sections.</p>
+
+    <!-- ─── BASIC ─────────────────────────────────────────────────── -->
+
+    <div class="article-section">
+      <h2>1 · Finance Fundamentals</h2>
+      <p>These formulas form the bedrock of valuation. They govern how we price risk and the value of money over time.</p>
+
+      <h3>Time Value of Money</h3>
+      <ul>
+        <li><strong>Present Value (PV):</strong> PV = FV / (1 + r)^n
+          <ul>
+            <li><em>r</em> = discount rate</li>
+            <li><em>n</em> = number of periods</li>
+          </ul>
+        </li>
+        <li><strong>Future Value (FV):</strong> FV = PV × (1 + r)^n</li>
+      </ul>
+
+      <h3>Cost of Capital</h3>
+      <ul>
+        <li><strong>WACC:</strong> WACC = (Cost of Equity × % Equity) + (Cost of Debt × (1 − Tax Rate) × % Debt)
+          <ul>
+            <li><em>% Equity</em> = Market Value of Equity / Total Capitalization</li>
+            <li><em>% Debt</em> = Market Value of Debt / Total Capitalization</li>
+          </ul>
+        </li>
+      </ul>
+      <div class="article-callout">
+        We multiply the Cost of Debt by (1 − Tax Rate) because interest expense is tax-deductible, creating a "tax shield" that lowers the effective cost of debt.
+      </div>
+      <ul>
+        <li><strong>CAPM (Cost of Equity):</strong> Ke = Risk-Free Rate + (Beta × Equity Risk Premium)
+          <ul>
+            <li><em>Risk-Free Rate:</em> Typically the yield on 10-year US Treasuries</li>
+            <li><em>Beta (β):</em> Measure of a stock's volatility relative to the market</li>
+            <li><em>Equity Risk Premium (ERP):</em> Expected return of the market minus the risk-free rate (usually 5–7%)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>2 · Accounting &amp; Ratios</h2>
+      <p>Understanding how to measure a company's health and operational efficiency is critical for modeling.</p>
+
+      <h3>The Fundamental Accounting Equation</h3>
+      <p><strong>Assets = Liabilities + Shareholders' Equity</strong></p>
+      <ul>
+        <li><em>Assets:</em> What a company owns (cash, inventory, PP&amp;E, etc.)</li>
+        <li><em>Liabilities:</em> What a company owes to creditors</li>
+        <li><em>Shareholders' Equity:</em> The residual value belonging to owners (Retained Earnings + Contributed Capital)</li>
+      </ul>
+      <div class="article-callout">
+        Every transaction affects at least two accounts while keeping this equation in balance. For example, if a company takes on $100M in debt (Liability ↑), it must also receive $100M in cash (Asset ↑).
+      </div>
+
+      <h3>Free Cash Flow</h3>
+      <ul>
+        <li><strong>Unlevered Free Cash Flow (UFCF):</strong> Used in DCFs. Represents cash available to all investors (debt + equity).
+          <br>UFCF = EBIT × (1 − Tax Rate) + D&amp;A − CapEx − Change in NWC
+          <ul>
+            <li><em>EBIT:</em> Earnings Before Interest and Taxes (Operating Income)</li>
+            <li><em>D&amp;A:</em> Depreciation &amp; Amortization (added back because it's a non-cash expense)</li>
+            <li><em>CapEx:</em> Capital Expenditures (subtracted because it's a cash outflow)</li>
+            <li><em>NWC:</em> Net Working Capital (increases are cash outflows; decreases are inflows)</li>
+          </ul>
+        </li>
+        <li><strong>Levered Free Cash Flow (LFCF):</strong> Cash available only to equity investors (after debt obligations).
+          <br>LFCF = Cash Flow from Operations − CapEx
+          <br><em>(Alternatively: Net Income + D&amp;A − Change in NWC − CapEx − Mandatory Debt Repayments)</em>
+        </li>
+      </ul>
+
+      <h3>Key Profitability &amp; Credit Metrics</h3>
+      <ul>
+        <li><strong>EBITDA</strong> (proxy for operating cash flow): EBITDA = EBIT + Depreciation + Amortization</li>
+        <li><strong>EBITDA Margin:</strong> EBITDA Margin = EBITDA / Revenue</li>
+        <li><strong>Leverage Ratio (Total Debt):</strong> Total Leverage = Total Debt / EBITDA</li>
+        <li><strong>Net Leverage Ratio:</strong> Net Leverage = (Total Debt − Cash) / EBITDA</li>
+        <li><strong>Net Debt:</strong> Net Debt = Total Debt − Cash <em>(used in the EV bridge and leverage analysis)</em></li>
+      </ul>
+
+      <h3>Working Capital Efficiency</h3>
+      <ul>
+        <li><strong>Net Working Capital (NWC):</strong> NWC = Current Assets (excl. Cash) − Current Liabilities (excl. Debt)
+          <br><em>Note: In banking, we focus on "Operating" NWC, excluding cash and interest-bearing debt.</em>
+        </li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>3 · Enterprise &amp; Equity Value</h2>
+      <p>This concept is tested in almost every interview. You must understand the bridge between the value of the operations (Enterprise Value) and the value of the shares (Equity Value).</p>
+
+      <ul>
+        <li><strong>The "Bridge" Formula:</strong> Enterprise Value = Equity Value + Total Debt + Preferred Stock + Non-Controlling Interest − Cash</li>
+        <li><strong>Equity Value (Market Cap):</strong> Equity Value = Share Price × Fully Diluted Shares Outstanding</li>
+      </ul>
+      <div class="article-callout">
+        Think of Enterprise Value as the "Takeover Price." If you buy a house (the company), you pay the seller (Equity Value) and must assume the mortgage (Debt), but you get to keep the money found in the safe (Cash).
+      </div>
+
+      <h3>Diluted Shares (Treasury Stock Method)</h3>
+      <p>We use diluted shares to calculate Equity Value. This assumes all "in-the-money" options are exercised.</p>
+      <ul>
+        <li><strong>Proceeds:</strong> Options Outstanding × Exercise Price</li>
+        <li><strong>Shares Repurchased:</strong> Proceeds / Current Share Price</li>
+        <li><strong>Net New Shares:</strong> Options Outstanding − Shares Repurchased</li>
+        <li><strong>Diluted Share Count:</strong> Basic Shares + Net New Shares</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>4 · Valuation Multiples</h2>
+      <p>Valuation in banking is relative. We compare assets using standardized multiples.</p>
+
+      <h3>Enterprise Value Multiples</h3>
+      <p>Used for metrics available to all capital holders:</p>
+      <ul>
+        <li>EV / Revenue</li>
+        <li>EV / EBITDA <em>(the most common multiple in IB)</em></li>
+        <li>EV / EBIT</li>
+      </ul>
+
+      <h3>Equity Value Multiples</h3>
+      <p>Used for metrics available only to shareholders (after interest):</p>
+      <ul>
+        <li>P/E Ratio = Price per Share / Earnings Per Share (EPS)</li>
+        <li>P/E Ratio = Equity Value / Net Income</li>
+        <li>EPS = Net Income / Shares Outstanding</li>
+      </ul>
+      <div class="article-callout orange">
+        Never mix the numerator and denominator. You cannot pair Enterprise Value with Net Income because EV belongs to both debt and equity holders, while Net Income belongs only to equity holders.
+      </div>
+    </div>
+
+    <div class="article-section">
+      <h2>5 · DCF Formulas</h2>
+      <p>The Discounted Cash Flow (DCF) analysis sums the present value of near-term cash flows and the "Terminal Value" of the business.</p>
+
+      <h3>Terminal Value</h3>
+      <p>What is the company worth at the end of the projection period (usually 5–10 years)?</p>
+      <ul>
+        <li><strong>Gordon Growth Method (Perpetuity Growth):</strong> Assumes the company grows at a steady rate (g) forever.
+          <br>TV = (Final Year FCF × (1 + g)) / (WACC − g)
+          <br><em>g</em> = long-term growth rate (usually 2–3%, roughly GDP growth)
+        </li>
+        <li><strong>Exit Multiple Method:</strong> Assumes the company is sold for a multiple of its terminal year metric.
+          <br>TV = Final Year EBITDA × Exit Multiple
+        </li>
+      </ul>
+
+      <h3>Discounting</h3>
+      <ul>
+        <li><strong>Discount Factor:</strong> Factor = 1 / (1 + WACC)^n <em>(where n is the year number, e.g., 0.5, 1.5, 2.5 for mid-year convention)</em></li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>6 · LBO Formulas (Paper LBO)</h2>
+      <p>For "Paper LBO" questions, you need mental math shortcuts to calculate returns.</p>
+
+      <h3>Return Metrics</h3>
+      <ul>
+        <li><strong>MOIC (Multiple on Invested Capital):</strong> MOIC = Total Equity Value at Exit / Initial Equity Invested</li>
+        <li><strong>Simple LBO Return Logic:</strong> Return = (EBITDA at Exit × Exit Multiple) − Net Debt at Exit</li>
+      </ul>
+
+      <h3>IRR Mental Math Rules</h3>
+      <ul>
+        <li>2.0x MOIC in 5 years ≈ 15% IRR</li>
+        <li>2.5x MOIC in 5 years ≈ 20% IRR</li>
+        <li>3.0x MOIC in 5 years ≈ 25% IRR</li>
+        <li><strong>Rule of 72:</strong> Years to double money = 72 / IRR <em>(e.g., 2.0x money in 5 years → 72/5 = 14.4% ≈ 15%)</em></li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>7 · M&amp;A Formulas</h2>
+      <p>When two companies merge, we analyze the impact on earnings and ownership.</p>
+
+      <ul>
+        <li><strong>Accretion / Dilution:</strong>
+          <br>New EPS = (Buyer's Net Income + Target's Net Income + Synergies − Interest Cost of Debt − Lost Interest on Cash) / New Share Count
+          <ul>
+            <li>If New EPS &gt; Old EPS: <strong>Accretion</strong></li>
+            <li>If New EPS &lt; Old EPS: <strong>Dilution</strong></li>
+          </ul>
+        </li>
+        <li><strong>Breakeven Pre-Tax Synergies:</strong> How much synergy is needed to avoid dilution?
+          <br>Breakeven Synergies = (EPS Dilution × New Share Count) / (1 − Tax Rate)
+        </li>
+      </ul>
+    </div>
+
+    <!-- ─── ADVANCED ───────────────────────────────────────────────── -->
+
+    <div class="article-section">
+      <h2>Advanced 1 · Advanced Finance Fundamentals</h2>
+      <p>At the advanced level, memorizing formulas is insufficient. You must understand the mechanics of how these variables interact, specifically when dealing with non-standard capital structures, complex accounting adjustments, and nuanced M&amp;A scenarios.</p>
+
+      <h3>Re-levering Beta (The Hamada Equation)</h3>
+      <p>The standard industry formula (Hamada Equation) assumes debt is risk-free (β<sub>d</sub> = 0):</p>
+      <p>β<sub>L</sub> = β<sub>U</sub> × [1 + (1 − t)(D/E)]</p>
+      <p>In distressed scenarios or highly leveraged firms where debt carries significant risk (β<sub>d</sub> &gt; 0), use the general form:</p>
+      <p>β<sub>L</sub> = β<sub>U</sub> + (β<sub>U</sub> − β<sub>d</sub>) × (1 − t)(D/E)</p>
+      <div class="article-callout">
+        If an interviewer asks "Does higher leverage always increase Equity Beta?", the answer is generally yes, unless the debt beta equals the unlevered beta (highly unlikely) or if the debt is negative (cash exceeds debt).
+      </div>
+
+      <h3>Alternative Cost of Equity (Dividend Discount Model)</h3>
+      <p>For stable, dividend-paying companies (utilities, REITs), CAPM may be less relevant:</p>
+      <p>Ke = (Dividend per Share / Share Price) + Dividend Growth Rate</p>
+      <ul>
+        <li><em>Example:</em> A utility pays a $2 dividend on a $40 stock, with 3% expected dividend growth. Ke = ($2/$40) + 3% = 5% + 3% = <strong>8%</strong>.</li>
+      </ul>
+
+      <h3>Cost of Preferred Stock</h3>
+      <p>Preferred stock pays a fixed dividend and has no tax shield (unlike debt interest):</p>
+      <p>Kp = Preferred Dividend / Preferred Stock Price</p>
+      <ul>
+        <li>Include this in WACC if the company has preferred shares in its capital structure.</li>
+        <li><em>Example:</em> $5 annual preferred dividend on a $50 preferred share = <strong>10% Cost of Preferred</strong>.</li>
+      </ul>
+
+      <h3>Iterative WACC (Circularity)</h3>
+      <p>A common modeling edge case: to calculate WACC, you need the weight of Debt and Equity — but to get Equity Value (via DCF), you need WACC. In Excel, this requires enabling iterative calculation or using a "copy-paste" macro to break the loop. In an interview, acknowledging this circularity demonstrates modeling experience.</p>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced 2 · Advanced Accounting Adjustments</h2>
+      <p>Financial statements are rarely "model-ready." You must normalize metrics to reflect true economic performance.</p>
+
+      <h3>Stock-Based Compensation (SBC)</h3>
+      <p>SBC is a non-cash expense, so it is added back on the Cash Flow Statement. However, there is a fierce debate about how to treat it in valuation:</p>
+      <ul>
+        <li><strong>DCF Context:</strong> Treat SBC as a real cash cost. Even though no cash leaves the door today, the dilution creates a real economic cost to shareholders. In a DCF, you typically <strong>do not</strong> add it back to calculate UFCF.</li>
+        <li><strong>Valuation Multiples:</strong> SBC is often added back to EBITDA (Adjusted EBITDA) to normalize margins, but the dilution must be captured in the denominator (fully diluted shares).</li>
+      </ul>
+
+      <h3>Lease Accounting (IFRS 16 / ASC 842)</h3>
+      <p>Operating leases are now capitalized on the Balance Sheet:</p>
+      <ul>
+        <li><strong>Balance Sheet:</strong> Right-of-Use (ROU) Asset and Lease Liability appear</li>
+        <li><strong>Income Statement:</strong> Rent expense is replaced by Depreciation (on ROU Asset) and Interest (on Lease Liability)</li>
+        <li><strong>Impact:</strong> EBITDA <strong>increases</strong> (because rent is removed), but Debt <strong>increases</strong> (lease liability)</li>
+        <li><strong>Formulas:</strong>
+          <ul>
+            <li>EV = Equity Value + Net Debt + Lease Liabilities + …</li>
+            <li>EBITDA = EBIT + D + A <em>(where A includes ROU Amortization)</em></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="article-callout orange">
+        Common Mistake: Comparing EV/EBITDA of a company reporting under IFRS 16 (capitalized leases) against a company using old standards (rent expense) without adjusting. The IFRS 16 company will look "cheaper" (higher EBITDA) and more levered (higher Debt) artificially.
+      </div>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced 3 · Complex Enterprise Value Scenarios</h2>
+      <p>Moving beyond "Debt + Equity − Cash," you must handle complex securities.</p>
+
+      <h3>Treasury Stock Method (TSM)</h3>
+      <p>Used for options and warrants. Assumes proceeds from exercising in-the-money options are used to repurchase shares at the current price:</p>
+      <p>New Shares = Options Issued × (Current Price − Strike Price) / Current Price</p>
+      <p><em>If Current Price &lt; Strike Price, the options are out-of-the-money and have no dilutive effect.</em></p>
+
+      <h3>Convertible Debt (If-Converted Method)</h3>
+      <p>Convertible bonds are hybrid securities. You must determine if they act as Debt or Equity:</p>
+      <ul>
+        <li><strong>Check Condition:</strong> Is Share Price &gt; Conversion Price?</li>
+        <li><strong>Scenario A (In-the-Money) — treat as Equity:</strong>
+          <ul>
+            <li>Add fully converted shares to the denominator</li>
+            <li>Do <em>not</em> count the face value as Debt in EV</li>
+            <li>Do <em>not</em> deduct interest expense from Net Income (for P/E)</li>
+          </ul>
+        </li>
+        <li><strong>Scenario B (Out-of-the-Money) — treat as Debt:</strong>
+          <ul>
+            <li>Count face value as Debt in EV</li>
+            <li>Keep interest expense in Net Income</li>
+            <li>Do not increase share count</li>
+          </ul>
+        </li>
+      </ul>
+      <div class="article-callout">
+        Always calculate diluted EPS or EV multiples using the method that produces the most conservative (highest valuation, lowest EPS) result if the status is borderline, though typically "In the Money" status dictates the treatment.
+      </div>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced 4 · Advanced Valuation Techniques</h2>
+
+      <h3>Calendarization</h3>
+      <p>Fiscal years rarely align across companies. To make an "apples-to-apples" comparison, you must calendarize financials to a December 31 year-end (or the target's fiscal year):</p>
+      <p>Calendarized Sales = (Sales × FY1 × #Months/12) + (Sales × FY2 × (12 − #Months)/12)</p>
+
+      <h3>Last Twelve Months (LTM)</h3>
+      <p>The most relevant metric for trading multiples is LTM (or TTM):</p>
+      <p>LTM = Previous FY + Current YTD − Previous YTD</p>
+      <p><em>Note: You subtract the "Previous YTD" to remove the overlap and isolate the exact 12-month period.</em></p>
+
+      <h3>Sum of the Parts (SOTP)</h3>
+      <p>For conglomerates, a single WACC or multiple implies incorrect risk/growth assumptions for diverse business units:</p>
+      <p>SOTP Value = Σ(Segment EBITDA × Multiple<sub>i</sub>) − Corporate Overhead</p>
+      <p><em>Note: You often apply a "Conglomerate Discount" (10–20%) to the final sum to account for inefficiency and lack of focus.</em></p>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced 5 · DCF Edge Cases</h2>
+
+      <h3>Mid-Year Convention</h3>
+      <p>Cash flows don't arrive on December 31; they arrive throughout the year. Discounting a full year over-penalizes the valuation:</p>
+      <ul>
+        <li><strong>Standard Discount Factor:</strong> 1 / (1 + WACC)^t</li>
+        <li><strong>Mid-Year Factor:</strong> 1 / (1 + WACC)^(t − 0.5)</li>
+      </ul>
+      <p><strong>The Stub Period Adjustment:</strong> If you are valuing a company on September 30, only 3 months remain in the first year (0.25 years). First period discount: (1 + WACC)^(0.25 × 0.5) = (1 + WACC)^0.125. Subsequent periods must adjust accordingly (e.g., 1.125, 2.125…).</p>
+
+      <h3>Terminal Value: Exit Multiple vs. Gordon Growth</h3>
+      <p>The two methods should theoretically align. You can solve for the <strong>Implied Growth Rate</strong> in an Exit Multiple to sanity check your assumption:</p>
+      <p>Implied g = (Multiple × WACC − 1) / (Multiple + 1)</p>
+      <p><em>If an Exit Multiple of 10x implies a Terminal Growth Rate of 6% (when GDP is 2–3%), your multiple is likely too aggressive.</em></p>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced 6 · Advanced LBO Mechanics</h2>
+
+      <h3>Returns Attribution</h3>
+      <p>In an LBO, returns (IRR) come from three sources:</p>
+      <ul>
+        <li><strong>Deleveraging:</strong> Paying down debt (Formula: Cumulative FCF utilized for debt repayment)</li>
+        <li><strong>Multiple Expansion:</strong> Selling at a higher multiple than bought (Formula: (Exit Multiple − Entry Multiple) × Exit EBITDA)</li>
+        <li><strong>Earnings Growth:</strong> Improving operations (Formula: (Exit EBITDA − Entry EBITDA) × Entry Multiple)</li>
+      </ul>
+
+      <h3>PIK (Payment in Kind) Interest</h3>
+      <p>High-yield debt often uses PIK. Interest is accrued to the principal rather than paid in cash:</p>
+      <ul>
+        <li><strong>Cash Flow Impact:</strong> Increases FCF (interest is added back)</li>
+        <li><strong>Ending Debt Formula:</strong> Beginning Debt × (1 + Interest Rate)^t</li>
+        <li><strong>Return Impact:</strong> Lowers MOM (Money on Money) multiple usually, but increases IRR if the equity check is kept smaller and cash flows are tight in early years</li>
+      </ul>
+    </div>
+
+    <div class="article-section">
+      <h2>Advanced 7 · Complex M&amp;A Formulas</h2>
+
+      <h3>Accretion/Dilution Shortcut</h3>
+      <p>For an all-stock deal, you don't need a full merger model to determine accretion/dilution directionally — you compare P/E multiples:</p>
+      <ul>
+        <li><strong>Rule:</strong> If Acquirer P/E &gt; Target P/E, the deal is <strong>Accretive</strong></li>
+        <li><strong>Logic:</strong> The acquirer is using "expensive" currency (high stock price relative to earnings) to buy "cheap" earnings</li>
+        <li><strong>The Breakeven P/E (Post-Tax Cost of Debt):</strong> In a cash deal, the "P/E" of cash is $1 / (Interest Rate × (1 − t)). If Acquirer P/E &lt; Cash P/E, it is accretive.</li>
+      </ul>
+
+      <h3>Collar Structures</h3>
+      <p>To protect against volatility in stock deals, collars are used:</p>
+      <ul>
+        <li><strong>Fixed Exchange Ratio:</strong> The number of shares is fixed. The value of the deal floats with the Acquirer's stock price. (Risk: Target)</li>
+        <li><strong>Floating Exchange Ratio (Fixed Value):</strong> The dollar value is fixed. The number of shares issued floats. (Risk: Acquirer — if their stock tanks, they must issue massive amounts of equity, diluting existing holders)</li>
+      </ul>
+
+      <h3>Deferred Tax Assets (DTA) &amp; Deferred Tax Liabilities (DTL)</h3>
+      <p>In M&amp;A, purchase price allocation (PPA) often creates book vs. tax basis differences:</p>
+      <ul>
+        <li><strong>Deferred Tax Liability (DTL):</strong> Created when you write up an asset's book value above its tax basis. You will owe taxes in the future as you depreciate/amortize the higher book value.
+          <br>DTL = Asset Write-Up × Tax Rate
+        </li>
+        <li><strong>Deferred Tax Asset (DTA):</strong> Created when you write down an asset or recognize a loss carryforward. You benefit from lower taxes in the future.
+          <br>DTA = Write-Down (or NOL) × Tax Rate
+        </li>
+      </ul>
+      <div class="article-callout">
+        DTLs are treated as debt-like items in Enterprise Value bridges (they represent future cash outflows). DTAs may be treated as cash-like if they are realizable.
+      </div>
+    </div>
+
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
