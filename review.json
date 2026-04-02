@@ -1,0 +1,359 @@
+[
+  {
+    "id": 9136,
+    "topic": "General Banking Knowledge",
+    "issue": "question text embedded in answer — manual review needed",
+    "question": "In your many informational chats, what questions did you ask?Follow-up 1: Ok - what is your understanding of the role and the skills that you will bring to it?",
+    "answer": "In your many informational chats, what questions did you ask? Follow-up 1: Ok - what is your understanding of the role and the skills that you will bring to it? Reported in Goldman Sachs Interview Informational Chat Questions: Categorize questions: Role-specific (typical day, projects), Culture (team dynamics, mentorship), Career Path (advice, experiences). Provide a few specific example questions within these categories. Role Understanding & Skills: Define Analyst Role: Core tasks (modeling, valuation, research, preparing materials) supporting senior bankers on transactions. Skill 1: Analytical/Quantitative (evidence: coursework, projects). Skill 2: Work Ethic/Resilience (evidence: demanding experiences). Skill 3: Attention to Detail (evidence: specific examples). Skill 4: Teamwork/Communication (evidence: group work). Skill 5: Learning Agility/Coachability (evidence: proactive learning)."
+  },
+  {
+    "id": 9180,
+    "topic": "General Banking Knowledge",
+    "issue": "question text embedded in answer — manual review needed",
+    "question": "What would be your biggest concern about joining J.P. Morgan?Follow-up 1: What would be our biggest concern about hiring you?",
+    "answer": "What would be your biggest concern about joining J.P. Morgan? Follow-up 1: What would be our biggest concern about hiring you? Reported in J.P. Morgan Interview New York office Primary Question: Frame your concern as a challenge you are eager to take on. For a large firm like J.P. Morgan, a good answer could be navigating the scale of the organization to build relationships or ensuring you get a broad range of experiences. Show that you have thought about the realities of working at a bulge bracket firm. Follow-up Question: Choose a genuine, but manageable, weakness and explain how you are actively working to mitigate it. Example: \"Given I don't come from a pure finance background, you might be concerned about my initial learning curve. However, I have proactively addressed this by [mentioning specific courses, self-study, or certifications] and have proven my ability to learn quickly in demanding environments.\""
+  },
+  {
+    "id": 292,
+    "topic": "Enterprise & Equity Value",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "How does ____ affect Enterprise Value?Raise $200m in Debt, use cash to buy a new piece of equipment.",
+    "answer": "How does ____ affect Enterprise Value? Raise $200m in Debt, use cash to buy a new piece of equipment. IB Vine Select Enterprise & Equity Value EV up by 200. EV = EqV + Debt - Cash etc. +200 debt (from raise) -200 cash (borrowing in form of debt) +200 cash (equipment purchase is a decrease in cash, which gets subtracted from EV, thereby boosting it)"
+  },
+  {
+    "id": 293,
+    "topic": "Enterprise & Equity Value",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "How does ____ affect Enterprise Value?Issue $200m in Equity for an IPO.",
+    "answer": "How does ____ affect Enterprise Value? Issue $200m in Equity for an IPO. IB Vine Select Enterprise & Equity Value EV stays unchanged. Equity +200, Cash +200, net zero effect on EV formula."
+  },
+  {
+    "id": 376,
+    "topic": "Leveraged Buyouts (LBOs)",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "How do the following affect IRR?Larger asset write-upUsing less excess cashTax shield",
+    "answer": "How do the following affect IRR? Larger asset write-up Using less excess cash Tax shield IB Vine Select Leveraged Buyouts (LBOs) Larger asset write-up: In a standard stock purchase, this creates a Deferred Tax Liability (DTL) because the higher depreciation isn't tax-deductible for cash purposes, meaning it has no effect on IRR. However, in an asset purchase (or 338(h)(10)), the step-up is tax-deductible, creating a cash tax shield that improves IRR. Using less excess cash: Using less of the target's cash to fund the deal creates a funding shortfall. If the sponsor plugs this gap with more equity, IRR decreases. If they plug it with more debt, IRR could increase due to higher leverage, but the risk profile rises. Tax shield: A larger tax shield, whether from higher depreciation (in an asset purchase) or greater interest expense, reduces cash taxes and increases free cash flow, thus improving IRR."
+  },
+  {
+    "id": 506,
+    "topic": "Accounting",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "MULTI-STEP: Assume a 25% tax rate.A company buys a machine for $200, financed with $100 of cash and a $100 5-year bond with a 10% annual cash interest payment.The machine is depreciated straight-line over 5 years with no salvage value.Walk me through the impact on the three financial statements at:Part 1) Time 0, at the moment of purchase.Part 2) The end of Year 1.",
+    "answer": "MULTI-STEP: Assume a 25% tax rate. A company buys a machine for $200, financed with $100 of cash and a $100 5-year bond with a 10% annual cash interest payment. The machine is depreciated straight-line over 5 years with no salvage value. Walk me through the impact on the three financial statements at: Part 1) Time 0, at the moment of purchase. Part 2) The end of Year 1. Reported in Greenhill & Co. Interview M&A group, First round Part 1: Time 0 Starting on the IS... No change. Moving onto the SCF... CFI -$200 for machine purchase. CFF +$100 from debt issuance. Net change in cash -$100. Finally, on the BS... A: PP&E +$200, Cash -$100, net +$100. L: Debt +$100. SE: No change. ...and the Balance Sheet balances. Part 2: Year 1 Starting on the IS... Depreciation expense $40 ($200 / 5 years). Interest expense $10 ($100 × 10%). Pre-tax income down $50. NI down $37.50 ($50 × (1 - 25%)). Moving onto the SCF... NI -$37.50. Add back $40 depreciation. Cash Flow from Operations: +$2.50. Net Change in Cash: +$2.50. Finally, on the BS... A: Cash +$2.50, PP&E -$40. Net change in Assets is -$37.50. L: Debt is unchanged. SE: Retained Earnings -$37.50. ...and the Balance Sheet balances."
+  },
+  {
+    "id": 507,
+    "topic": "Accounting",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "MULTI-STEP: Assume a 25% tax rate.A company buys a machine for $200, financed with $100 of cash and a $100 5-year bond with a 10% annual cash interest payment.The machine is depreciated straight-line over 5 years with no salvage value.Walk me through the impact on the three financial statements at:Part 1) Time 0, at the moment of purchase.Part 2) The end of Year 1.",
+    "answer": "MULTI-STEP: Assume a 25% tax rate. A company buys a machine for $200, financed with $100 of cash and a $100 5-year bond with a 10% annual cash interest payment. The machine is depreciated straight-line over 5 years with no salvage value. Walk me through the impact on the three financial statements at: Part 1) Time 0, at the moment of purchase. Part 2) The end of Year 1. Reported in Greenhill & Co. Interview Restructuring group, First round Part 1: Time 0 Starting on the IS... No change. Moving onto the SCF... CFI -$200 for machine purchase. CFF +$100 from debt issuance. Net change in cash -$100. Finally, on the BS... A: PP&E +$200, Cash -$100, net +$100. L: Debt +$100. SE: No change. ...and the Balance Sheet balances. Part 2: Year 1 Starting on the IS... Depreciation expense $40 ($200 / 5 years). Interest expense $10 ($100 × 10%). Pre-tax income down $50. NI down $37.50 ($50 × (1 - 25%)). Moving onto the SCF... NI -$37.50. Add back $40 depreciation. Net change in cash +$2.50. Finally, on the BS... A: Cash +$2.50, PP&E -$40, net -$37.50. L: No change. SE: Retained Earnings -$37.50. ...and the Balance Sheet balances."
+  },
+  {
+    "id": 545,
+    "topic": "Accounting",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Assume a 25% tax rate.Part 1: Walk me through the 3 statements for a SaaS company at the point of sale for a $120 annual subscription paid in cash upfront.Part 2: Now, walk me through the 3 statements after one month has passed.",
+    "answer": "Assume a 25% tax rate. Part 1: Walk me through the 3 statements for a SaaS company at the point of sale for a $120 annual subscription paid in cash upfront. Part 2: Now, walk me through the 3 statements after one month has passed. Reported in Unspecified Interview Part 1: At Point of Sale Starting on the IS... No revenue recognized yet (deferred revenue created) Moving onto the SCF... Cash from operations +$120 Net change in cash +$120 Finally, on the BS... A: Cash +$120 L: Deferred Revenue +$120 SE: No change Part 2: After One Month Starting on the IS... Revenue recognized: $120 / 12 = $10 Pre-tax income +$10 NI +$7.50 ($10 * (1 - 25%)) Moving onto the SCF... NI +$7.50 Decrease in Deferred Revenue: -$10 Net change in cash -$2.50 (taxes paid) Finally, on the BS... A: Cash -$2.50 L: Deferred Revenue -$10 SE: Retained Earnings +$7.50 ...and the Balance Sheet balances"
+  },
+  {
+    "id": 547,
+    "topic": "Accounting",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What is operating leverage?Using Peloton as an example, how would you analyze its degree of operating leverage?",
+    "answer": "What is operating leverage? Using Peloton as an example, how would you analyze its degree of operating leverage? Reported in Unspecified Interview Operating leverage measures how revenue changes affect EBIT. High operating leverage means high fixed costs relative to variable costs, so revenue growth drives disproportionate profit growth (and vice versa). Degree of Operating Leverage = % Change in EBIT / % Change in Revenue Peloton analysis: High fixed costs: Content production, studios, technology infrastructure Variable costs: Bike manufacturing, shipping (partially variable) During growth: Strong operating leverage as subscription revenue scales During decline: Negative leverage exposed - revenue drops caused larger EBIT declines Calculate by comparing period-over-period EBIT % change vs. revenue % change."
+  },
+  {
+    "id": 562,
+    "topic": "Enterprise & Equity Value",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "A company issues $500m in new shares.How do equity value, enterprise value, EV/EBITDA, and P/E change?",
+    "answer": "A company issues $500m in new shares. How do equity value, enterprise value, EV/EBITDA, and P/E change? Reported in Evercore Interview Enterprise & Equity Value Impacts: Equity Value: Increases by $500m (cash raised). Enterprise Value: Unchanged (Equity +$500m, Cash +$500m offset). EV/EBITDA: Unchanged (EV and EBITDA unchanged). P/E: Increases (Equity Value increases, Net Income initially unchanged)."
+  },
+  {
+    "id": 568,
+    "topic": "Enterprise & Equity Value",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "A $100 fine is announced.What is the impact on enterprise value?",
+    "answer": "A $100 fine is announced. What is the impact on enterprise value? Reported in Evercore Interview Enterprise & Equity Value No impact on TEV. Either reduces cash (if immediately paid) or is recognized as a liability (fine payable), offsetting the decrease in equity value."
+  },
+  {
+    "id": 609,
+    "topic": "Enterprise & Equity Value",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "In a tax-free world, a firm with $500 million EV issues $100 million of new debt.What is the new EV?",
+    "answer": "What is the new EV? Reported in William Blair Interview Enterprise & Equity Value Enterprise value remains $500 million, assuming the cash is retained on the balance sheet and not spent. TEV = Equity Value + Debt - Cash. Adding debt and adding the same amount of cash cancels out."
+  },
+  {
+    "id": 622,
+    "topic": "Enterprise & Equity Value",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Share price=$50, Basic shares=200.Securities: 50 options (strike $20), 30 RSUs, $6k converts ($1k par, $40 conversion price).What is the fully diluted equity value?",
+    "answer": "Share price=$50, Basic shares=200. Securities: 50 options (strike $20), 30 RSUs, $6k converts ($1k par, $40 conversion price). What is the fully diluted equity value? Reported in Evercore Interview Enterprise & Equity Value Answer: $20,500 Calculation: The options are in-the-money since the exercise price ($20) is below the current price ($50). Exercising 50 options at $20 each generates $1,000 for the company, which it uses to buy back shares at the current price of $50 per share ($1,000 / $50 = 20 shares repurchased). Thus, there is a net issuance of 30 new shares. RSUs lead to the creation of 30 additional shares. Each convertible bond ($1,000 par value) converts at $40 per share, resulting in 25 new shares per bond ($1,000 / $40). With a total bond value of $6,000, the total new shares issued are 150 ($6,000 / $1,000 x 25). The total diluted shares outstanding are 200 (original) + 30 (options) + 30 (RSUs) + 150 (convertibles) = 410 shares. At the current share price of $50, the diluted equity value equals 410 x $50 = $20,500. Common mistake: options add 30, not 20 — TSM = 50 − (50×20)/50 = 30."
+  },
+  {
+    "id": 647,
+    "topic": "Enterprise & Equity Value",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Calculate Enterprise Value given the following information. Assume a 20% tax rate.Annual Interest Expense = $20Equity Value = $1,000EV/EBITDA = 12xP/E = 25xCost of Debt = 10%Annual D&A = $30",
+    "answer": "Assume a 20% tax rate. Annual Interest Expense = $20 Equity Value = $1,000 EV/EBITDA = 12x P/E = 25x Cost of Debt = 10% Annual D&A = $30 Reported in Unspecified Interview Enterprise & Equity Value Answer: $1,200 Method 1 (Shortcut): Total Debt = Interest Expense / Cost of Debt = $20 / 10% = $200 EV = Equity Value + Debt = $1,000 + $200 = $1,200 (assuming no cash) Method 2 (Income Statement walk): From P/E = 25x and Equity Value = $1,000, find Net Income: NI = $1,000 / 25 = $40 Find Pre-Tax Income (EBT): EBT = NI / (1 - Tax Rate) = $40 / (1 - 0.20) = $50 Find EBIT: EBIT = EBT + Interest Expense = $50 + $20 = $70 Find EBITDA: EBITDA = EBIT + D&A = $70 + $30 = $100 Calculate Enterprise Value: EV = EBITDA * EV/EBITDA Multiple = $100 * 12x = $1,200"
+  },
+  {
+    "id": 723,
+    "topic": "Valuation",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Pick an industry sector.How would you create a comparable company set for a company in that sector, and what are some of the key factors you would consider?",
+    "answer": "Pick an industry sector. How would you create a comparable company set for a company in that sector, and what are some of the key factors you would consider? Reported in Moelis & Co. Interview Valuation This is an open-ended question. Below is a sample framework applicable to any sector. Steps to create a comparable company set: Industry / Sector: Companies in the same or closely related industry. Business Model: Similar revenue streams, cost structures, and operations. Size: Comparable revenue, EBITDA, or market cap (avoid huge size mismatches). Geography: Similar markets or regions if relevant to business dynamics. Growth Profile: Similar growth rates and stage of maturity. Profitability: Comparable margins and returns. End Markets: Similar customer bases or cyclical exposure. Tailor criteria to the sector. For example, in healthcare, consider therapeutic areas; in retail, consider brick-and-mortar vs. e-commerce."
+  },
+  {
+    "id": 742,
+    "topic": "Valuation",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Why is debt cheaper than equity?What is the correlation with interest rates?",
+    "answer": "Why is debt cheaper than equity? What is the correlation with interest rates? Reported in UBS Interview SA 2026, New York office, Superday Valuation Debt sits higher in the capital stack and receives fixed coupons, so investors demand lower returns than residual equity holders. Interest rates set the risk‑free baseline; as central‑bank rates rise, the absolute cost of debt climbs and the after‑tax advantage versus equity narrows."
+  },
+  {
+    "id": 814,
+    "topic": "Valuation",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What are Net Operating Losses (NOLs)?Assume you are valuing a shell company whose only asset is $1 million in NOLs. How much would you be willing to pay for this company?",
+    "answer": "What are Net Operating Losses (NOLs)? Assume you are valuing a shell company whose only asset is $1 million in NOLs. How much would you be willing to pay for this company? Reported in Perella Weinberg Interview SF Office Valuation NOLs Definition Net Operating Losses are accumulated tax losses that can be carried forward to offset future taxable income, reducing future tax liabilities. Valuation Maximum value = $1M NOL * Tax Rate. At a 25% tax rate, the NOL saves $250k in future taxes. However, practical value is lower due to: Limitations on usage (Section 382 limits NOL usage after ownership changes). Time value of money (future tax savings must be discounted). Uncertainty about generating sufficient taxable income to utilize NOLs. Expiration risk (though recent law changes reduced this risk). Realistic valuation: 15-25% of face value, or $150k-$250k, depending on ability to utilize and discount rate applied."
+  },
+  {
+    "id": 870,
+    "topic": "DCF",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Walk me through a DCF.Follow-up 1: Why use a 5-10 year projection?Follow-up 2: Could we do a 25-year DCF?",
+    "answer": "Walk me through a DCF. Follow-up 1: Why use a 5-10 year projection? Follow-up 2: Could we do a 25-year DCF? Reported in Allen & Company Interview SA 2026 DCF DCF steps: Project unlevered FCF for 5–10 years. Estimate terminal value (Gordon Growth or exit multiple). Discount both at WACC and sum to get enterprise value. Follow‑ups: Forecast accuracy drops sharply beyond 5–10 years; using that range balances visibility and value capture. A 25‑year DCF is theoretically possible but small forecasting errors compound, so most value practitioners rely on a shorter explicit period plus a terminal value."
+  },
+  {
+    "id": 871,
+    "topic": "DCF",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What is a levered DCF?Follow-up 1: What discount rate do you use?Follow-up 2: How do you calculate cost of equity?",
+    "answer": "What is a levered DCF? Follow-up 1: What discount rate do you use? Follow-up 2: How do you calculate cost of equity? Reported in Allen & Company Interview SA 2026 DCF A levered DCF discounts cash flows after interest and mandatory principal at the Cost of Equity to value equity directly. Follow‑ups: The discount rate is the company’s Cost of Equity. Cost of Equity = Risk‑free rate + Beta × Equity risk premium ± size/sector adjustments (CAPM)."
+  },
+  {
+    "id": 908,
+    "topic": "DCF",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "3 places taxes affect the DCF?Follow-up: How does each place get affected if taxes increase?",
+    "answer": "3 places taxes affect the DCF? Follow-up: How does each place get affected if taxes increase? Reported in Rothschild Interview SA 2026 DCF NOPAT in FCF — higher taxes cut NOPAT and FCF. Cost of Debt — higher taxes increase the shield, lowering the after‑tax cost and WACC. Levered Beta — conversion from Unlevered to Levered. Overall, FCF falls and the discount rate may fall; valuation typically declines."
+  },
+  {
+    "id": 921,
+    "topic": "Merger Model (M&A)",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "If a company with a P/E multiple of 15x acquires a company with a P/E multiple of 18x in an all-stock transaction, is the deal accretive or dilutive?Why?",
+    "answer": "P/E multiple of 18x in an all-stock transaction, is the deal accretive or dilutive? Why? Reported in Bank of America Interview M&A, Second round Merger Model (M&A) The deal is dilutive. In an all-stock transaction, the acquirer's cost of equity is implied by its P/E multiple. An acquirer with 15x P/E has an earnings yield (cost of equity) of 1/15 = 6.67%. The target with 18x P/E has an earnings yield of 1/18 = 5.56%. Since the acquirer's cost (6.67%) is higher than the target's yield (5.56%), the deal is dilutive to the acquirer's EPS. Rule: Acquiring a company at a higher P/E (lower yield) than your own P/E using stock is dilutive. Acquiring at a lower P/E (higher yield) is accretive."
+  },
+  {
+    "id": 962,
+    "topic": "Merger Model (M&A)",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Part 1: Would a seller prefer a stock purchase or an asset purchase? Why?Part 2: Would a buyer prefer a stock purchase or an asset purchase? Why?",
+    "answer": "Part 2: Would a buyer prefer a stock purchase or an asset purchase? Why? Reported in Unspecified Interview Superday Merger Model (M&A) Part 1: Seller Preference Sellers typically prefer stock purchases. Tax treatment: Capital gains tax (often lower) vs. ordinary income tax on assets. Simplicity: Transfer ownership of entire entity rather than individual assets. No recapture: Avoids depreciation recapture on assets sold. Part 2: Buyer Preference Buyers typically prefer asset purchases. Tax benefit: Step-up in asset basis allows higher depreciation/amortization deductions. Liability protection: Buyer avoids inheriting unknown or contingent liabilities. Flexibility: Cherry-pick specific assets and liabilities to acquire."
+  },
+  {
+    "id": 975,
+    "topic": "Merger Model (M&A)",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "You are analyzing a potential acquisition with the following details:Acquirer A: Sales $100, NI Margin 10%, Share Price $20, Shares Outstanding 10Target B: Sales $200, NI Margin 10%, Share Price $10, Shares Outstanding 20Part 1: Is a 100% stock-financed acquisition accretive or dilutive?Part 2: Assuming a 5% cost of debt and a 25% tax rate, is a 100% debt-financed acquisition accretive or dilutive?",
+    "answer": "Part 2: Assuming a 5% cost of debt and a 25% tax rate, is a 100% debt-financed acquisition accretive or dilutive? Reported in Citi Interview First round Merger Model (M&A) Part 1: Stock-Financed Acquisition The deal is accretive. A's NI = $100 * 10% = $10 A's Standalone EPS = $10 / 10 = $1.00 B's NI = $200 * 10% = $20 B's Market Cap = $10 * 20 = $200 Shares Issued = $200 / $20 = 10 shares PF Shares = 10 + 10 = 20 PF NI = $10 + $20 = $30 PF EPS = $30 / 20 = $1.50 Accretion = ($1.50 / $1.00) - 1 = 50% Part 2: Debt-Financed Acquisition The deal is accretive. Purchase Price = $200 (B's Market Cap) New Debt = $200 Interest Expense = $200 * 5% = $10 After-Tax Interest = $10 * (1 - 25%) = $7.50 PF NI = $10 + $20 - $7.50 = $22.50 PF EPS = $22.50 / 10 = $2.25 Accretion = ($2.25 / $1.00) - 1 = 125%"
+  },
+  {
+    "id": 992,
+    "topic": "Merger Model (M&A)",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "A company with a P/E ratio of 10x is considering a debt-funded share repurchase. Assume a 25% tax rate.Answer the following:What is the maximum after-tax cost of debt for the repurchase to be accretive?What is the maximum pre-tax cost of debt for the repurchase to be accretive?",
+    "answer": "What is the maximum pre-tax cost of debt for the repurchase to be accretive? Reported in J.P. Morgan Interview Chicago office, Superday Merger Model (M&A) Part 1: Maximum After-Tax Cost of Debt Answer: 10% Earnings Yield = 1 / P/E = 1 / 10x = 10%. For accretion, after-tax cost of debt must be < earnings yield. Maximum after-tax cost of debt = 10%. Part 2: Maximum Pre-Tax Cost of Debt Answer: 13.33% After-tax cost of debt = Pre-tax cost * (1 - Tax Rate). 10% = Pre-tax cost * (1 - 25%). Pre-tax cost = 10% / 0.75 = 13.33%."
+  },
+  {
+    "id": 1014,
+    "topic": "Merger Model (M&A)",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "You are analyzing an acquisition of Company B by Company A.Company A: 10 shares outstanding, $25 share price, $10 Net Income, 40% tax rate.Company B: $150 market cap, $10 Net Income, 40% tax rate.Part 1: If A acquires B using 100% stock, is the deal accretive or dilutive?Part 2: If A acquires B using 100% debt at a 10% pre-tax interest rate, and there are $5 in pre-tax synergies, is the deal accretive or dilutive?",
+    "answer": "Part 2: If A acquires B using 100% debt at a 10% pre-tax interest rate, and there are $5 in pre-tax synergies, is the deal accretive or dilutive? Reported in Unspecified Interview Merger Model (M&A) Part 1: 100% Stock The deal is accretive by $0.25 per share or 25%. A Standalone EPS: $10 / 10 shares = $1.00 Shares issued: $150 / $25 = 6 shares Pro-forma shares: 10 + 6 = 16 shares Pro-forma NI: $10 + $10 = $20 Pro-forma EPS: $20 / 16 = $1.25 Accretion: $1.25 - $1.00 = $0.25 or 25% Part 2: 100% Debt with Synergies The deal is accretive by $0.40 per share or 40%. Interest expense: $150 * 10% = $15 After-tax interest: $15 * (1 - 40%) = $9 After-tax synergies: $5 * (1 - 40%) = $3 Pro-forma NI: $10 + $10 - $9 + $3 = $14 Pro-forma shares: 10 (no dilution) Pro-forma EPS: $14 / 10 = $1.40 Accretion: $1.40 - $1.00 = $0.40 or 40%"
+  },
+  {
+    "id": 1041,
+    "topic": "Leveraged Buyouts (LBOs)",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Interest coverage is 5x.Leverage ratio is 5x.What is the implied interest rate on debt?",
+    "answer": "Interest coverage is 5x. Leverage ratio is 5x. What is the implied interest rate on debt? Reported in Evercore Interview Leveraged Buyouts (LBOs) Answer: 4% Interest Coverage Ratio = EBIT / Interest Expense = 5x → EBIT = 5x Interest Expense. Assume EBIT = EBITDA. Leverage Ratio = Debt / EBITDA → 5x = Debt / (5x Interest Expense) Debt = 25x Interest Expense Interest Expense / Debt = 1 / 25 = 4%"
+  },
+  {
+    "id": 1093,
+    "topic": "Leveraged Buyouts (LBOs)",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "How can you increase IRR in an LBO?How does a dividend recap affect IRR and MOIC?",
+    "answer": "How can you increase IRR in an LBO? How does a dividend recap affect IRR and MOIC? Reported in Greenhill & Co. Interview First round Leveraged Buyouts (LBOs) Boost IRR by: Lower purchase price Higher exit multiple Faster EBITDA growth Quicker debt pay‑down Early cash distributions A dividend recap pulls cash forward, raising IRR (earlier proceeds) but leaving MOIC unchanged because total dollars returned stay the same."
+  },
+  {
+    "id": 1102,
+    "topic": "Leveraged Buyouts (LBOs)",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "How would you LBO a farm?Follow-up 1: Would a DCF be a suitable valuation method?Follow-up 2: What valuation multiples would you consider using?",
+    "answer": "How would you LBO a farm? Follow-up 1: Would a DCF be a suitable valuation method? Follow-up 2: What valuation multiples would you consider using? Reported in Lazard Interview Leveraged Buyouts (LBOs) Approach Model operations: acres × yield × commodity price, input costs, seasonal working capital, maintenance capex. Add LBO overlay: purchase price, debt tranches, interest, amortization, exit year; test sponsor IRR and covenants. Stress-test downside scenarios (drought, price shocks) and check asset coverage (land + equipment liquidation values). DCF Suitability Unlevered DCF can frame intrinsic value, but pair with asset and multiple methods due to volatile cash flows. Valuation Multiples EV / EBITDA to benchmark against agribusiness peers. EV / acre (adjusted for quality and location) to align with recent farmland transactions."
+  },
+  {
+    "id": 1203,
+    "topic": "Finance Brain Teasers",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Match the following three companies to their most likely EBITDA margins: 40%, 25%, and 15%.An out-of-home advertising companyA pipe installation companyAn esports team",
+    "answer": "TDA margins: 40%, 25%, and 15%. An out-of-home advertising company A pipe installation company An esports team Reported in Unspecified Interview Finance Brain Teasers Matching: Out-of-home advertising: 40% (high fixed costs, scalable) Pipe installation: 15% (labor-intensive, competitive bidding) Esports team: 25% (mid-range, sponsorship-driven with some overhead) Rationale: Advertising has high incremental margins once billboards are installed Construction/installation is low-margin due to labor costs and competition Esports benefits from digital scalability but has player/event costs"
+  },
+  {
+    "id": 1206,
+    "topic": "General Brain Teasers",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What is the square root of 0.01?No paper or pen – talk me through your thinking.",
+    "answer": "What is the square root of 0.01? No paper or pen – talk me through your thinking. Reported in Bank of America Interview General Brain Teasers Note: The interviewer who asked this actually giggled and said something along the lines of, \"You seemed so confident, I just wanted to catch you off guard. Nobody else is going to ask you that.\" So don't stress too much about these. Answer: 0.1 An easy way to find square root of a decimal like this is to convert it to a fraction, then take the square root of the numerator and denominator separately. 0.01 = 1/100 √(1/100) = √1 / √100 = 1/10 = 0.1"
+  },
+  {
+    "id": 1221,
+    "topic": "General Brain Teasers",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Part 1: What is 150 divided by 2.5?Part 2: What is 1% of $150 billion?",
+    "answer": "Part 1: What is 150 divided by 2.5? Part 2: What is 1% of $150 billion? Reported in J.P. Morgan Interview Chicago office General Brain Teasers Part 1 Answer: 60 150 / 2.5 = 1,500 / 25 = 60 Part 2 Answer: $1.5 billion 1% of $150B = $150B / 100 = $1.5B"
+  },
+  {
+    "id": 1222,
+    "topic": "General Brain Teasers",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Part 1: What is 30 divided by 1.5?Part 2: What is 1% of 1.5 million?",
+    "answer": "Part 1: What is 30 divided by 1.5? Part 2: What is 1% of 1.5 million? Reported in J.P. Morgan Interview Chicago office, Superday General Brain Teasers Part 1 Answer: 20 30 / 1.5 = 300 / 15 = 20 Part 2 Answer: $15,000 1% of $1.5M = $1.5M / 100 = $15,000"
+  },
+  {
+    "id": 1233,
+    "topic": "General Brain Teasers",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What is 54% of 110?Follow-up: What about 1008^2?",
+    "answer": "What is 54% of 110? Follow-up: What about 1008^2? Reported in Centerview Partners Interview SA 2026, New York office, Superday General Brain Teasers Part 1: Break into parts 50% of 110 = 55 (just divide by 2) 4% of 110 = 4.4 (1% is 1.1, so 4% is 4 × 1.1) 55 + 4.4 = 59.4 Part 2: Use the identity (a+b)2 = a2 + 2ab + b2 Represent 1008 as 1000 + 8 Then, (1000 + 8)2 = 10002 + (2 × 1000 × 8) + 82 = 1000000 + 16000 + 64 = 1,016,064"
+  },
+  {
+    "id": 1252,
+    "topic": "Market Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Who is the Fed Chairman?Follow-up 1: What does Trump want to do with interest rates?Follow-up 2: Explain interest rates.Follow-up 3: Does Trump like Powell?",
+    "answer": "Who is the Fed Chairman? Follow-up 1: What does Trump want to do with interest rates? Follow-up 2: Explain interest rates. Follow-up 3: Does Trump like Powell? Reported in Centerview Partners Interview SA 2026, New York office, Superday Market Knowledge Sample answer in 2025: Jerome Powell. He publicly advocates lower rates to stimulate growth. Interest rates are the price of money, set by supply/demand for funds and central‑bank policy; higher rates cool inflation but slow growth, and vice‑versa. He has historically criticized Powell for not cutting quickly, indicating strained relations."
+  },
+  {
+    "id": 1285,
+    "topic": "Market Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What is private equity?Can you describe some of the different private equity investment strategies?",
+    "answer": "What is private equity? Can you describe some of the different private equity investment strategies? Reported in Moelis & Co. Interview Market Knowledge Private equity refers to capital injected into privately held businesses—or used to take public companies private—by external investors. Private equity firms typically acquire a controlling interest, drive operational and strategic improvements, and then sell their stake at a substantial gain. Strategies: Leveraged Buyouts (LBOs): Acquiring mature companies with a combination of debt and equity, using the target’s cash flows to service the debt. Growth/Expansion Capital: Providing minority or majority equity to fund scaling initiatives, product launches, or geographic expansion in growing businesses. Distressed/Turnaround Investing: Buying companies in financial distress at deep discounts and restructuring operations or balance sheets to restore profitability. Venture Capital: Investing in early-stage companies with high growth potential in exchange for equity, often supporting product development and market entry. Mezzanine/Structured Equity: Providing subordinated debt or preferred equity with higher yields and equity kickers, bridging the gap between senior debt and common equity. Secondaries and Fund-of-Funds: Purchasing existing private equity stakes from other investors (secondaries) or investing in a diversified portfolio of PE funds (FoFs) for broader exposure."
+  },
+  {
+    "id": 1328,
+    "topic": "Market Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What is the S&P 500 trading at?Follow-up 1: What is Bitcoin trading at?Follow-up 2: What is the P/E of the S&P 500?",
+    "answer": "What is the S&P 500 trading at? Follow-up 1: What is Bitcoin trading at? Follow-up 2: What is the P/E of the S&P 500? Reported in Jefferies Interview SA 2026, New York office, M&A group Market Knowledge You should have a rough idea of where the S&P500, DJIA, Nasdaq Composite, Russell 2000 and Bitcoin are trading (price and P/E). You should also know the same for the bank you are interviewing at, if they are a publicly traded company (price, P/E and name of CEO). Sample answer in June 2025: S&P 500: 6000 (28x P/E ratio) Bitcoin: Trading at $105K"
+  },
+  {
+    "id": 1333,
+    "topic": "Market Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "2025 market outlook.Follow-up 1: Any rate cuts expected?Follow-up 2: How will tariffs affect the market?",
+    "answer": "2025 market outlook. Follow-up 1: Any rate cuts expected? Follow-up 2: How will tariffs affect the market? Reported in Morgan Stanley Interview SA 2026 Market Knowledge The 2025 market outlook is less important than knowing the market outlook for the next year and how major policy decisions (rate cuts, tariffs, etc). will affect the market. Sample answer for 2025: Consensus foresaw moderate global GDP growth (~2–3%) with inflation easing toward targets and corporate earnings up mid‑single digits. Follow‑up 1: The market expected 50 bps of rate cuts for 2025, implying just two quarter-point reductions. Follow‑up 2: New tariffs were expected to slow growth, raise inflation and volatility, and shift economic activity toward manufacturing at the expense of other sectors, while also increasing costs for consumers and businesses."
+  },
+  {
+    "id": 1417,
+    "topic": "Technology Banking",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What are MRR and ARR?Why do they matter for tech companies from both a company and valuation perspective?Follow-up: What are the three things that impact MRR?",
+    "answer": "What are MRR and ARR? Why do they matter for tech companies from both a company and valuation perspective? Follow-up: What are the three things that impact MRR? Reported in LionTree Interview SA 2026 Technology Banking MRR is predictable subscription revenue each month; ARR = MRR × 12. They signal growth quality and underpin EV/ARR valuation multiples. Three MRR drivers: New customer additions. Account expansion/upsells. Churn and downgrades."
+  },
+  {
+    "id": 1419,
+    "topic": "Technology Banking",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What is LTV to CAC?What would be considered good vs. bad?",
+    "answer": "What is LTV to CAC? What would be considered good vs. bad? Reported in LionTree Interview SA 2026 Technology Banking The ratio of a customer’s projected lifetime gross profit (LTV) to the cost of acquiring that customer (CAC). A common benchmark is 3-to-1 LTV-to-CAC — meaning the value you get from a customer should be roughly three times what you spent to acquire them. Ratios below ~1:1 suggest you’re spending more to acquire customers than the profit they generate, which is unsustainable, while significantly higher ratios (e.g., 4–5× or more) can imply under-investment in growth."
+  },
+  {
+    "id": 1436,
+    "topic": "Technology Banking",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What is NRR and GRR?Is logo expansion included in NRR? How about in GRR?",
+    "answer": "What is NRR and GRR? Is logo expansion included in NRR? How about in GRR? Reported in Centerview Partners Interview SA 2026, San Francisco office, Technology M&A group Technology Banking NRR = Net Revenue Retention. GRR = Gross Revenue Retention. NRR factors downgrades, churn, and upsell / expansion. GRR excludes expansion; it captures only starting revenue minus churn + downgrades. Logo expansion sits in NRR, not GRR."
+  },
+  {
+    "id": 9053,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Why do you want to work in the middle market?Follow-up 1: What qualities do you have that will make you successful in this job?",
+    "answer": "Why do you want to work in the middle market? Follow-up 1: What qualities do you have that will make you successful in this job? Reported in Baird Interview Chicago office, First round Primary Question: Highlight the unique advantages of the middle market: greater responsibility at the junior level, direct exposure to senior bankers and clients, and the opportunity to work on a wide variety of deals from start to finish. Express interest in working with growing, dynamic companies that form the backbone of the economy. Follow-up Question: List 3-4 key qualities essential for an investment banking analyst. Include a mix of technical ability (quantitative skills), work ethic (resilience, attention to detail), and soft skills (communication, teamwork, coachability). Briefly provide an example from your experience for each quality you mention."
+  },
+  {
+    "id": 9071,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "If you had $1 million, what would you do with it?Follow-up: If you had $1 million to invest for a client, where would you put it?",
+    "answer": "If you had $1 million, what would you do with it? Follow-up: If you had $1 million to invest for a client, where would you put it? Reported in Bank of America Interview C&R group, First round Personal Investment: Show a responsible approach: Pay off any high-interest debt, establish an emergency fund. Outline a diversified, long-term strategy: Mention a mix of low-cost index funds/ETFs based on your personal risk tolerance and time horizon. Client Investment: Start by Asking Questions: State that your first step is always to understand the client's profile: risk tolerance, time horizon, liquidity needs, and financial goals. Propose a Hypothetical Allocation: Based on a sample client profile (e.g., \"a moderate-risk client with a long-term goal\"), suggest a diversified portfolio across asset classes (e.g., equities, fixed income, alternatives) and briefly justify the strategy."
+  },
+  {
+    "id": 9174,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Are we your first choice and why or why not? Other candidates have shared that we are their first choice, so why should we give the offer to you?Talk through competitor banks and your thought process. How quickly would you accept our offer and how many days would you need to think it over?",
+    "answer": "Talk through competitor banks and your thought process. How quickly would you accept our offer and how many days would you need to think it over? Reported in J.P. Morgan Interview Chicago office, Superday This is a stress test; remain calm and confident. Acknowledge their position without being defensive. Reiterate your strong interest in J.P. Morgan with specific reasons (deal flow, platform, culture). If they are your top choice, state it clearly. If not, be diplomatic, emphasizing they are in your top tier of interest. Differentiate yourself by highlighting a unique combination of skills, experiences, or perspectives that you bring. When discussing competitors, provide a structured and analytical comparison, focusing on factors like culture, deal flow, and career development, showing you've done your homework. Provide a professional and reasonable timeframe for your decision (e.g., \"I would be prepared to make a decision within the standard timeframe allotted\"), showing you are decisive but not reckless."
+  },
+  {
+    "id": 9175,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Do you think there is an error on your resume?Follow-up 1: How sure are you? How much money would you bet?",
+    "answer": "Do you think there is an error on your resume? Follow-up 1: How sure are you? How much money would you bet? Reported in J.P. Morgan Interview Chicago office, Superday This is a test of your confidence and attention to detail. Maintain composure and be firm in your response. State confidently that you have meticulously reviewed your resume and are certain it is accurate. For the follow-up, handle it gracefully. You can state a high number metaphorically to show conviction (e.g., \"I'm as confident as one can be\") or politely decline to gamble on a certainty. The goal is to show you are not easily rattled by pressure and stand behind your work."
+  },
+  {
+    "id": 9178,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What's a recent book you read?Follow-up 1: Should we read it and why?",
+    "answer": "What's a recent book you read? Follow-up 1: Should we read it and why? Reported in J.P. Morgan Interview Chicago office, Superday Choose a book (non-fiction or fiction) that you can speak about intelligently and that reflects intellectual curiosity. Briefly summarize the book's main theme or argument in a compelling way. When recommending it, explain what makes it valuable. Focus on the perspective it offers, the insights it provides, or the way it challenges conventional thinking. This is a chance to showcase your personality and ability to form and articulate a persuasive argument."
+  },
+  {
+    "id": 9181,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Pick your favorite sport or hobby. Who's the greatest of all time in that sport or hobby?Follow-up 1: What is the analytical argument to support that?",
+    "answer": "Follow-up 1: What is the analytical argument to support that? Reported in J.P. Morgan Interview New York office Choose a sport/hobby and a \"GOAT\" (Greatest Of All Time) that you can confidently discuss. Structure your analytical argument with 3-4 clear points, using a mix of quantitative data (statistics, records) and qualitative factors (impact on the game, longevity, leadership). This question tests your ability to build a logical, data-driven argument and articulate it persuasively, which is a core skill in banking."
+  },
+  {
+    "id": 9183,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Are you sure there's no mistake on your resume?Follow-up 1: How much are you willing to bet on that?",
+    "answer": "Are you sure there's no mistake on your resume? Follow-up 1: How much are you willing to bet on that? Reported in J.P. Morgan Interview New York office This is a pressure test. Maintain composure and respond with calm confidence. Reiterate that you have checked your resume thoroughly and are confident in its accuracy. For the follow-up, avoid getting flustered. You can handle it with a touch of humor or by metaphorically expressing your certainty, for example, \"I'm confident enough that I wouldn't want to bet against it.\" The goal is to demonstrate poise, not to actually place a bet."
+  },
+  {
+    "id": 9184,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "I see a lot of accomplishments on your resume. What is it that drives you?Follow-up 1: Expand on some examples of how this quality manifests itself outside of work.",
+    "answer": "Follow-up 1: Expand on some examples of how this quality manifests itself outside of work. Reported in J.P. Morgan Interview New York office, First round Primary Drivers: Identify 2-3 core motivators that align with investment banking. Examples include the challenge of solving complex problems, the drive to achieve tangible results, a commitment to continuous learning, and the satisfaction of contributing to a high-performing team. Outside Example: Provide a concise, specific example from a hobby, sport, or volunteer activity that illustrates one of your stated drivers. For instance, if you are driven by achieving results, talk about the rigorous training regimen you followed to complete a marathon."
+  },
+  {
+    "id": 9220,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "Where does Moelis stand in your process?Follow-up 1: How do you make a decision on the bank you are going to join?",
+    "answer": "Where does Moelis stand in your process? Follow-up 1: How do you make a decision on the bank you are going to join? Reported in Moelis & Co. Interview Chicago office, First round Primary Question: Be honest but diplomatic. Express that Moelis & Co. is a top choice for you. Reinforce your interest with specific reasons, such as the firm's strong deal flow, lean team structure, and entrepreneurial culture. Follow-up Question: Outline a structured decision-making framework based on key factors. Mention the quality of people and culture as a primary consideration. Also include the quality of the learning experience (deal exposure, level of responsibility) and the firm's platform and reputation."
+  },
+  {
+    "id": 9223,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "If you were given $1M today, how would you think about paying off your student loan vs. investing in a certain stock?Follow-up 1: If you'd invest in a stock, which would you pick?",
+    "answer": "Follow-up 1: If you'd invest in a stock, which would you pick? Reported in Moelis & Co. Interview Chicago office, Superday Primary Question: Structure your answer as a financial analysis. Compare the interest rate on the student loan (a guaranteed, risk-free return if paid off) with the expected risk-adjusted return from investing in the market. Mention other factors like the tax deductibility of student loan interest and your personal risk tolerance. A sound conclusion would be to pay off high-interest debt and invest the remainder. Follow-up Question: Present a concise stock pitch. Start with a brief company overview. Provide a clear investment thesis with 2-3 key drivers. Mention valuation, briefly touching on key metrics and why the stock is attractively priced. Conclude with potential catalysts and risks."
+  },
+  {
+    "id": 9245,
+    "topic": "General Banking Knowledge",
+    "issue": "answer first sentence found in question — possible repetition or multi-part format",
+    "question": "What about this job worries you?Follow-up 1: How would you work with analysts?",
+    "answer": "What about this job worries you? Follow-up 1: How would you work with analysts? Reported in PJT Partners Interview New York office, Superday Primary Question: Reframe \"worry\" as an anticipated challenge you are prepared to manage. Focus on a realistic aspect of the job, such as the steep learning curve or maintaining a high level of precision under pressure. Emphasize your proactive strategies for addressing this challenge, such as strong organizational skills, seeking feedback, and a dedicated work ethic. Follow-up Question: Describe a collaborative and supportive approach. For an Associate role, this means providing clear guidance, being accessible for questions, and mentoring. Emphasize teamwork and mutual respect, fostering an environment where analysts can learn and develop."
+  }
+]
