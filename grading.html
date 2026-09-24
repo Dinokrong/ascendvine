@@ -145,7 +145,7 @@
           .filter(attempt => attempt.group_id === group.id && quizzes.some(quiz => quiz.id === attempt.quiz_id))
           .sort((a, b) => new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0));
         return '<article class="grading-card">' +
-          '<div><span class="role-pill">' + esc({ admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst' }[currentRole] || currentRole) + ' access</span>' +
+          '<div><span class="role-pill">' + esc({ admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst', general: 'General' }[currentRole] || currentRole) + ' access</span>' +
           '<h2>' + esc(group.name) + '</h2>' +
           '<p>' + count + ' assigned member' + (count === 1 ? '' : 's') + '</p></div>' +
           (submissions.length ? '<div class="grading-submission-list">' + submissions.map(attempt => {

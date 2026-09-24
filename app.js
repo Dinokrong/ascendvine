@@ -13,11 +13,21 @@
       var user = await auth.requireApprovedUser();
       if (!user) return;
 
-      document.documentElement.style.visibility = '';
-
       var memberships = await auth.getMyMemberships();
       var roles = memberships.map(function(item) { return item.role; });
       function has(role) { return roles.indexOf(role) !== -1; }
+
+      // General members (outside the group) only get Home, Question Bank,
+      // Study Guide, and their Profile.
+      var generalOnly = roles.length > 0 && roles.every(function(role) { return role === 'general'; });
+      var MEMBER_PAGES = ['leaderboard.html', 'quiz-leaderboard.html', 'groups.html', 'quizzes.html', 'quiz.html',
+        'grading.html', 'grade-quiz.html', 'quiz-release.html', 'quiz-admin.html', 'admin.html'];
+      if (generalOnly && MEMBER_PAGES.indexOf(page) !== -1) {
+        window.location.replace('home.html');
+        return;
+      }
+
+      document.documentElement.style.visibility = '';
       var board = new URLSearchParams(window.location.search).get('board') === 'practice' ? 'practice' : 'quiz';
 
       // A nav item that shows its links underneath on hover (or tap on phones).
@@ -39,7 +49,7 @@
 
       // Pages every member uses sit in the center, next to Question Bank.
       var navCenter = document.querySelector('.nav-center');
-      if (navCenter && !navCenter.querySelector('.nav-menu')) {
+      if (navCenter && !generalOnly && !navCenter.querySelector('.nav-menu')) {
         navCenter.insertAdjacentHTML('beforeend', navMenu('Leaderboard', [
           link('leaderboard.html?board=quiz', 'Quiz Scores', page === 'leaderboard.html' && board === 'quiz'),
           link('leaderboard.html?board=practice', 'Study Time', page === 'leaderboard.html' && board === 'practice')
@@ -70,10 +80,12 @@
       navRight.classList.add('account-nav');
       navRight.innerHTML =
         roleMenu +
-        navMenu('Account', [
-          link('profile.html', 'My Profile'),
-          link('groups.html', 'My Group')
-        ]) +
+        (generalOnly
+          ? '<a href="profile.html" class="nav-menu-trigger' + (page === 'profile.html' ? ' active' : '') + '">Profile</a>'
+          : navMenu('Account', [
+            link('profile.html', 'My Profile'),
+            link('groups.html', 'My Group')
+          ])) +
         '<button type="button" class="nav-sign-out">Sign Out</button>';
 
       navRight.querySelector('.nav-sign-out').addEventListener('click', auth.signOut);

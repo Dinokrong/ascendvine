@@ -12,6 +12,7 @@ accounts. New accounts remain pending until an Admin approves them.
 | Vice President | No | No | Yes, for their assigned group | No |
 | Associate | No | No | No | Yes |
 | Analyst | No | No | No | Yes |
+| General | No | No | No | No |
 
 The quiz workflow uses those same semester roles and Senior-led groups. Admins
 upload a draft and its answer key, mark it ready, and Seniors push it to their
@@ -43,6 +44,8 @@ only the groups assigned to them; Admins retain an administrative override.
    the practice leaderboard.
    - Then run `supabase/leaderboard-groups-streaks.sql` once to show each
      member's group on both leaderboards and study streaks on the practice one.
+   - Run `supabase/general-members.sql` once to add the General role (see
+     below).
    - Run `supabase/quiz-away-alerts.sql` once to record when members leave the
      quiz page mid-quiz, shown to their Senior and Vice President when grading.
 9. Under Authentication, enable email/password accounts.
@@ -143,3 +146,12 @@ deleting Admin, and timestamp.
 The bulk parser recognizes chapter headings plus numbered questions such as
 `1. Question text`. It pairs them, in order, with paragraphs beginning
 `Answer:`. The question and answer counts must match before upload.
+
+## General members
+
+General is for people outside the group who still get study access. General
+members see only Home, the Question Bank, the Study Guide, and their Profile.
+They are never placed in groups, do not take quizzes, and cannot view either
+leaderboard; the site sends them to Home if they open those pages, and the
+database refuses leaderboard data for them. Admins choose General when approving
+an account or changing a role.
