@@ -155,6 +155,12 @@ as $$
               or viewer_group.user_id is not null
             )
         )
+        or exists (
+          select 1
+          from public.quiz_attempts own_attempt
+          where own_attempt.quiz_id = selected_quiz.id
+            and own_attempt.user_id = auth.uid()
+        )
       )
   );
 $$;
@@ -177,6 +183,12 @@ as $$
           from public.quiz_group_releases release
           where release.quiz_id = selected_quiz.id
             and public.can_grade_group(release.group_id)
+        )
+        or exists (
+          select 1
+          from public.quiz_attempts attempt
+          where attempt.quiz_id = selected_quiz.id
+            and public.can_grade_group(attempt.group_id)
         )
       )
   );
@@ -781,3 +793,34 @@ revoke all on function public.grade_quiz_attempt(uuid, jsonb, text) from public;
 revoke all on function public.get_quiz_leaderboard(uuid) from public;
 grant execute on function public.grade_quiz_attempt(uuid, jsonb, text) to authenticated;
 grant execute on function public.get_quiz_leaderboard(uuid) to authenticated;
+
+
+create or replace function public.senior_unpublish_quiz(
+  target_quiz uuid,
+  target_group uuid
+)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if not public.is_approved_user() or not exists (
+    select 1
+    from public.quiz_group_releases release
+    join public.groups selected_group on selected_group.id = release.group_id
+    where release.quiz_id = target_quiz
+      and release.group_id = target_group
+      and selected_group.senior_id = auth.uid()
+  ) then
+    raise exception 'Only the group Senior can unpublish this quiz';
+  end if;
+
+  delete from public.quiz_group_releases
+  where quiz_id = target_quiz
+    and group_id = target_group;
+end;
+$$;
+
+revoke all on function public.senior_unpublish_quiz(uuid, uuid) from public;
+grant execute on function public.senior_unpublish_quiz(uuid, uuid) to authenticated;
