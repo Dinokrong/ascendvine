@@ -9,14 +9,14 @@ accounts. New accounts remain pending until an Admin approves them.
 | --- | --- | --- | --- | --- |
 | Admin | Yes | No | Administrative override only | No |
 | Senior | No | Yes, for their group | Yes, for their group | No |
-| VP | No | No | Yes, for their assigned group | No |
+| Vice President | No | No | Yes, for their assigned group | No |
 | Associate | No | No | No | Yes |
 | Analyst | No | No | No | Yes |
 
 The quiz workflow uses those same semester roles and Senior-led groups. Admins
 upload a draft and its answer key, mark it ready, and Seniors push it to their
 group. Associates and Analysts can then answer and submit it. Answer keys are
-stored separately and are never sent to quiz takers. VPs and Seniors can grade
+stored separately and are never sent to quiz takers. Vice Presidents and Seniors can grade
 only the groups assigned to them; Admins retain an administrative override.
 
 ## 1. Create and configure Supabase
@@ -38,8 +38,10 @@ only the groups assigned to them; Admins retain an administrative override.
    submitted.
 8. Run `supabase/practice-time.sql` once to add Question Bank time tracking and
    the practice leaderboard.
-   - Then run `supabase/leaderboard-groups.sql` once to show each member's
-     group on both leaderboards.
+   - Then run `supabase/leaderboard-groups-streaks.sql` once to show each
+     member's group on both leaderboards and study streaks on the practice one.
+   - Run `supabase/quiz-away-alerts.sql` once to record when members leave the
+     quiz page mid-quiz, shown to their Senior and Vice President when grading.
 9. Under Authentication, enable email/password accounts.
 10. Require email confirmation.
 11. Set the production Site URL to the deployed AscendVine URL.
@@ -90,7 +92,7 @@ on conflict (semester_id, user_id) do update set role = 'admin';
 ```
 
 After this, that user can open `admin.html` to approve accounts, assign roles,
-create named Senior-led groups, and place VPs, Associates, and Analysts in them.
+create named Senior-led groups, and place Vice Presidents, Associates, and Analysts in them.
 
 ## Approval flow
 
@@ -100,7 +102,7 @@ create named Senior-led groups, and place VPs, Associates, and Analysts in them.
 4. An Admin approves or rejects the request.
 5. On approval, the Admin assigns one semester role.
 6. An Admin creates Senior-led groups.
-7. VPs, Associates, and Analysts can then be assigned to one group per semester.
+7. Vice Presidents, Associates, and Analysts can then be assigned to one group per semester.
 
 Users cannot edit approval status, role, semester membership, or group
 assignment. All changes are checked in the database and role/approval changes
@@ -127,8 +129,8 @@ deleting Admin, and timestamp.
 4. Associates and Analysts open `quizzes.html`, choose the released quiz, and
    answer it in `quiz.html`. Answers save automatically and lock on submission.
 5. The submitted records are visible only to the quiz taker, their group's
-   Senior and VP, and semester Admins.
-6. Seniors, VPs, and Admins open `grading.html`, review the member response
+   Senior and Vice President, and semester Admins.
+6. Seniors, Vice Presidents, and Admins open `grading.html`, review the member response
    beside the protected answer key, award points, and publish feedback.
 7. `leaderboard.html` has two tabs. Quizzes totals graded quiz points across
    the semester. Practice totals active Question Bank time: the page reports

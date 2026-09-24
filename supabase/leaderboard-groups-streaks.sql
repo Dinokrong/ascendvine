@@ -1,4 +1,7 @@
--- Show each member's group on both leaderboards.
+-- Show each member's group on both leaderboards, and add study streaks to the
+-- practice leaderboard alongside days active: days in a row with at least
+-- one minute of Question Bank time. A streak is current if its last day is
+-- today or yesterday (Eastern time).
 -- Apply after supabase/quiz-grading.sql and supabase/practice-time.sql.
 -- The return columns change, so the functions are dropped and recreated.
 
@@ -99,6 +102,8 @@ returns table (
   role text,
   group_name text,
   days_active bigint,
+  current_streak bigint,
+  best_streak bigint,
   active_seconds bigint
 )
 language sql
@@ -120,6 +125,8 @@ as $$
       membership.role,
       member_group.name as group_name,
       count(activity.activity_date) filter (where activity.active_seconds >= 60)::bigint as days_active,
+      streak.current_streak,
+      streak.best_streak,
       coalesce(sum(activity.active_seconds), 0)::bigint as active_seconds
     from public.semester_memberships membership
     join public.semesters semester on semester.id = membership.semester_id
@@ -131,10 +138,32 @@ as $$
     left join public.practice_daily_activity activity
       on activity.user_id = membership.user_id
      and activity.activity_date between semester.starts_on and semester.ends_on
+    -- Consecutive study days share an island_key (date minus its row number).
+    left join lateral (
+      select
+        coalesce(max(island.length) filter (
+          where island.last_day >= (now() at time zone 'America/New_York')::date - 1
+        ), 0)::bigint as current_streak,
+        coalesce(max(island.length), 0)::bigint as best_streak
+      from (
+        select max(study_day.activity_date) as last_day, count(*) as length
+        from (
+          select
+            streak_day.activity_date,
+            streak_day.activity_date - (row_number() over (order by streak_day.activity_date))::integer as island_key
+          from public.practice_daily_activity streak_day
+          where streak_day.user_id = membership.user_id
+            and streak_day.active_seconds >= 60
+            and streak_day.activity_date between semester.starts_on and semester.ends_on
+        ) study_day
+        group by study_day.island_key
+      ) island
+    ) streak on true
     where membership.semester_id = target_semester
       and membership.role in ('associate', 'analyst')
       and (select allowed from authorized)
-    group by membership.user_id, profile.first_name, profile.last_name, membership.role, member_group.name
+    group by membership.user_id, profile.first_name, profile.last_name, membership.role,
+      member_group.name, streak.current_streak, streak.best_streak
   )
   select
     dense_rank() over (order by member_totals.active_seconds desc) as rank,
@@ -143,6 +172,8 @@ as $$
     member_totals.role,
     member_totals.group_name,
     member_totals.days_active,
+    member_totals.current_streak,
+    member_totals.best_streak,
     member_totals.active_seconds
   from member_totals
   order by rank, display_name;

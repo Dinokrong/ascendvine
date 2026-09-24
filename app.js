@@ -62,7 +62,7 @@
           link('grading.html', 'Grade Quizzes')
         ]);
       } else if (has('vp')) {
-        roleMenu = navMenu('VP', [link('grading.html', 'Grade Quizzes')]);
+        roleMenu = navMenu('Vice President', [link('grading.html', 'Grade Quizzes')]);
       } else if (has('associate') || has('analyst')) {
         roleMenu = navMenu(has('associate') ? 'Associate' : 'Analyst', [link('quizzes.html', 'Weekly Quizzes')]);
       }

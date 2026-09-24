@@ -135,7 +135,7 @@
             (members.length ? members.map(item =>
               '<div class="group-person' + (item.profile.id === currentUser.id ? ' current-user' : '') + '">' +
                 '<div><strong>' + esc(nameOf(item.profile)) + '</strong><span>' + esc(item.profile.email) + '</span></div>' +
-                '<span class="role-pill">' + esc(item.role || 'Member') + '</span>' +
+                '<span class="role-pill">' + esc({ admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst' }[item.role] || 'Member') + '</span>' +
               '</div>'
             ).join('') : '<p class="admin-empty">No members assigned yet.</p>') +
           '</div>' +

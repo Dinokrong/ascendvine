@@ -62,13 +62,14 @@
         ]
       },
       practice: {
-        description: 'Active time in the Question Bank. Time counts only while the page is open and in use.',
-        columns: ['Rank', 'Member', 'Days active', 'Active time', 'Per active day'],
+        description: 'Active time in the Question Bank. Time counts only while the page is open and in use. A streak is days in a row with at least one minute of study.',
+        columns: ['Rank', 'Member', 'Days active', 'Current streak', 'Longest streak', 'Active time'],
         rpc: 'get_practice_leaderboard',
         cells: member => [
           esc(member.days_active),
-          '<strong>' + esc(formatDuration(member.active_seconds)) + '</strong>',
-          esc(Number(member.days_active) ? formatDuration(member.active_seconds / member.days_active) : '—')
+          esc(formatDays(member.current_streak)),
+          esc(formatDays(member.best_streak)),
+          '<strong>' + esc(formatDuration(member.active_seconds)) + '</strong>'
         ]
       }
     };
@@ -84,7 +85,12 @@
     }
 
     function roleLabel(role) {
-      return role ? role.charAt(0).toUpperCase() + role.slice(1) : '';
+      return { admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst' }[role] || role || '';
+    }
+
+    function formatDays(days) {
+      const count = Number(days || 0);
+      return count + (count === 1 ? ' day' : ' days');
     }
 
     function formatDuration(seconds) {
@@ -116,6 +122,7 @@
       description.textContent = config.description;
       heading.innerHTML = config.columns.map(column => '<span>' + esc(column) + '</span>').join('');
       tabs.forEach(tab => tab.setAttribute('aria-selected', String(tab.dataset.board === board)));
+      document.querySelector('.leaderboard-card').classList.toggle('practice', board === 'practice');
 
       const thisRequest = ++requestId;
       rows.innerHTML = '';

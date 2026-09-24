@@ -21,9 +21,9 @@
   <main class="admin-page">
     <header class="admin-header">
       <div>
-        <div class="home-eyebrow">Senior and VP workspace</div>
+        <div class="home-eyebrow">Senior and Vice President workspace</div>
         <h1>Quiz grading</h1>
-        <p>Seniors and VPs grade submissions for their own group. Admins retain semester-wide oversight.</p>
+        <p>Seniors and Vice Presidents grade submissions for their own group. Admins retain semester-wide oversight.</p>
       </div>
       <label class="admin-semester-picker">
         Semester
@@ -78,7 +78,7 @@
 
       if (error) throw error;
       memberships = (data || []).filter(item => ALLOWED_ROLES.includes(item.role));
-      if (!memberships.length) throw new Error('Quiz grading is available only to Admins, Seniors, and VPs.');
+      if (!memberships.length) throw new Error('Quiz grading is available only to Admins, Seniors, and Vice Presidents.');
 
       semesterSelect.innerHTML = memberships.map(item =>
         '<option value="' + item.semester_id + '">' + esc(item.semesters.name) + '</option>'
@@ -129,20 +129,34 @@
       const profiles = profileResult.data || [];
       const quizzes = quizResult.data || [];
 
+      // How many times each member left the quiz page mid-quiz. If this
+      // feature isn't installed in the database yet, show no badges.
+      const awayResult = attempts.length
+        ? await supabase.from('quiz_away_events').select('attempt_id').in('attempt_id', attempts.map(attempt => attempt.id))
+        : { data: [], error: null };
+      const awayCounts = {};
+      (awayResult.error ? [] : awayResult.data || []).forEach(event => {
+        awayCounts[event.attempt_id] = (awayCounts[event.attempt_id] || 0) + 1;
+      });
+
       grid.innerHTML = groups.map(group => {
         const count = groupMembers.filter(member => member.group_id === group.id).length;
         const submissions = attempts
           .filter(attempt => attempt.group_id === group.id && quizzes.some(quiz => quiz.id === attempt.quiz_id))
           .sort((a, b) => new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0));
         return '<article class="grading-card">' +
-          '<div><span class="role-pill">' + esc(currentRole) + ' access</span>' +
+          '<div><span class="role-pill">' + esc({ admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst' }[currentRole] || currentRole) + ' access</span>' +
           '<h2>' + esc(group.name) + '</h2>' +
           '<p>' + count + ' assigned member' + (count === 1 ? '' : 's') + '</p></div>' +
           (submissions.length ? '<div class="grading-submission-list">' + submissions.map(attempt => {
             const profile = profiles.find(item => item.id === attempt.user_id);
             const quiz = quizzes.find(item => item.id === attempt.quiz_id);
             return '<a class="grading-submission" href="grade-quiz.html?id=' + attempt.id + '">' +
-              '<div><strong>' + esc(nameOf(profile)) + '</strong><span>' + esc(quiz?.title || 'Weekly quiz') +
+              '<div><strong>' + esc(nameOf(profile)) +
+              (awayCounts[attempt.id]
+                ? '<span class="grading-away-badge">Left page ' + awayCounts[attempt.id] + '×</span>'
+                : '') +
+              '</strong><span>' + esc(quiz?.title || 'Weekly quiz') +
               ' · ' + esc(formatDate(attempt.submitted_at)) + '</span></div>' +
               '<span class="grading-submission-status ' + attempt.status + '">' +
               (attempt.status === 'graded' ? esc(attempt.score ?? 'Graded') : 'Grade') + '</span></a>';
