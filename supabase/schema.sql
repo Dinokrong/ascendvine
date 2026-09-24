@@ -38,6 +38,16 @@ create table if not exists public.semester_memberships (
   primary key (semester_id, user_id)
 );
 
+create table if not exists public.role_change_history (
+  id bigint generated always as identity primary key,
+  semester_id uuid not null references public.semesters(id) on delete cascade,
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  previous_role text check (previous_role is null or previous_role in ('admin', 'mentor', 'mentee')),
+  new_role text not null check (new_role in ('admin', 'mentor', 'mentee')),
+  changed_by uuid not null references public.profiles(id),
+  changed_at timestamptz not null default now()
+);
+
 create table if not exists public.mentor_assignments (
   id uuid primary key default gen_random_uuid(),
   semester_id uuid not null references public.semesters(id) on delete cascade,
@@ -115,16 +125,19 @@ alter table public.profiles enable row level security;
 alter table public.semesters enable row level security;
 alter table public.semester_memberships enable row level security;
 alter table public.mentor_assignments enable row level security;
+alter table public.role_change_history enable row level security;
 
 revoke all on public.profiles from anon, authenticated;
 revoke all on public.semesters from anon, authenticated;
 revoke all on public.semester_memberships from anon, authenticated;
 revoke all on public.mentor_assignments from anon, authenticated;
+revoke all on public.role_change_history from anon, authenticated;
 
 grant select, update on public.profiles to authenticated;
 grant select on public.semesters to authenticated;
 grant select on public.semester_memberships to authenticated;
 grant select on public.mentor_assignments to authenticated;
+grant select on public.role_change_history to authenticated;
 
 create policy "Verified users can view their own profile"
 on public.profiles for select
@@ -179,3 +192,68 @@ using (
 -- Membership and mentor-assignment writes intentionally have no browser policy.
 -- Perform them from an admin-only server function or the Supabase dashboard.
 -- Never put the secret/service-role key in this repository.
+
+
+create policy "Admins can view role history"
+on public.role_change_history for select
+to authenticated
+using (
+  public.is_verified_emory_user()
+  and public.is_semester_admin(semester_id)
+);
+
+create or replace function public.admin_set_member_role(
+  target_semester uuid,
+  target_user uuid,
+  target_role text
+)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  old_role text;
+  admin_count integer;
+begin
+  if not public.is_verified_emory_user()
+     or not public.is_semester_admin(target_semester) then
+    raise exception 'Admin permission required';
+  end if;
+
+  if target_role not in ('admin', 'mentor', 'mentee') then
+    raise exception 'Invalid role';
+  end if;
+
+  select role into old_role
+  from public.semester_memberships
+  where semester_id = target_semester and user_id = target_user;
+
+  if old_role = 'admin' and target_role <> 'admin' then
+    select count(*) into admin_count
+    from public.semester_memberships
+    where semester_id = target_semester and role = 'admin';
+
+    if admin_count <= 1 then
+      raise exception 'A semester must retain at least one admin';
+    end if;
+  end if;
+
+  insert into public.semester_memberships (semester_id, user_id, role)
+  values (target_semester, target_user, target_role)
+  on conflict (semester_id, user_id)
+  do update set role = excluded.role;
+
+  if old_role is distinct from target_role then
+    insert into public.role_change_history (
+      semester_id, user_id, previous_role, new_role, changed_by
+    )
+    values (
+      target_semester, target_user, old_role, target_role, auth.uid()
+    );
+  end if;
+end;
+$$;
+
+revoke all on function public.admin_set_member_role(uuid, uuid, text) from public;
+grant execute on function public.admin_set_member_role(uuid, uuid, text) to authenticated;
