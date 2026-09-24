@@ -9,9 +9,24 @@
   document.documentElement.style.visibility = 'hidden';
 
   import('./js/auth-client.js')
-    .then(function(auth) { return auth.requireApprovedUser(); })
-    .then(function(user) {
-      if (user) document.documentElement.style.visibility = '';
+    .then(async function(auth) {
+      var user = await auth.requireApprovedUser();
+      if (!user) return;
+
+      document.documentElement.style.visibility = '';
+
+      var navRight = document.querySelector('.nav-right');
+      if (!navRight) return;
+
+      var memberships = await auth.getMyMemberships();
+      var isAdmin = memberships.some(function(item) { return item.role === 'admin'; });
+      navRight.classList.add('account-nav');
+      navRight.innerHTML =
+        (isAdmin ? '<a href="admin.html">Admin</a>' : '') +
+        '<a href="profile.html">Profile</a>' +
+        '<button type="button" class="nav-sign-out">Sign out</button>';
+
+      navRight.querySelector('.nav-sign-out').addEventListener('click', auth.signOut);
     })
     .catch(function() {
       window.location.replace('index.html');
