@@ -20,8 +20,13 @@
 
       var memberships = await auth.getMyMemberships();
       var isAdmin = memberships.some(function(item) { return item.role === 'admin'; });
+      var canGrade = memberships.some(function(item) {
+        return item.role === 'admin' || item.role === 'senior' || item.role === 'vp';
+      });
       navRight.classList.add('account-nav');
       navRight.innerHTML =
+        '<a href="groups.html">Groups</a>' +
+        (canGrade ? '<a href="grading.html">Grading</a>' : '') +
         (isAdmin ? '<a href="admin.html">Admin</a>' : '') +
         '<a href="profile.html">Profile</a>' +
         '<button type="button" class="nav-sign-out">Sign out</button>';
