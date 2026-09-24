@@ -8,28 +8,31 @@ accounts. New accounts remain pending until an Admin approves them.
 | Role | Account approval and organization | Quiz release | Quiz grading | Takes quizzes |
 | --- | --- | --- | --- | --- |
 | Admin | Yes | No | Administrative override only | No |
-| Senior | No | Yes, for assigned members | Yes | No |
-| VP | No | No | Yes | No |
+| Senior | No | Yes, for their group | Yes, for their group | No |
+| VP | No | No | Yes, for their assigned group | No |
 | Associate | No | No | No | Yes |
 | Analyst | No | No | No | Yes |
 
-Quiz tables and screens will be added in the next implementation phase. The
-account schema already establishes the roles and Senior assignments that those
-rules will use.
+Quiz tables and submission screens will be added in the next implementation
+phase. The account schema plus `supabase/groups.sql` establish the roles and
+Senior-led groups those rules will use. VPs, Associates, and Analysts are group
+members; Seniors lead groups.
 
 ## 1. Create and configure Supabase
 
 1. Create a Supabase project.
 2. Open the SQL editor and run `supabase/schema.sql`.
-3. Under Authentication, enable email/password accounts.
-4. Require email confirmation.
-5. Set the production Site URL to the deployed AscendVine URL.
-6. Add exact redirect URLs for:
+3. For an existing account installation, run `supabase/groups.sql` once to add
+   named groups and group-scoped permissions.
+4. Under Authentication, enable email/password accounts.
+5. Require email confirmation.
+6. Set the production Site URL to the deployed AscendVine URL.
+7. Add exact redirect URLs for:
    - `/profile.html`
    - `/reset-password.html`
    - the corresponding local-development URLs
-7. Configure custom SMTP before inviting users. Supabase's default mailer is for
-   testing only.
+8. Configure custom SMTP before inviting users. Supabase's built-in mailer is for
+   testing only and is currently limited to two Auth emails per hour per project.
 
 ## 2. Connect the browser client
 
@@ -71,7 +74,7 @@ on conflict (semester_id, user_id) do update set role = 'admin';
 ```
 
 After this, that user can open `admin.html` to approve accounts, assign roles,
-and place Associates and Analysts under Seniors.
+create named Senior-led groups, and place VPs, Associates, and Analysts in them.
 
 ## Approval flow
 
@@ -80,8 +83,9 @@ and place Associates and Analysts under Seniors.
 3. The profile remains `pending`.
 4. An Admin approves or rejects the request.
 5. On approval, the Admin assigns one semester role.
-6. Associates and Analysts can then be assigned to a Senior.
+6. An Admin creates Senior-led groups.
+7. VPs, Associates, and Analysts can then be assigned to one group per semester.
 
-Users cannot edit approval status, role, semester membership, or Senior
+Users cannot edit approval status, role, semester membership, or group
 assignment. All changes are checked in the database and role/approval changes
 are retained in audit tables.
