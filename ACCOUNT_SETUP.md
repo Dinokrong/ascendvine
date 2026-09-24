@@ -31,14 +31,21 @@ only the groups assigned to them; Admins retain an administrative override.
    group releases, attempts, and responses.
    - If `quizzes.sql` was installed before the grading phase, also run
      `supabase/quiz-grading.sql` once to add grading and quiz standings.
-6. Under Authentication, enable email/password accounts.
-7. Require email confirmation.
-8. Set the production Site URL to the deployed AscendVine URL.
-9. Add exact redirect URLs for:
+6. Run `supabase/admin-protection.sql` once. It keeps
+   `ashley.hsieh@emory.edu` approved, undeletable, and an Admin of every
+   semester, including semesters created later.
+7. Run `supabase/no-quiz-deadlines.sql` once. Released quizzes stay open until
+   submitted.
+8. Run `supabase/practice-time.sql` once to add Question Bank time tracking and
+   the practice leaderboard.
+9. Under Authentication, enable email/password accounts.
+10. Require email confirmation.
+11. Set the production Site URL to the deployed AscendVine URL.
+12. Add exact redirect URLs for:
    - `/profile.html`
    - `/reset-password.html`
    - the corresponding local-development URLs
-10. Configure custom SMTP before inviting users. Supabase's built-in mailer is for
+13. Configure custom SMTP before inviting users. Supabase's built-in mailer is for
    testing only and is currently limited to two Auth emails per hour per project.
 
 ## 2. Connect the browser client
@@ -113,16 +120,18 @@ deleting Admin, and timestamp.
 1. An Admin opens `quiz-admin.html`, pastes the numbered Questions tab and the
    matching Answer Key tab, then validates the pairs.
 2. The Admin creates a draft and marks it ready after reviewing the preview.
-3. A Senior opens `quiz-release.html`, selects their group and optional due time,
-   then pushes the quiz.
+3. A Senior opens `quiz-release.html`, selects their group, then pushes the
+   quiz. Quizzes have no due date.
 4. Associates and Analysts open `quizzes.html`, choose the released quiz, and
    answer it in `quiz.html`. Answers save automatically and lock on submission.
 5. The submitted records are visible only to the quiz taker, their group's
    Senior and VP, and semester Admins.
 6. Seniors, VPs, and Admins open `grading.html`, review the member response
    beside the protected answer key, award points, and publish feedback.
-7. `quiz-leaderboard.html` totals graded quiz points across the semester. This
-   is separate from the future Question Bank practice leaderboard.
+7. `leaderboard.html` has two tabs. Quizzes totals graded quiz points across
+   the semester. Practice totals active Question Bank time: the page reports
+   every 30 seconds while it is visible and in use, and the database credits at
+   most 60 seconds per report, so idle or hidden tabs do not count.
 
 The bulk parser recognizes chapter headings plus numbered questions such as
 `1. Question text`. It pairs them, in order, with paragraphs beginning
