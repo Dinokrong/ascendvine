@@ -718,7 +718,7 @@
 
 .quiz-release-controls {
   display: grid;
-  grid-template-columns: minmax(135px, 175px) minmax(175px, 215px) minmax(190px, auto);
+  grid-template-columns: minmax(175px, 240px) minmax(190px, auto);
   align-items: center;
   gap: .65rem;
 }
