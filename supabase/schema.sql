@@ -185,7 +185,9 @@ revoke all on public.senior_assignments from anon, authenticated;
 revoke all on public.role_change_history from anon, authenticated;
 revoke all on public.account_approval_history from anon, authenticated;
 
-grant select, update on public.profiles to authenticated;
+grant select on public.profiles to authenticated;
+grant update (first_name, last_name, graduation_year, major, bio, avatar_url, updated_at)
+  on public.profiles to authenticated;
 grant select on public.semesters to authenticated;
 grant select on public.semester_memberships to authenticated;
 grant select on public.senior_assignments to authenticated;
