@@ -394,3 +394,203 @@ grant execute on function public.can_grade_quiz(uuid) to authenticated;
 grant execute on function public.admin_create_quiz(uuid, text, text, text, text, jsonb) to authenticated;
 grant execute on function public.admin_set_quiz_status(uuid, text) to authenticated;
 grant execute on function public.admin_delete_draft_quiz(uuid) to authenticated;
+
+
+create or replace function public.senior_release_quiz(
+  target_quiz uuid,
+  target_group uuid,
+  target_due_at timestamptz default null
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  target_semester uuid;
+  release_id uuid;
+begin
+  select quiz.semester_id into target_semester
+  from public.quizzes quiz
+  join public.groups selected_group
+    on selected_group.semester_id = quiz.semester_id
+  where quiz.id = target_quiz
+    and selected_group.id = target_group
+    and quiz.status = 'ready'
+    and selected_group.senior_id = auth.uid();
+
+  if target_semester is null or not public.is_approved_user() then
+    raise exception 'Only the group Senior can release a ready quiz';
+  end if;
+
+  if target_due_at is not null and target_due_at <= now() then
+    raise exception 'Due time must be in the future';
+  end if;
+
+  insert into public.quiz_group_releases (
+    quiz_id, group_id, released_by, released_at, due_at
+  )
+  values (
+    target_quiz, target_group, auth.uid(), now(), target_due_at
+  )
+  on conflict (quiz_id, group_id)
+  do update set
+    released_by = auth.uid(),
+    released_at = now(),
+    due_at = excluded.due_at
+  returning id into release_id;
+
+  return release_id;
+end;
+$$;
+
+create or replace function public.start_quiz_attempt(target_quiz uuid)
+returns uuid
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  selected_group uuid;
+  selected_due_at timestamptz;
+  attempt_id uuid;
+  existing_status text;
+begin
+  if not public.is_approved_user() then
+    raise exception 'Approved account required';
+  end if;
+
+  select release.group_id, release.due_at
+  into selected_group, selected_due_at
+  from public.quiz_group_releases release
+  join public.group_memberships group_member
+    on group_member.group_id = release.group_id
+   and group_member.user_id = auth.uid()
+  join public.semester_memberships member_role
+    on member_role.semester_id = group_member.semester_id
+   and member_role.user_id = group_member.user_id
+   and member_role.role in ('associate', 'analyst')
+  join public.quizzes quiz on quiz.id = release.quiz_id
+  where release.quiz_id = target_quiz
+    and quiz.status = 'ready'
+  limit 1;
+
+  if selected_group is null then
+    raise exception 'This quiz has not been released to your group';
+  end if;
+
+  select id, status into attempt_id, existing_status
+  from public.quiz_attempts
+  where quiz_id = target_quiz and user_id = auth.uid();
+
+  if attempt_id is null then
+    if selected_due_at is not null and selected_due_at < now() then
+      raise exception 'The due time for this quiz has passed';
+    end if;
+
+    insert into public.quiz_attempts (quiz_id, group_id, user_id)
+    values (target_quiz, selected_group, auth.uid())
+    returning id into attempt_id;
+
+    insert into public.quiz_responses (attempt_id, question_id)
+    select attempt_id, question.id
+    from public.quiz_questions question
+    where question.quiz_id = target_quiz
+    order by question.position;
+  end if;
+
+  return attempt_id;
+end;
+$$;
+
+create or replace function public.save_quiz_response(
+  target_attempt uuid,
+  target_question uuid,
+  answer_text text
+)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if not exists (
+    select 1
+    from public.quiz_attempts attempt
+    join public.quiz_questions question
+      on question.quiz_id = attempt.quiz_id
+    where attempt.id = target_attempt
+      and attempt.user_id = auth.uid()
+      and attempt.status = 'in_progress'
+      and question.id = target_question
+  ) then
+    raise exception 'This response cannot be edited';
+  end if;
+
+  insert into public.quiz_responses (
+    attempt_id, question_id, response_text, updated_at
+  )
+  values (
+    target_attempt, target_question, coalesce(answer_text, ''), now()
+  )
+  on conflict (attempt_id, question_id)
+  do update set
+    response_text = excluded.response_text,
+    updated_at = now();
+end;
+$$;
+
+create or replace function public.submit_quiz_attempt(target_attempt uuid)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  missing_count integer;
+  target_due_at timestamptz;
+begin
+  if not exists (
+    select 1 from public.quiz_attempts
+    where id = target_attempt
+      and user_id = auth.uid()
+      and status = 'in_progress'
+  ) then
+    raise exception 'This quiz cannot be submitted';
+  end if;
+
+  select release.due_at into target_due_at
+  from public.quiz_attempts attempt
+  join public.quiz_group_releases release
+    on release.quiz_id = attempt.quiz_id
+   and release.group_id = attempt.group_id
+  where attempt.id = target_attempt;
+
+  if target_due_at is not null and target_due_at < now() then
+    raise exception 'The due time for this quiz has passed';
+  end if;
+
+  select count(*) into missing_count
+  from public.quiz_responses response
+  where response.attempt_id = target_attempt
+    and length(trim(response.response_text)) = 0;
+
+  if missing_count > 0 then
+    raise exception 'Answer every question before submitting';
+  end if;
+
+  update public.quiz_attempts
+  set status = 'submitted', submitted_at = now()
+  where id = target_attempt;
+end;
+$$;
+
+revoke all on function public.senior_release_quiz(uuid, uuid, timestamptz) from public;
+revoke all on function public.start_quiz_attempt(uuid) from public;
+revoke all on function public.save_quiz_response(uuid, uuid, text) from public;
+revoke all on function public.submit_quiz_attempt(uuid) from public;
+
+grant execute on function public.senior_release_quiz(uuid, uuid, timestamptz) to authenticated;
+grant execute on function public.start_quiz_attempt(uuid) to authenticated;
+grant execute on function public.save_quiz_response(uuid, uuid, text) to authenticated;
+grant execute on function public.submit_quiz_attempt(uuid) to authenticated;
