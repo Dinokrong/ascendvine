@@ -59,6 +59,25 @@ export async function signIn(email, password) {
     throw new Error('Verify your Emory email before signing in.');
   }
 
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('approval_status')
+    .eq('id', data.user.id)
+    .single();
+
+  if (profileError) {
+    await supabase.auth.signOut();
+    throw profileError;
+  }
+
+  if (profile.approval_status !== 'approved') {
+    await supabase.auth.signOut();
+    const message = profile.approval_status === 'rejected'
+      ? 'This account request was not approved. Contact an administrator if you believe this is an error.'
+      : 'Your Emory email is verified. An administrator must approve your account before you can enter.';
+    throw new Error(message);
+  }
+
   return data;
 }
 
@@ -86,18 +105,31 @@ export async function getVerifiedUser() {
   return data.user;
 }
 
-export async function requireVerifiedUser() {
+export async function requireApprovedUser() {
   const user = await getVerifiedUser();
   if (!user) {
     const destination = isSupabaseConfigured ? 'index.html' : 'index.html?setup=1';
     window.location.replace(destination);
     return null;
   }
+
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .select('approval_status')
+    .eq('id', user.id)
+    .single();
+
+  if (error || profile?.approval_status !== 'approved') {
+    await supabase.auth.signOut();
+    window.location.replace('index.html?approval=pending');
+    return null;
+  }
+
   return user;
 }
 
 export async function getMyProfile() {
-  const user = await requireVerifiedUser();
+  const user = await requireApprovedUser();
   if (!user) return null;
 
   const { data, error } = await supabase
@@ -111,7 +143,7 @@ export async function getMyProfile() {
 }
 
 export async function updateMyProfile(values) {
-  const user = await requireVerifiedUser();
+  const user = await requireApprovedUser();
   if (!user) return null;
 
   const allowed = {
@@ -135,7 +167,7 @@ export async function updateMyProfile(values) {
 }
 
 export async function getMyMemberships() {
-  const user = await requireVerifiedUser();
+  const user = await requireApprovedUser();
   if (!user) return [];
 
   const { data, error } = await supabase
