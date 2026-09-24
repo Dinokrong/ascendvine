@@ -5,6 +5,8 @@ import {
   isSupabaseConfigured
 } from './supabase-config.js';
 
+export { isSupabaseConfigured };
+
 export const supabase = isSupabaseConfigured
   ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
   : null;
