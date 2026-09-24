@@ -1,12 +1,21 @@
 /* ================================
-   AUTH GUARD
+   AUTHORIZATION GUARD
 ================================ */
-(function guard() {
+(function guardProtectedPages() {
   var page = window.location.pathname.split('/').pop() || 'index.html';
-  if (page === 'index.html' || page === '') return; // login page is always public
-  if (!sessionStorage.getItem('auth')) {
-    window.location.replace('index.html');
-  }
+  var publicPages = new Set(['index.html', 'reset-password.html', '']);
+  if (publicPages.has(page)) return;
+
+  document.documentElement.style.visibility = 'hidden';
+
+  import('./js/auth-client.js')
+    .then(function(auth) { return auth.requireApprovedUser(); })
+    .then(function(user) {
+      if (user) document.documentElement.style.visibility = '';
+    })
+    .catch(function() {
+      window.location.replace('index.html');
+    });
 })();
 
 /* ================================
@@ -16,46 +25,6 @@
   var page = window.location.pathname.split('/').pop() || 'home.html';
   document.querySelectorAll('.nav-center a').forEach(function(link) {
     if (link.getAttribute('href') === page) link.classList.add('active');
-  });
-})();
-
-
-/* ================================
-   LOGIN PAGE
-================================ */
-(function initLogin() {
-  var form = document.getElementById('login-form');
-  if (!form) return;
-
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var username = document.getElementById('username').value.trim();
-    var passcode = document.getElementById('passcode').value;
-    var errorEl  = document.getElementById('error-msg');
-
-    var ACCOUNTS = {
-      'ascend':  'emory2025',
-      'ashley':  '1',
-      'aig': 'emory2026'
-    };
-
-    if (ACCOUNTS[username] && ACCOUNTS[username] === passcode) {
-      sessionStorage.setItem('auth', '1');
-      window.location.href = 'home.html';
-    } else {
-      errorEl.style.display = 'block';
-      var card = document.querySelector('.login-card');
-      card.style.transform = 'translateX(6px)';
-      setTimeout(function() { card.style.transform = 'translateX(-6px)'; }, 80);
-      setTimeout(function() { card.style.transform = 'translateX(4px)';  }, 160);
-      setTimeout(function() { card.style.transform = 'translateX(0)';    }, 240);
-    }
-  });
-
-  ['username', 'passcode'].forEach(function(id) {
-    document.getElementById(id).addEventListener('input', function() {
-      document.getElementById('error-msg').style.display = 'none';
-    });
   });
 })();
 
