@@ -3,64 +3,166 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emory Avine — Login</title>
+  <title>AscendVine — Account</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="account.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-  <link rel="manifest" href="site.webmanifest">
 </head>
 <body>
-  <div class="login-page">
-    <div class="login-card">
+  <main class="account-page">
+    <div class="account-shell">
+      <a class="account-brand" href="index.html">AscendVine</a>
 
-      <div class="login-lock-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="#4472C4">
-          <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10
-                   c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2z
-                   m-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z
-                   m3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
-        </svg>
-      </div>
+      <section class="account-card">
+        <h1 id="account-heading">Welcome back</h1>
+        <p class="account-intro" id="account-intro">Sign in with your verified Emory email.</p>
 
-      <h1>Emory Avine</h1>
-      <p class="subtitle">Sign in to continue</p>
-
-      <form id="login-form" novalidate>
-        <div class="form-group">
-          <label for="username">Username</label>
-          <input
-            type="text"
-            id="username"
-            name="username"
-            placeholder="Enter your username"
-            autocomplete="username"
-            spellcheck="false"
-          >
+        <div class="account-tabs" role="tablist" aria-label="Account options">
+          <button class="account-tab active" id="signin-tab" type="button" role="tab" aria-selected="true">Sign in</button>
+          <button class="account-tab" id="signup-tab" type="button" role="tab" aria-selected="false">Create account</button>
         </div>
 
-        <div class="form-group">
-          <label for="passcode">Passcode</label>
-          <input
-            type="password"
-            id="passcode"
-            name="passcode"
-            placeholder="Enter your passcode"
-            autocomplete="current-password"
-          >
-        </div>
+        <div class="account-message" id="account-message" role="status" aria-live="polite"></div>
 
-        <button type="submit" class="btn-submit">Sign In</button>
+        <form class="account-form" id="signin-form">
+          <div class="form-group">
+            <label for="signin-email">Emory email</label>
+            <input id="signin-email" name="email" type="email" autocomplete="email" placeholder="name@emory.edu" required>
+          </div>
+          <div class="form-group">
+            <label for="signin-password">Password</label>
+            <input id="signin-password" name="password" type="password" autocomplete="current-password" required>
+          </div>
+          <button class="account-button" type="submit">Sign in</button>
+          <p class="account-help">
+            <button class="account-link-button" id="forgot-password" type="button">Forgot your password?</button>
+          </p>
+        </form>
 
-        <div class="error-msg" id="error-msg" role="alert">
-          Incorrect username or passcode. Please try again.
-        </div>
-      </form>
-
+        <form class="account-form" id="signup-form" hidden>
+          <div class="account-grid">
+            <div class="form-group">
+              <label for="signup-first-name">First name</label>
+              <input id="signup-first-name" name="firstName" autocomplete="given-name" required>
+            </div>
+            <div class="form-group">
+              <label for="signup-last-name">Last name</label>
+              <input id="signup-last-name" name="lastName" autocomplete="family-name" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="signup-email">Emory email</label>
+            <input id="signup-email" name="email" type="email" autocomplete="email" placeholder="name@emory.edu" required>
+          </div>
+          <div class="form-group">
+            <label for="signup-year">Graduation year</label>
+            <input id="signup-year" name="graduationYear" type="number" min="2000" max="2100" inputmode="numeric" required>
+          </div>
+          <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input id="signup-password" name="password" type="password" minlength="10" autocomplete="new-password" required>
+          </div>
+          <button class="account-button" type="submit">Create account</button>
+          <p class="account-help">Account access requires email verification. Roles are assigned by an administrator.</p>
+        </form>
+      </section>
     </div>
-  </div>
+  </main>
 
-  <script src="app.js"></script>
+  <script type="module">
+    import {
+      isSupabaseConfigured,
+      supabase,
+      signIn,
+      signUp,
+      sendPasswordReset,
+      getVerifiedUser
+    } from './js/auth-client.js';
+
+    const message = document.getElementById('account-message');
+    const signInForm = document.getElementById('signin-form');
+    const signUpForm = document.getElementById('signup-form');
+    const signInTab = document.getElementById('signin-tab');
+    const signUpTab = document.getElementById('signup-tab');
+
+    function showMessage(text, type = 'error') {
+      message.textContent = text;
+      message.className = 'account-message visible ' + type;
+    }
+
+    function setMode(mode) {
+      const isSignUp = mode === 'signup';
+      signInForm.hidden = isSignUp;
+      signUpForm.hidden = !isSignUp;
+      signInTab.classList.toggle('active', !isSignUp);
+      signUpTab.classList.toggle('active', isSignUp);
+      signInTab.setAttribute('aria-selected', String(!isSignUp));
+      signUpTab.setAttribute('aria-selected', String(isSignUp));
+      document.getElementById('account-heading').textContent = isSignUp ? 'Create your account' : 'Welcome back';
+      document.getElementById('account-intro').textContent = isSignUp
+        ? 'Use your @emory.edu address to join AscendVine.'
+        : 'Sign in with your verified Emory email.';
+      message.className = 'account-message';
+    }
+
+    async function withBusy(form, action) {
+      const button = form.querySelector('button[type="submit"]');
+      button.disabled = true;
+      try {
+        await action();
+      } catch (error) {
+        showMessage(error.message || 'Something went wrong. Please try again.');
+      } finally {
+        button.disabled = false;
+      }
+    }
+
+    signInTab.addEventListener('click', () => setMode('signin'));
+    signUpTab.addEventListener('click', () => setMode('signup'));
+
+    signInForm.addEventListener('submit', event => {
+      event.preventDefault();
+      withBusy(signInForm, async () => {
+        await signIn(
+          document.getElementById('signin-email').value,
+          document.getElementById('signin-password').value
+        );
+        window.location.replace('home.html');
+      });
+    });
+
+    signUpForm.addEventListener('submit', event => {
+      event.preventDefault();
+      withBusy(signUpForm, async () => {
+        await signUp({
+          email: document.getElementById('signup-email').value,
+          password: document.getElementById('signup-password').value,
+          firstName: document.getElementById('signup-first-name').value,
+          lastName: document.getElementById('signup-last-name').value,
+          graduationYear: document.getElementById('signup-year').value
+        });
+        signUpForm.reset();
+        showMessage('Check your Emory inbox and verify your email before signing in.', 'success');
+      });
+    });
+
+    document.getElementById('forgot-password').addEventListener('click', async () => {
+      const email = document.getElementById('signin-email').value;
+      try {
+        await sendPasswordReset(email);
+        showMessage('If an eligible account exists, a password-reset email has been sent.', 'success');
+      } catch (error) {
+        showMessage(error.message || 'Unable to send the password-reset email.');
+      }
+    });
+
+    if (!isSupabaseConfigured || new URLSearchParams(location.search).has('setup')) {
+      showMessage('Account infrastructure is ready, but the Supabase project has not been connected yet.');
+    } else {
+      getVerifiedUser().then(user => {
+        if (user) window.location.replace('home.html');
+      });
+    }
+  </script>
 </body>
 </html>
