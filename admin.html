@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AscendVine — Admin</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="account.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">AscendVine</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right account-nav">
+      <a href="profile.html">Profile</a>
+    </div>
+  </nav>
+
+  <main class="admin-page">
+    <header class="admin-header">
+      <div>
+        <div class="home-eyebrow">Account administration</div>
+        <h1>Members and roles</h1>
+        <p>Approve accounts, assign semester roles, and organize Associates and Analysts under Seniors.</p>
+      </div>
+      <label class="admin-semester-picker">
+        Semester
+        <select id="semester-select"></select>
+      </label>
+    </header>
+
+    <div class="account-message" id="admin-message" role="status" aria-live="polite"></div>
+
+    <section class="admin-section">
+      <h2>Pending account requests</h2>
+      <div id="pending-list" class="admin-list"></div>
+    </section>
+
+    <section class="admin-section">
+      <h2>Semester roster</h2>
+      <div id="roster-list" class="admin-list"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import {
+      supabase,
+      requireApprovedUser
+    } from './js/auth-client.js';
+
+    const ROLES = ['admin', 'senior', 'vp', 'associate', 'analyst'];
+    const message = document.getElementById('admin-message');
+    const semesterSelect = document.getElementById('semester-select');
+    let profiles = [];
+    let memberships = [];
+    let assignments = [];
+
+    function showMessage(text, type = 'error') {
+      message.textContent = text;
+      message.className = 'account-message visible ' + type;
+    }
+
+    function displayName(profile) {
+      return ((profile.first_name || '') + ' ' + (profile.last_name || '')).trim() || profile.email;
+    }
+
+    function roleOptions(selected) {
+      return ROLES.map(role =>
+        '<option value="' + role + '"' + (role === selected ? ' selected' : '') + '>' +
+        role.charAt(0).toUpperCase() + role.slice(1) + '</option>'
+      ).join('');
+    }
+
+    async function loadSemesters() {
+      await requireApprovedUser();
+      const { data, error } = await supabase
+        .from('semester_memberships')
+        .select('semester_id, role, semesters(name, is_active)')
+        .eq('role', 'admin');
+
+      if (error) throw error;
+      if (!data?.length) {
+        throw new Error('This page requires an Admin role.');
+      }
+
+      semesterSelect.innerHTML = data.map(item =>
+        '<option value="' + item.semester_id + '">' + item.semesters.name + '</option>'
+      ).join('');
+    }
+
+    async function refresh() {
+      const semesterId = semesterSelect.value;
+      const [profileResult, membershipResult, assignmentResult] = await Promise.all([
+        supabase.from('profiles')
+          .select('id, email, first_name, last_name, graduation_year, approval_status')
+          .order('created_at'),
+        supabase.from('semester_memberships')
+          .select('user_id, role')
+          .eq('semester_id', semesterId),
+        supabase.from('senior_assignments')
+          .select('senior_id, member_id')
+          .eq('semester_id', semesterId)
+      ]);
+
+      if (profileResult.error) throw profileResult.error;
+      if (membershipResult.error) throw membershipResult.error;
+      if (assignmentResult.error) throw assignmentResult.error;
+
+      profiles = profileResult.data || [];
+      memberships = membershipResult.data || [];
+      assignments = assignmentResult.data || [];
+      renderPending();
+      renderRoster();
+    }
+
+    function renderPending() {
+      const container = document.getElementById('pending-list');
+      const pending = profiles.filter(profile => profile.approval_status === 'pending');
+
+      if (!pending.length) {
+        container.innerHTML = '<p class="admin-empty">No pending requests.</p>';
+        return;
+      }
+
+      container.innerHTML = pending.map(profile =>
+        '<article class="admin-member" data-user="' + profile.id + '">' +
+          '<div><strong>' + displayName(profile) + '</strong><span>' + profile.email + '</span></div>' +
+          '<select class="pending-role">' + roleOptions('analyst') + '</select>' +
+          '<button class="admin-action approve-account" type="button">Approve</button>' +
+          '<button class="admin-action reject-account secondary" type="button">Reject</button>' +
+        '</article>'
+      ).join('');
+    }
+
+    function renderRoster() {
+      const container = document.getElementById('roster-list');
+      const approved = profiles.filter(profile => profile.approval_status === 'approved');
+      const seniors = memberships
+        .filter(item => item.role === 'senior')
+        .map(item => profiles.find(profile => profile.id === item.user_id))
+        .filter(Boolean);
+
+      if (!approved.length) {
+        container.innerHTML = '<p class="admin-empty">No approved members.</p>';
+        return;
+      }
+
+      container.innerHTML = approved.map(profile => {
+        const membership = memberships.find(item => item.user_id === profile.id);
+        if (!membership) return '';
+
+        const assignment = assignments.find(item => item.member_id === profile.id);
+        const needsSenior = ['associate', 'analyst'].includes(membership.role);
+        const seniorOptions = seniors.map(senior =>
+          '<option value="' + senior.id + '"' +
+          (assignment?.senior_id === senior.id ? ' selected' : '') + '>' +
+          displayName(senior) + '</option>'
+        ).join('');
+
+        return '<article class="admin-member" data-user="' + profile.id + '">' +
+          '<div><strong>' + displayName(profile) + '</strong><span>' + profile.email + '</span></div>' +
+          '<select class="roster-role">' + roleOptions(membership.role) + '</select>' +
+          (needsSenior
+            ? '<select class="senior-assignment"><option value="">Assign Senior…</option>' + seniorOptions + '</select>'
+            : '<span class="admin-assignment-note">No Senior assignment required</span>') +
+        '</article>';
+      }).join('');
+    }
+
+    document.getElementById('pending-list').addEventListener('click', async event => {
+      const row = event.target.closest('.admin-member');
+      if (!row) return;
+
+      try {
+        if (event.target.classList.contains('approve-account')) {
+          const role = row.querySelector('.pending-role').value;
+          let result = await supabase.rpc('admin_set_account_status', {
+            target_user: row.dataset.user,
+            target_status: 'approved'
+          });
+          if (result.error) throw result.error;
+
+          result = await supabase.rpc('admin_set_member_role', {
+            target_semester: semesterSelect.value,
+            target_user: row.dataset.user,
+            target_role: role
+          });
+          if (result.error) throw result.error;
+          showMessage('Account approved and role assigned.', 'success');
+        } else if (event.target.classList.contains('reject-account')) {
+          const result = await supabase.rpc('admin_set_account_status', {
+            target_user: row.dataset.user,
+            target_status: 'rejected'
+          });
+          if (result.error) throw result.error;
+          showMessage('Account request rejected.', 'success');
+        } else {
+          return;
+        }
+
+        await refresh();
+      } catch (error) {
+        showMessage(error.message || 'Unable to update this account.');
+      }
+    });
+
+    document.getElementById('roster-list').addEventListener('change', async event => {
+      const row = event.target.closest('.admin-member');
+      if (!row) return;
+
+      try {
+        if (event.target.classList.contains('roster-role')) {
+          const result = await supabase.rpc('admin_set_member_role', {
+            target_semester: semesterSelect.value,
+            target_user: row.dataset.user,
+            target_role: event.target.value
+          });
+          if (result.error) throw result.error;
+          showMessage('Role updated.', 'success');
+        } else if (event.target.classList.contains('senior-assignment') && event.target.value) {
+          const result = await supabase.rpc('admin_assign_senior', {
+            target_semester: semesterSelect.value,
+            target_senior: event.target.value,
+            target_member: row.dataset.user
+          });
+          if (result.error) throw result.error;
+          showMessage('Senior assignment updated.', 'success');
+        }
+
+        await refresh();
+      } catch (error) {
+        showMessage(error.message || 'Unable to update the roster.');
+        await refresh();
+      }
+    });
+
+    semesterSelect.addEventListener('change', () => refresh().catch(error => showMessage(error.message)));
+
+    try {
+      await loadSemesters();
+      await refresh();
+    } catch (error) {
+      showMessage(error.message || 'Unable to load the admin dashboard.');
+      document.querySelectorAll('.admin-section').forEach(section => section.hidden = true);
+    }
+  </script>
+
+  <script src="app.js"></script>
+</body>
+</html>
