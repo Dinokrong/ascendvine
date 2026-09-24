@@ -24,14 +24,16 @@ members; Seniors lead groups.
 2. Open the SQL editor and run `supabase/schema.sql`.
 3. Run `supabase/groups.sql` once after the base schema to add named groups
    and group-scoped permissions.
-4. Under Authentication, enable email/password accounts.
-5. Require email confirmation.
-6. Set the production Site URL to the deployed AscendVine URL.
-7. Add exact redirect URLs for:
+4. Run `supabase/admin-delete-account.sql` once to enable guarded permanent
+   deletion from the Admin page.
+5. Under Authentication, enable email/password accounts.
+6. Require email confirmation.
+7. Set the production Site URL to the deployed AscendVine URL.
+8. Add exact redirect URLs for:
    - `/profile.html`
    - `/reset-password.html`
    - the corresponding local-development URLs
-8. Configure custom SMTP before inviting users. Supabase's built-in mailer is for
+9. Configure custom SMTP before inviting users. Supabase's built-in mailer is for
    testing only and is currently limited to two Auth emails per hour per project.
 
 ## 2. Connect the browser client
@@ -89,3 +91,14 @@ create named Senior-led groups, and place VPs, Associates, and Analysts in them.
 Users cannot edit approval status, role, semester membership, or group
 assignment. All changes are checked in the database and role/approval changes
 are retained in audit tables.
+
+
+## Permanent account deletion
+
+Admins can permanently delete an account from either the pending-request list or
+the semester roster. The browser requires the Admin to type `DELETE`, and the
+database prevents self-deletion, deletion of a semester's last Admin, and
+deletion of a Senior who still leads a group. The operation removes the
+Supabase Auth user and cascades through the profile, roles, and group membership.
+A minimal deletion audit record retains the deleted user ID, email, name,
+deleting Admin, and timestamp.
