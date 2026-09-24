@@ -362,7 +362,7 @@ begin
     where semester_id = target_semester and senior_id = target_user;
   end if;
 end;
-$;
+$$;
 
 create or replace function public.admin_assign_senior(
   target_semester uuid,
