@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AscendVine — Quiz grading</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="account.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">AscendVine</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right account-nav"><a href="profile.html">Profile</a></div>
+  </nav>
+
+  <main class="admin-page">
+    <header class="admin-header">
+      <div>
+        <div class="home-eyebrow">Senior and VP workspace</div>
+        <h1>Quiz grading</h1>
+        <p>Seniors and VPs grade submissions for their own group. Admins retain semester-wide oversight.</p>
+      </div>
+      <label class="admin-semester-picker">
+        Semester
+        <select id="semester-select"></select>
+      </label>
+    </header>
+
+    <div class="account-message" id="grading-message" role="status" aria-live="polite"></div>
+    <section id="grading-grid" class="group-directory"></section>
+  </main>
+
+  <script type="module">
+    import { supabase, requireApprovedUser } from './js/auth-client.js';
+
+    const ALLOWED_ROLES = ['admin', 'senior', 'vp'];
+    const message = document.getElementById('grading-message');
+    const semesterSelect = document.getElementById('semester-select');
+    const grid = document.getElementById('grading-grid');
+    let memberships = [];
+
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showError(text) {
+      message.textContent = text;
+      message.className = 'account-message visible error';
+    }
+
+    async function loadSemesters() {
+      const user = await requireApprovedUser();
+      const { data, error } = await supabase
+        .from('semester_memberships')
+        .select('semester_id, role, semesters(name, is_active)')
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      memberships = (data || []).filter(item => ALLOWED_ROLES.includes(item.role));
+      if (!memberships.length) throw new Error('Quiz grading is available only to Admins, Seniors, and VPs.');
+
+      semesterSelect.innerHTML = memberships.map(item =>
+        '<option value="' + item.semester_id + '">' + esc(item.semesters.name) + '</option>'
+      ).join('');
+    }
+
+    async function refresh() {
+      const semesterId = semesterSelect.value;
+      const currentRole = memberships.find(item => item.semester_id === semesterId)?.role;
+      const [groupResult, groupMemberResult] = await Promise.all([
+        supabase.from('groups')
+          .select('id, name, senior_id')
+          .eq('semester_id', semesterId)
+          .order('name'),
+        supabase.from('group_memberships')
+          .select('group_id, user_id')
+          .eq('semester_id', semesterId)
+      ]);
+
+      if (groupResult.error) throw groupResult.error;
+      if (groupMemberResult.error) throw groupMemberResult.error;
+
+      const groups = groupResult.data || [];
+      const groupMembers = groupMemberResult.data || [];
+
+      if (!groups.length) {
+        grid.innerHTML = '<div class="group-empty-state"><h2>No grading groups yet</h2><p>An Admin must create and assign groups before quizzes can be graded.</p></div>';
+        return;
+      }
+
+      grid.innerHTML = groups.map(group => {
+        const count = groupMembers.filter(member => member.group_id === group.id).length;
+        return '<article class="grading-card">' +
+          '<div><span class="role-pill">' + esc(currentRole) + ' access</span>' +
+          '<h2>' + esc(group.name) + '</h2>' +
+          '<p>' + count + ' assigned member' + (count === 1 ? '' : 's') + '</p></div>' +
+          '<div class="grading-empty">' +
+            '<strong>No quiz submissions yet</strong>' +
+            '<span>This group is ready. Weekly quizzes and submission grading will appear here in the quiz phase.</span>' +
+          '</div>' +
+        '</article>';
+      }).join('');
+    }
+
+    semesterSelect.addEventListener('change', () => refresh().catch(error => showError(error.message)));
+
+    try {
+      await loadSemesters();
+      await refresh();
+    } catch (error) {
+      showError(error.message || 'Unable to load the grading workspace.');
+      grid.hidden = true;
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

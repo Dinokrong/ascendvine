@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AscendVine — Groups</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="account.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">AscendVine</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right account-nav"><a href="profile.html">Profile</a></div>
+  </nav>
+
+  <main class="admin-page">
+    <header class="admin-header">
+      <div>
+        <div class="home-eyebrow">Semester organization</div>
+        <h1>Your groups</h1>
+        <p>See your Senior-led group and the members you will work with this semester.</p>
+      </div>
+      <label class="admin-semester-picker">
+        Semester
+        <select id="semester-select"></select>
+      </label>
+    </header>
+
+    <div class="account-message" id="group-message" role="status" aria-live="polite"></div>
+    <section id="groups-grid" class="group-directory"></section>
+  </main>
+
+  <script type="module">
+    import { supabase, requireApprovedUser } from './js/auth-client.js';
+
+    const message = document.getElementById('group-message');
+    const semesterSelect = document.getElementById('semester-select');
+    const grid = document.getElementById('groups-grid');
+    let currentUser;
+
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function nameOf(profile) {
+      return ((profile?.first_name || '') + ' ' + (profile?.last_name || '')).trim()
+        || profile?.email || 'Unknown member';
+    }
+
+    function showError(text) {
+      message.textContent = text;
+      message.className = 'account-message visible error';
+    }
+
+    async function loadSemesters() {
+      currentUser = await requireApprovedUser();
+      const { data, error } = await supabase
+        .from('semester_memberships')
+        .select('semester_id, role, semesters(name, is_active)')
+        .eq('user_id', currentUser.id);
+
+      if (error) throw error;
+      if (!data?.length) throw new Error('You are not assigned to a semester yet.');
+
+      semesterSelect.innerHTML = data.map(item =>
+        '<option value="' + item.semester_id + '">' + esc(item.semesters.name) + '</option>'
+      ).join('');
+    }
+
+    async function refresh() {
+      const semesterId = semesterSelect.value;
+      const [groupResult, memberResult, roleResult] = await Promise.all([
+        supabase.from('groups')
+          .select('id, name, senior_id')
+          .eq('semester_id', semesterId)
+          .order('name'),
+        supabase.from('group_memberships')
+          .select('group_id, user_id')
+          .eq('semester_id', semesterId),
+        supabase.from('semester_memberships')
+          .select('user_id, role')
+          .eq('semester_id', semesterId)
+      ]);
+
+      for (const result of [groupResult, memberResult, roleResult]) {
+        if (result.error) throw result.error;
+      }
+
+      const groups = groupResult.data || [];
+      const groupMemberships = memberResult.data || [];
+      const roles = roleResult.data || [];
+      const ids = [...new Set([
+        ...groups.map(group => group.senior_id),
+        ...groupMemberships.map(member => member.user_id)
+      ])];
+
+      let profiles = [];
+      if (ids.length) {
+        const profileResult = await supabase
+          .from('profiles')
+          .select('id, email, first_name, last_name, graduation_year')
+          .in('id', ids);
+        if (profileResult.error) throw profileResult.error;
+        profiles = profileResult.data || [];
+      }
+
+      if (!groups.length) {
+        grid.innerHTML = '<div class="group-empty-state"><h2>No group assigned yet</h2><p>An Admin will place you into a Senior-led group.</p></div>';
+        return;
+      }
+
+      grid.innerHTML = groups.map(group => {
+        const senior = profiles.find(profile => profile.id === group.senior_id);
+        const members = groupMemberships
+          .filter(member => member.group_id === group.id)
+          .map(member => ({
+            profile: profiles.find(profile => profile.id === member.user_id),
+            role: roles.find(role => role.user_id === member.user_id)?.role
+          }))
+          .filter(item => item.profile)
+          .sort((a, b) => nameOf(a.profile).localeCompare(nameOf(b.profile)));
+
+        return '<article class="group-directory-card">' +
+          '<div class="group-directory-header"><div><span>Senior-led group</span><h2>' + esc(group.name) + '</h2></div>' +
+          '<div class="group-senior"><small>Senior</small><strong>' + esc(nameOf(senior)) + '</strong></div></div>' +
+          '<div class="group-member-list">' +
+            (members.length ? members.map(item =>
+              '<div class="group-person' + (item.profile.id === currentUser.id ? ' current-user' : '') + '">' +
+                '<div><strong>' + esc(nameOf(item.profile)) + '</strong><span>' + esc(item.profile.email) + '</span></div>' +
+                '<span class="role-pill">' + esc(item.role || 'Member') + '</span>' +
+              '</div>'
+            ).join('') : '<p class="admin-empty">No members assigned yet.</p>') +
+          '</div>' +
+        '</article>';
+      }).join('');
+    }
+
+    semesterSelect.addEventListener('change', () => refresh().catch(error => showError(error.message)));
+
+    try {
+      await loadSemesters();
+      await refresh();
+    } catch (error) {
+      showError(error.message || 'Unable to load groups.');
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

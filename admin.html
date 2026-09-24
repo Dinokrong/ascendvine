@@ -15,17 +15,15 @@
       <a href="questionbank.html">Question Bank</a>
       <a href="studyguide.html">Study Guide</a>
     </div>
-    <div class="nav-right account-nav">
-      <a href="profile.html">Profile</a>
-    </div>
+    <div class="nav-right account-nav"><a href="profile.html">Profile</a></div>
   </nav>
 
   <main class="admin-page">
     <header class="admin-header">
       <div>
         <div class="home-eyebrow">Account administration</div>
-        <h1>Members and roles</h1>
-        <p>Approve accounts, assign semester roles, and organize Associates and Analysts under Seniors.</p>
+        <h1>Members, roles, and groups</h1>
+        <p>Approve accounts, assign semester roles, and place VPs, Associates, and Analysts into Senior-led groups.</p>
       </div>
       <label class="admin-semester-picker">
         Semester
@@ -41,23 +39,43 @@
     </section>
 
     <section class="admin-section">
+      <div class="admin-section-heading">
+        <div>
+          <h2>Senior-led groups</h2>
+          <p>Each VP, Associate, or Analyst can belong to one group per semester.</p>
+        </div>
+      </div>
+      <form id="create-group-form" class="group-create-form">
+        <input id="group-name" type="text" minlength="2" maxlength="80" placeholder="Group name" required>
+        <select id="group-senior" required></select>
+        <button class="admin-action" type="submit">Create group</button>
+      </form>
+      <div id="group-list" class="group-admin-grid"></div>
+    </section>
+
+    <section class="admin-section">
       <h2>Semester roster</h2>
       <div id="roster-list" class="admin-list"></div>
     </section>
   </main>
 
   <script type="module">
-    import {
-      supabase,
-      requireApprovedUser
-    } from './js/auth-client.js';
+    import { supabase, requireApprovedUser } from './js/auth-client.js';
 
     const ROLES = ['admin', 'senior', 'vp', 'associate', 'analyst'];
     const message = document.getElementById('admin-message');
     const semesterSelect = document.getElementById('semester-select');
     let profiles = [];
     let memberships = [];
-    let assignments = [];
+    let groups = [];
+    let groupMemberships = [];
+
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
 
     function showMessage(text, type = 'error') {
       message.textContent = text;
@@ -65,14 +83,32 @@
     }
 
     function displayName(profile) {
-      return ((profile.first_name || '') + ' ' + (profile.last_name || '')).trim() || profile.email;
+      return ((profile?.first_name || '') + ' ' + (profile?.last_name || '')).trim()
+        || profile?.email || 'Unknown member';
+    }
+
+    function roleLabel(role) {
+      return role.charAt(0).toUpperCase() + role.slice(1);
     }
 
     function roleOptions(selected) {
       return ROLES.map(role =>
         '<option value="' + role + '"' + (role === selected ? ' selected' : '') + '>' +
-        role.charAt(0).toUpperCase() + role.slice(1) + '</option>'
+        roleLabel(role) + '</option>'
       ).join('');
+    }
+
+    function seniorOptions(selected, placeholder = 'Choose a Senior…') {
+      const seniors = memberships
+        .filter(item => item.role === 'senior')
+        .map(item => profiles.find(profile => profile.id === item.user_id))
+        .filter(Boolean);
+
+      return '<option value="">' + esc(placeholder) + '</option>' +
+        seniors.map(senior =>
+          '<option value="' + senior.id + '"' + (senior.id === selected ? ' selected' : '') + '>' +
+          esc(displayName(senior)) + '</option>'
+        ).join('');
     }
 
     async function loadSemesters() {
@@ -83,37 +119,36 @@
         .eq('role', 'admin');
 
       if (error) throw error;
-      if (!data?.length) {
-        throw new Error('This page requires an Admin role.');
-      }
+      if (!data?.length) throw new Error('This page requires an Admin role.');
 
       semesterSelect.innerHTML = data.map(item =>
-        '<option value="' + item.semester_id + '">' + item.semesters.name + '</option>'
+        '<option value="' + item.semester_id + '">' + esc(item.semesters.name) + '</option>'
       ).join('');
     }
 
     async function refresh() {
       const semesterId = semesterSelect.value;
-      const [profileResult, membershipResult, assignmentResult] = await Promise.all([
+      const results = await Promise.all([
         supabase.from('profiles')
           .select('id, email, first_name, last_name, graduation_year, approval_status')
           .order('created_at'),
         supabase.from('semester_memberships')
           .select('user_id, role')
           .eq('semester_id', semesterId),
-        supabase.from('senior_assignments')
-          .select('senior_id, member_id')
+        supabase.from('groups')
+          .select('id, name, senior_id')
+          .eq('semester_id', semesterId)
+          .order('name'),
+        supabase.from('group_memberships')
+          .select('group_id, user_id')
           .eq('semester_id', semesterId)
       ]);
 
-      if (profileResult.error) throw profileResult.error;
-      if (membershipResult.error) throw membershipResult.error;
-      if (assignmentResult.error) throw assignmentResult.error;
+      for (const result of results) if (result.error) throw result.error;
+      [profiles, memberships, groups, groupMemberships] = results.map(result => result.data || []);
 
-      profiles = profileResult.data || [];
-      memberships = membershipResult.data || [];
-      assignments = assignmentResult.data || [];
       renderPending();
+      renderGroups();
       renderRoster();
     }
 
@@ -127,8 +162,8 @@
       }
 
       container.innerHTML = pending.map(profile =>
-        '<article class="admin-member" data-user="' + profile.id + '">' +
-          '<div><strong>' + displayName(profile) + '</strong><span>' + profile.email + '</span></div>' +
+        '<article class="admin-member pending-row" data-user="' + profile.id + '">' +
+          '<div><strong>' + esc(displayName(profile)) + '</strong><span>' + esc(profile.email) + '</span></div>' +
           '<select class="pending-role">' + roleOptions('analyst') + '</select>' +
           '<button class="admin-action approve-account" type="button">Approve</button>' +
           '<button class="admin-action reject-account secondary" type="button">Reject</button>' +
@@ -136,13 +171,36 @@
       ).join('');
     }
 
+    function renderGroups() {
+      const seniorSelect = document.getElementById('group-senior');
+      seniorSelect.innerHTML = seniorOptions('', 'Choose group Senior…');
+      seniorSelect.disabled = !memberships.some(item => item.role === 'senior');
+
+      const container = document.getElementById('group-list');
+      if (!groups.length) {
+        container.innerHTML = '<p class="admin-empty group-empty">Create the first Senior-led group for this semester.</p>';
+        return;
+      }
+
+      container.innerHTML = groups.map(group => {
+        const memberCount = groupMemberships.filter(item => item.group_id === group.id).length;
+        return '<article class="group-admin-card" data-group="' + group.id + '">' +
+          '<label>Group name<input class="group-name-input" value="' + esc(group.name) + '" maxlength="80"></label>' +
+          '<label>Senior<select class="group-senior-input">' +
+            seniorOptions(group.senior_id) +
+          '</select></label>' +
+          '<div class="group-card-footer">' +
+            '<span>' + memberCount + ' assigned member' + (memberCount === 1 ? '' : 's') + '</span>' +
+            '<div><button class="admin-action save-group" type="button">Save</button>' +
+            '<button class="admin-action secondary delete-group" type="button">Delete</button></div>' +
+          '</div>' +
+        '</article>';
+      }).join('');
+    }
+
     function renderRoster() {
       const container = document.getElementById('roster-list');
       const approved = profiles.filter(profile => profile.approval_status === 'approved');
-      const seniors = memberships
-        .filter(item => item.role === 'senior')
-        .map(item => profiles.find(profile => profile.id === item.user_id))
-        .filter(Boolean);
 
       if (!approved.length) {
         container.innerHTML = '<p class="admin-empty">No approved members.</p>';
@@ -153,23 +211,71 @@
         const membership = memberships.find(item => item.user_id === profile.id);
         if (!membership) return '';
 
-        const assignment = assignments.find(item => item.member_id === profile.id);
-        const needsSenior = ['associate', 'analyst'].includes(membership.role);
-        const seniorOptions = seniors.map(senior =>
-          '<option value="' + senior.id + '"' +
-          (assignment?.senior_id === senior.id ? ' selected' : '') + '>' +
-          displayName(senior) + '</option>'
+        const groupMembership = groupMemberships.find(item => item.user_id === profile.id);
+        const groupEligible = ['vp', 'associate', 'analyst'].includes(membership.role);
+        const groupOptions = groups.map(group =>
+          '<option value="' + group.id + '"' +
+          (groupMembership?.group_id === group.id ? ' selected' : '') + '>' +
+          esc(group.name) + '</option>'
         ).join('');
 
-        return '<article class="admin-member" data-user="' + profile.id + '">' +
-          '<div><strong>' + displayName(profile) + '</strong><span>' + profile.email + '</span></div>' +
+        return '<article class="admin-member roster-row" data-user="' + profile.id + '">' +
+          '<div><strong>' + esc(displayName(profile)) + '</strong><span>' + esc(profile.email) + '</span></div>' +
           '<select class="roster-role">' + roleOptions(membership.role) + '</select>' +
-          (needsSenior
-            ? '<select class="senior-assignment"><option value="">Assign Senior…</option>' + seniorOptions + '</select>'
-            : '<span class="admin-assignment-note">No Senior assignment required</span>') +
+          (groupEligible
+            ? '<select class="group-assignment"><option value="">No group assigned</option>' + groupOptions + '</select>'
+            : '<span class="admin-assignment-note">' +
+                (membership.role === 'senior' ? 'Leads groups selected above' : 'No group assignment required') +
+              '</span>') +
         '</article>';
       }).join('');
     }
+
+    document.getElementById('create-group-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      try {
+        const result = await supabase.rpc('admin_create_group', {
+          target_semester: semesterSelect.value,
+          group_name: document.getElementById('group-name').value,
+          target_senior: document.getElementById('group-senior').value
+        });
+        if (result.error) throw result.error;
+        event.target.reset();
+        showMessage('Group created.', 'success');
+        await refresh();
+      } catch (error) {
+        showMessage(error.message || 'Unable to create the group.');
+      }
+    });
+
+    document.getElementById('group-list').addEventListener('click', async event => {
+      const card = event.target.closest('.group-admin-card');
+      if (!card) return;
+
+      try {
+        if (event.target.classList.contains('save-group')) {
+          const result = await supabase.rpc('admin_update_group', {
+            target_group: card.dataset.group,
+            group_name: card.querySelector('.group-name-input').value,
+            target_senior: card.querySelector('.group-senior-input').value
+          });
+          if (result.error) throw result.error;
+          showMessage('Group updated.', 'success');
+        } else if (event.target.classList.contains('delete-group')) {
+          if (!window.confirm('Delete this group? Members will become unassigned.')) return;
+          const result = await supabase.rpc('admin_delete_group', {
+            target_group: card.dataset.group
+          });
+          if (result.error) throw result.error;
+          showMessage('Group deleted. Its members are now unassigned.', 'success');
+        } else {
+          return;
+        }
+        await refresh();
+      } catch (error) {
+        showMessage(error.message || 'Unable to update this group.');
+      }
+    });
 
     document.getElementById('pending-list').addEventListener('click', async event => {
       const row = event.target.closest('.admin-member');
@@ -177,11 +283,10 @@
 
       try {
         if (event.target.classList.contains('approve-account')) {
-          const role = row.querySelector('.pending-role').value;
           const result = await supabase.rpc('admin_approve_member', {
             target_user: row.dataset.user,
             target_semester: semesterSelect.value,
-            target_role: role
+            target_role: row.querySelector('.pending-role').value
           });
           if (result.error) throw result.error;
           showMessage('Account approved and role assigned.', 'success');
@@ -195,7 +300,6 @@
         } else {
           return;
         }
-
         await refresh();
       } catch (error) {
         showMessage(error.message || 'Unable to update this account.');
@@ -215,16 +319,15 @@
           });
           if (result.error) throw result.error;
           showMessage('Role updated.', 'success');
-        } else if (event.target.classList.contains('senior-assignment') && event.target.value) {
-          const result = await supabase.rpc('admin_assign_senior', {
-            target_semester: semesterSelect.value,
-            target_senior: event.target.value,
-            target_member: row.dataset.user
-          });
+        } else if (event.target.classList.contains('group-assignment')) {
+          const rpc = event.target.value ? 'admin_assign_group_member' : 'admin_remove_group_member';
+          const args = event.target.value
+            ? { target_group: event.target.value, target_user: row.dataset.user }
+            : { target_semester: semesterSelect.value, target_user: row.dataset.user };
+          const result = await supabase.rpc(rpc, args);
           if (result.error) throw result.error;
-          showMessage('Senior assignment updated.', 'success');
+          showMessage(event.target.value ? 'Group assignment updated.' : 'Member removed from group.', 'success');
         }
-
         await refresh();
       } catch (error) {
         showMessage(error.message || 'Unable to update the roster.');
@@ -242,7 +345,6 @@
       document.querySelectorAll('.admin-section').forEach(section => section.hidden = true);
     }
   </script>
-
   <script src="app.js"></script>
 </body>
 </html>

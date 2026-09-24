@@ -40,7 +40,12 @@ export async function signUp({ email, password, firstName, lastName, graduationY
     }
   });
 
-  if (error) throw error;
+  if (error) {
+    if (/email rate limit exceeded/i.test(error.message || '')) {
+      throw new Error('The verification email limit was reached. Please wait about an hour and try again, or ask an administrator to finish configuring the production email sender.');
+    }
+    throw error;
+  }
   return data;
 }
 
