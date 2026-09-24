@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AscendVine — Quiz Leaderboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="account.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">AscendVine</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right account-nav"><a href="profile.html">Profile</a></div>
+  </nav>
+
+  <main class="quiz-topic-page">
+    <header class="quiz-topic-header">
+      <div>
+        <div class="home-eyebrow">Semester standings</div>
+        <h1>Quiz leaderboard</h1>
+        <p>Cumulative points from graded weekly quizzes. The separate practice leaderboard will track Question Bank activity.</p>
+      </div>
+      <label class="admin-semester-picker">Semester<select id="semester-select"></select></label>
+    </header>
+
+    <div class="account-message" id="leaderboard-message" role="status" aria-live="polite"></div>
+    <section class="leaderboard-card">
+      <div class="leaderboard-heading">
+        <span>Rank</span><span>Member</span><span>Quizzes</span><span>Points</span><span>Average</span>
+      </div>
+      <div id="leaderboard-rows"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { supabase, requireApprovedUser } from './js/auth-client.js';
+
+    const semesterSelect = document.getElementById('semester-select');
+    const message = document.getElementById('leaderboard-message');
+    const rows = document.getElementById('leaderboard-rows');
+
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showError(text) {
+      message.textContent = text;
+      message.className = 'account-message visible error';
+    }
+
+    async function loadSemesters() {
+      const user = await requireApprovedUser();
+      const result = await supabase.from('semester_memberships')
+        .select('semester_id, semesters(name)')
+        .eq('user_id', user.id);
+      if (result.error) throw result.error;
+      if (!result.data?.length) throw new Error('You are not assigned to a semester yet.');
+      semesterSelect.innerHTML = result.data.map(item =>
+        '<option value="' + item.semester_id + '">' + esc(item.semesters.name) + '</option>'
+      ).join('');
+    }
+
+    async function refresh() {
+      const result = await supabase.rpc('get_quiz_leaderboard', {
+        target_semester: semesterSelect.value
+      });
+      if (result.error) throw result.error;
+      const standings = result.data || [];
+
+      if (!standings.length) {
+        rows.innerHTML = '<div class="leaderboard-empty">No Associates or Analysts are assigned yet.</div>';
+        return;
+      }
+
+      rows.innerHTML = standings.map(member =>
+        '<div class="leaderboard-row' + (Number(member.rank) <= 3 ? ' top-three' : '') + '">' +
+          '<strong class="leaderboard-rank">' + esc(member.rank) + '</strong>' +
+          '<div class="leaderboard-person"><strong>' + esc(member.display_name) + '</strong>' +
+          '<span>' + esc(member.role) + '</span></div>' +
+          '<span>' + esc(member.quizzes_graded) + '</span>' +
+          '<span>' + esc(member.points_earned) + ' / ' + esc(member.points_possible) + '</span>' +
+          '<strong>' + esc(member.percentage) + '%</strong>' +
+        '</div>'
+      ).join('');
+    }
+
+    semesterSelect.addEventListener('change', () => refresh().catch(error => showError(error.message)));
+
+    try {
+      await loadSemesters();
+      await refresh();
+    } catch (error) {
+      showError(error.message || 'Unable to load quiz standings.');
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

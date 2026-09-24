@@ -43,6 +43,7 @@
     const semesterSelect = document.getElementById('semester-select');
     const grid = document.getElementById('grading-grid');
     let memberships = [];
+    let currentUser;
 
     function esc(value) {
       return String(value ?? '')
@@ -56,12 +57,24 @@
       message.className = 'account-message visible error';
     }
 
+    function nameOf(profile) {
+      return ((profile?.first_name || '') + ' ' + (profile?.last_name || '')).trim()
+        || profile?.email || 'AscendVine member';
+    }
+
+    function formatDate(value) {
+      if (!value) return '';
+      return new Intl.DateTimeFormat(undefined, {
+        month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+      }).format(new Date(value));
+    }
+
     async function loadSemesters() {
-      const user = await requireApprovedUser();
+      currentUser = await requireApprovedUser();
       const { data, error } = await supabase
         .from('semester_memberships')
         .select('semester_id, role, semesters(name, is_active)')
-        .eq('user_id', user.id);
+        .eq('user_id', currentUser.id);
 
       if (error) throw error;
       memberships = (data || []).filter(item => ALLOWED_ROLES.includes(item.role));
@@ -75,37 +88,66 @@
     async function refresh() {
       const semesterId = semesterSelect.value;
       const currentRole = memberships.find(item => item.semester_id === semesterId)?.role;
-      const [groupResult, groupMemberResult] = await Promise.all([
+      const [groupResult, groupMemberResult, attemptResult] = await Promise.all([
         supabase.from('groups')
           .select('id, name, senior_id')
           .eq('semester_id', semesterId)
           .order('name'),
         supabase.from('group_memberships')
           .select('group_id, user_id')
-          .eq('semester_id', semesterId)
+          .eq('semester_id', semesterId),
+        supabase.from('quiz_attempts')
+          .select('id, quiz_id, group_id, user_id, status, submitted_at, graded_at, score')
+          .in('status', ['submitted', 'graded'])
       ]);
 
       if (groupResult.error) throw groupResult.error;
       if (groupMemberResult.error) throw groupMemberResult.error;
+      if (attemptResult.error) throw attemptResult.error;
 
       const groups = groupResult.data || [];
       const groupMembers = groupMemberResult.data || [];
+      const attempts = attemptResult.data || [];
 
       if (!groups.length) {
         grid.innerHTML = '<div class="group-empty-state"><h2>No grading groups yet</h2><p>An Admin must create and assign groups before quizzes can be graded.</p></div>';
         return;
       }
 
+      const userIds = [...new Set(attempts.map(attempt => attempt.user_id))];
+      const quizIds = [...new Set(attempts.map(attempt => attempt.quiz_id))];
+      const [profileResult, quizResult] = await Promise.all([
+        userIds.length
+          ? supabase.from('profiles').select('id, email, first_name, last_name').in('id', userIds)
+          : Promise.resolve({ data: [], error: null }),
+        quizIds.length
+          ? supabase.from('quizzes').select('id, title, semester_id').eq('semester_id', semesterId).in('id', quizIds)
+          : Promise.resolve({ data: [], error: null })
+      ]);
+      if (profileResult.error) throw profileResult.error;
+      if (quizResult.error) throw quizResult.error;
+      const profiles = profileResult.data || [];
+      const quizzes = quizResult.data || [];
+
       grid.innerHTML = groups.map(group => {
         const count = groupMembers.filter(member => member.group_id === group.id).length;
+        const submissions = attempts
+          .filter(attempt => attempt.group_id === group.id && quizzes.some(quiz => quiz.id === attempt.quiz_id))
+          .sort((a, b) => new Date(b.submitted_at || 0) - new Date(a.submitted_at || 0));
         return '<article class="grading-card">' +
           '<div><span class="role-pill">' + esc(currentRole) + ' access</span>' +
           '<h2>' + esc(group.name) + '</h2>' +
           '<p>' + count + ' assigned member' + (count === 1 ? '' : 's') + '</p></div>' +
-          '<div class="grading-empty">' +
-            '<strong>No quiz submissions yet</strong>' +
-            '<span>This group is ready. Weekly quizzes and submission grading will appear here in the quiz phase.</span>' +
-          '</div>' +
+          (submissions.length ? '<div class="grading-submission-list">' + submissions.map(attempt => {
+            const profile = profiles.find(item => item.id === attempt.user_id);
+            const quiz = quizzes.find(item => item.id === attempt.quiz_id);
+            return '<a class="grading-submission" href="grade-quiz.html?id=' + attempt.id + '">' +
+              '<div><strong>' + esc(nameOf(profile)) + '</strong><span>' + esc(quiz?.title || 'Weekly quiz') +
+              ' · ' + esc(formatDate(attempt.submitted_at)) + '</span></div>' +
+              '<span class="grading-submission-status ' + attempt.status + '">' +
+              (attempt.status === 'graded' ? esc(attempt.score ?? 'Graded') : 'Grade') + '</span></a>';
+          }).join('') + '</div>' : '<div class="grading-empty"><strong>No submissions waiting</strong>' +
+            '<span>Submitted quizzes from this group will appear here.</span></div>') +
         '</article>';
       }).join('');
     }

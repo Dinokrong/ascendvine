@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AscendVine — Grade Quiz</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="account.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">AscendVine</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right account-nav"><a href="profile.html">Profile</a></div>
+  </nav>
+
+  <main class="quiz-taking-page grading-review-page">
+    <a class="quiz-back-link" href="grading.html">← Back to grading</a>
+    <header class="quiz-taking-header">
+      <div>
+        <div class="home-eyebrow">Submission review</div>
+        <h1 id="quiz-title">Loading submission…</h1>
+        <p id="student-name"></p>
+      </div>
+      <div class="quiz-save-state" id="grade-status">Loading…</div>
+    </header>
+
+    <div class="account-message" id="grading-message" role="status" aria-live="polite"></div>
+    <section id="grading-questions" class="quiz-question-list"></section>
+    <section id="grading-submit" class="grading-submit-card" hidden>
+      <label>Overall feedback
+        <textarea id="overall-feedback" rows="4" placeholder="Optional overall feedback for the member"></textarea>
+      </label>
+      <div>
+        <span id="score-preview">0 points awarded</span>
+        <button id="publish-grade" class="admin-action" type="button">Publish grade</button>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { supabase, requireApprovedUser } from './js/auth-client.js';
+
+    const attemptId = new URLSearchParams(window.location.search).get('id');
+    const title = document.getElementById('quiz-title');
+    const studentName = document.getElementById('student-name');
+    const status = document.getElementById('grade-status');
+    const message = document.getElementById('grading-message');
+    const questionsContainer = document.getElementById('grading-questions');
+    const submitCard = document.getElementById('grading-submit');
+    const overallFeedback = document.getElementById('overall-feedback');
+    const scorePreview = document.getElementById('score-preview');
+    const publishButton = document.getElementById('publish-grade');
+    let attempt;
+    let questions = [];
+
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showMessage(text, type = 'error') {
+      message.textContent = text;
+      message.className = 'account-message visible ' + type;
+    }
+
+    function nameOf(profile) {
+      return ((profile?.first_name || '') + ' ' + (profile?.last_name || '')).trim()
+        || profile?.email || 'AscendVine member';
+    }
+
+    function updateScorePreview() {
+      const awarded = [...questionsContainer.querySelectorAll('.grade-points')]
+        .reduce((sum, input) => sum + (Number(input.value) || 0), 0);
+      const possible = questions.reduce((sum, item) => sum + Number(item.max_points), 0);
+      scorePreview.textContent = awarded + ' / ' + possible + ' points';
+    }
+
+    async function loadSubmission() {
+      if (!attemptId) throw new Error('Choose a submission from the grading page.');
+      await requireApprovedUser();
+
+      const attemptResult = await supabase.from('quiz_attempts')
+        .select('id, quiz_id, user_id, group_id, status, submitted_at, score, overall_feedback')
+        .eq('id', attemptId)
+        .single();
+      if (attemptResult.error) throw attemptResult.error;
+      attempt = attemptResult.data;
+
+      const [quizResult, profileResult, questionResult, responseResult] = await Promise.all([
+        supabase.from('quizzes').select('title').eq('id', attempt.quiz_id).single(),
+        supabase.from('profiles').select('email, first_name, last_name').eq('id', attempt.user_id).single(),
+        supabase.from('quiz_questions')
+          .select('id, position, chapter, prompt, max_points')
+          .eq('quiz_id', attempt.quiz_id)
+          .order('position'),
+        supabase.from('quiz_responses')
+          .select('question_id, response_text, points_awarded, grader_feedback')
+          .eq('attempt_id', attempt.id)
+      ]);
+
+      for (const result of [quizResult, profileResult, questionResult, responseResult]) {
+        if (result.error) throw result.error;
+      }
+
+      questions = questionResult.data || [];
+      const responses = responseResult.data || [];
+      const keyResult = await supabase.from('quiz_answer_keys')
+        .select('question_id, answer_key')
+        .in('question_id', questions.map(question => question.id));
+      if (keyResult.error) throw keyResult.error;
+      const answerKeys = keyResult.data || [];
+
+      title.textContent = quizResult.data.title;
+      studentName.textContent = 'Submission from ' + nameOf(profileResult.data);
+      status.textContent = attempt.status === 'graded' ? 'Graded' : 'Awaiting grade';
+      status.className = 'quiz-save-state ' + (attempt.status === 'graded' ? 'saved' : 'saving');
+      overallFeedback.value = attempt.overall_feedback || '';
+
+      questionsContainer.innerHTML = questions.map(question => {
+        const response = responses.find(item => item.question_id === question.id) || {};
+        const key = answerKeys.find(item => item.question_id === question.id);
+        return '<article class="quiz-question-card grading-question" data-question="' + question.id + '">' +
+          '<div class="quiz-question-heading"><span>Question ' + esc(question.position) + '</span>' +
+          '<span>' + esc(question.max_points) + ' points possible</span></div>' +
+          (question.chapter ? '<div class="quiz-question-chapter">' + esc(question.chapter) + '</div>' : '') +
+          '<h2>' + esc(question.prompt) + '</h2>' +
+          '<div class="grading-comparison"><div><span>Member response</span><p>' + esc(response.response_text || 'No response') + '</p></div>' +
+          '<div class="answer-key-panel"><span>Protected answer key</span><p>' + esc(key?.answer_key || 'No answer key available') + '</p></div></div>' +
+          '<div class="grading-fields"><label>Points awarded<input class="grade-points" type="number" min="0" max="' +
+          esc(question.max_points) + '" step="0.25" value="' + esc(response.points_awarded ?? '') + '" required></label>' +
+          '<label>Question feedback<textarea class="grade-feedback" rows="3" placeholder="Optional feedback">' +
+          esc(response.grader_feedback || '') + '</textarea></label></div>' +
+          '</article>';
+      }).join('');
+
+      submitCard.hidden = false;
+      updateScorePreview();
+    }
+
+    questionsContainer.addEventListener('input', event => {
+      if (event.target.classList.contains('grade-points')) updateScorePreview();
+    });
+
+    publishButton.addEventListener('click', async () => {
+      try {
+        const grades = [...questionsContainer.querySelectorAll('.grading-question')].map(card => {
+          const pointsInput = card.querySelector('.grade-points');
+          if (pointsInput.value === '') throw new Error('Award points for every question before publishing.');
+          const points = Number(pointsInput.value);
+          if (points < 0 || points > Number(pointsInput.max)) {
+            throw new Error('Points must stay within each question maximum.');
+          }
+          return {
+            question_id: card.dataset.question,
+            points_awarded: points,
+            feedback: card.querySelector('.grade-feedback').value
+          };
+        });
+
+        if (!window.confirm('Publish this grade and feedback to the member?')) return;
+        publishButton.disabled = true;
+        publishButton.textContent = 'Publishing…';
+        const result = await supabase.rpc('grade_quiz_attempt', {
+          target_attempt: attempt.id,
+          response_grades: grades,
+          final_feedback: overallFeedback.value
+        });
+        if (result.error) throw result.error;
+        showMessage('Grade published. Final score: ' + result.data + '.', 'success');
+        status.textContent = 'Graded';
+        status.className = 'quiz-save-state saved';
+        publishButton.textContent = 'Update grade';
+        publishButton.disabled = false;
+      } catch (error) {
+        showMessage(error.message || 'Unable to publish this grade.');
+        publishButton.disabled = false;
+        publishButton.textContent = attempt?.status === 'graded' ? 'Update grade' : 'Publish grade';
+      }
+    });
+
+    try {
+      await loadSubmission();
+    } catch (error) {
+      title.textContent = 'Submission unavailable';
+      studentName.textContent = 'Return to the grading workspace and try again.';
+      status.textContent = '';
+      showMessage(error.message || 'Unable to load this submission.');
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

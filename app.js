@@ -33,6 +33,7 @@
         (takesQuizzes ? '<a href="quizzes.html">Quizzes</a>' : '') +
         (isSenior ? '<a href="quiz-release.html">Release</a>' : '') +
         (canGrade ? '<a href="grading.html">Grading</a>' : '') +
+        '<a href="quiz-leaderboard.html">Quiz standings</a>' +
         (isAdmin ? '<a href="quiz-admin.html">Quiz Admin</a>' : '') +
         (isAdmin ? '<a href="admin.html">Admin</a>' : '') +
         '<a href="profile.html">Profile</a>' +
