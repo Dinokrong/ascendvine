@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AscendVine — Quizzes</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="account.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">AscendVine</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right account-nav"><a href="profile.html">Profile</a></div>
+  </nav>
+
+  <main class="quiz-topic-page">
+    <header class="quiz-topic-header">
+      <div>
+        <div class="home-eyebrow">Weekly learning</div>
+        <h1>Your quizzes</h1>
+        <p>Select a released quiz to start or continue your work.</p>
+      </div>
+      <label class="admin-semester-picker">Semester<select id="semester-select"></select></label>
+    </header>
+
+    <div class="account-message" id="quiz-message" role="status" aria-live="polite"></div>
+    <section id="quiz-topic-list" class="quiz-topic-list"></section>
+  </main>
+
+  <script type="module">
+    import { supabase, requireApprovedUser } from './js/auth-client.js';
+
+    const ELIGIBLE_ROLES = ['associate', 'analyst'];
+    const semesterSelect = document.getElementById('semester-select');
+    const message = document.getElementById('quiz-message');
+    const list = document.getElementById('quiz-topic-list');
+    let user;
+
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showMessage(text) {
+      message.textContent = text;
+      message.className = 'account-message visible error';
+    }
+
+    function formatDate(value) {
+      if (!value) return 'No due date';
+      return 'Due ' + new Intl.DateTimeFormat(undefined, {
+        month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+      }).format(new Date(value));
+    }
+
+    async function loadSemesters() {
+      user = await requireApprovedUser();
+      const { data, error } = await supabase
+        .from('semester_memberships')
+        .select('semester_id, role, semesters(name)')
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      const eligible = (data || []).filter(item => ELIGIBLE_ROLES.includes(item.role));
+      if (!eligible.length) throw new Error('Only Associates and Analysts take weekly quizzes.');
+
+      semesterSelect.innerHTML = eligible.map(item =>
+        '<option value="' + item.semester_id + '">' + esc(item.semesters.name) + '</option>'
+      ).join('');
+    }
+
+    async function refresh() {
+      const semesterId = semesterSelect.value;
+      const releaseResult = await supabase
+        .from('quiz_group_releases')
+        .select('quiz_id, group_id, released_at, due_at');
+
+      if (releaseResult.error) throw releaseResult.error;
+      const releases = releaseResult.data || [];
+      const quizIds = [...new Set(releases.map(item => item.quiz_id))];
+
+      if (!quizIds.length) {
+        list.innerHTML = '<div class="group-empty-state"><h2>No quizzes released yet</h2><p>Your Senior will push each weekly quiz when your group is ready.</p></div>';
+        return;
+      }
+
+      const [quizResult, attemptResult] = await Promise.all([
+        supabase.from('quizzes')
+          .select('id, title, description, status')
+          .eq('semester_id', semesterId)
+          .in('id', quizIds),
+        supabase.from('quiz_attempts')
+          .select('id, quiz_id, status, score, submitted_at')
+          .eq('user_id', user.id)
+      ]);
+
+      if (quizResult.error) throw quizResult.error;
+      if (attemptResult.error) throw attemptResult.error;
+      const quizzes = quizResult.data || [];
+      const attempts = attemptResult.data || [];
+
+      list.innerHTML = releases.map((release, index) => {
+        const quiz = quizzes.find(item => item.id === release.quiz_id);
+        if (!quiz) return '';
+        const attempt = attempts.find(item => item.quiz_id === quiz.id);
+        const expired = release.due_at && new Date(release.due_at) < new Date() && !attempt;
+        let action = '<a class="quiz-card-action" href="quiz.html?id=' + quiz.id + '">Start</a>';
+        let status = 'Available';
+
+        if (expired) {
+          action = '<span class="quiz-card-action disabled">Closed</span>';
+          status = 'Past due';
+        } else if (attempt?.status === 'in_progress') {
+          action = '<a class="quiz-card-action" href="quiz.html?id=' + quiz.id + '">Continue</a>';
+          status = 'In progress';
+        } else if (attempt?.status === 'submitted') {
+          action = '<span class="quiz-card-action disabled">Submitted</span>';
+          status = 'Awaiting grade';
+        } else if (attempt?.status === 'graded') {
+          action = '<a class="quiz-card-action" href="quiz.html?id=' + quiz.id + '">View result</a>';
+          status = attempt.score == null ? 'Graded' : 'Score: ' + attempt.score;
+        }
+
+        return '<article class="quiz-topic-card">' +
+          '<div class="quiz-topic-copy"><span class="quiz-card-index">' + (index + 1) + '</span>' +
+          '<div><div class="quiz-card-meta"><span>' + esc(status) + '</span><span>' + esc(formatDate(release.due_at)) + '</span></div>' +
+          '<h2>' + esc(quiz.title) + '</h2><p>' + esc(quiz.description || 'Weekly open-response quiz') + '</p></div></div>' +
+          action + '</article>';
+      }).join('');
+    }
+
+    semesterSelect.addEventListener('change', () => refresh().catch(error => showMessage(error.message)));
+
+    try {
+      await loadSemesters();
+      await refresh();
+    } catch (error) {
+      showMessage(error.message || 'Unable to load quizzes.');
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
