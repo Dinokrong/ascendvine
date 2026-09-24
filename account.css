@@ -211,3 +211,133 @@
     gap: 0;
   }
 }
+
+
+.account-nav {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.account-nav a {
+  color: var(--account-muted);
+  font-size: .84rem;
+}
+
+.admin-page {
+  width: min(1120px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 3.5rem 0 5rem;
+}
+
+.admin-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.admin-header h1 {
+  margin: .35rem 0;
+  font-size: clamp(2rem, 4vw, 3.4rem);
+  letter-spacing: -.05em;
+}
+
+.admin-header p {
+  max-width: 650px;
+  color: var(--account-muted);
+  line-height: 1.55;
+}
+
+.admin-semester-picker {
+  display: grid;
+  gap: .4rem;
+  min-width: 210px;
+  color: var(--account-muted);
+  font-size: .72rem;
+  font-weight: 600;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.admin-semester-picker select,
+.admin-member select {
+  border: 1px solid var(--account-border);
+  border-radius: 5px;
+  padding: .68rem;
+  background: white;
+  color: var(--account-text);
+}
+
+.admin-section {
+  margin-top: 2rem;
+}
+
+.admin-section h2 {
+  margin-bottom: .75rem;
+  font-size: 1rem;
+}
+
+.admin-list {
+  overflow: hidden;
+  border: 1px solid var(--account-border);
+  border-radius: 7px;
+  background: var(--account-card);
+}
+
+.admin-member {
+  display: grid;
+  grid-template-columns: minmax(230px, 1fr) 180px 180px 110px;
+  align-items: center;
+  gap: .75rem;
+  padding: .9rem 1rem;
+  border-bottom: 1px solid var(--account-border);
+}
+
+.admin-member:last-child {
+  border-bottom: 0;
+}
+
+.admin-member div {
+  display: grid;
+  gap: .18rem;
+}
+
+.admin-member span {
+  color: var(--account-muted);
+  font-size: .8rem;
+}
+
+.admin-action {
+  border: 0;
+  border-radius: 5px;
+  padding: .7rem;
+  background: var(--account-text);
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.admin-action.secondary {
+  border: 1px solid var(--account-border);
+  background: transparent;
+  color: var(--account-text);
+}
+
+.admin-assignment-note,
+.admin-empty {
+  padding: .95rem 1rem;
+  color: var(--account-muted);
+  font-size: .84rem;
+}
+
+@media (max-width: 760px) {
+  .admin-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .admin-member {
+    grid-template-columns: 1fr;
+  }
+}
