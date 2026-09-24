@@ -22,8 +22,8 @@ members; Seniors lead groups.
 
 1. Create a Supabase project.
 2. Open the SQL editor and run `supabase/schema.sql`.
-3. For an existing account installation, run `supabase/groups.sql` once to add
-   named groups and group-scoped permissions.
+3. Run `supabase/groups.sql` once after the base schema to add named groups
+   and group-scoped permissions.
 4. Under Authentication, enable email/password accounts.
 5. Require email confirmation.
 6. Set the production Site URL to the deployed AscendVine URL.
