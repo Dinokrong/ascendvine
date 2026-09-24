@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AscendVine — Take Quiz</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="account.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">AscendVine</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right account-nav"><a href="profile.html">Profile</a></div>
+  </nav>
+
+  <main class="quiz-taking-page">
+    <a class="quiz-back-link" href="quizzes.html">← Back to quizzes</a>
+    <header class="quiz-taking-header">
+      <div>
+        <div class="home-eyebrow">Weekly quiz</div>
+        <h1 id="quiz-title">Loading quiz…</h1>
+        <p id="quiz-description">Your work saves as you move between questions.</p>
+      </div>
+      <div class="quiz-save-state" id="save-state" aria-live="polite">Loading…</div>
+    </header>
+
+    <div class="account-message" id="quiz-message" role="status" aria-live="polite"></div>
+    <section id="quiz-questions" class="quiz-question-list"></section>
+    <div id="quiz-submit-bar" class="quiz-submit-bar" hidden>
+      <div><strong>Ready to turn it in?</strong><span>Submission locks your answers for grading.</span></div>
+      <button id="submit-quiz" class="admin-action" type="button">Submit quiz</button>
+    </div>
+  </main>
+
+  <script type="module">
+    import { supabase, requireApprovedUser } from './js/auth-client.js';
+
+    const quizId = new URLSearchParams(window.location.search).get('id');
+    const title = document.getElementById('quiz-title');
+    const description = document.getElementById('quiz-description');
+    const questionsContainer = document.getElementById('quiz-questions');
+    const message = document.getElementById('quiz-message');
+    const saveState = document.getElementById('save-state');
+    const submitBar = document.getElementById('quiz-submit-bar');
+    const submitButton = document.getElementById('submit-quiz');
+    let attempt;
+    let saveQueue = Promise.resolve();
+    const saveTimers = new Map();
+
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showMessage(text, type = 'error') {
+      message.textContent = text;
+      message.className = 'account-message visible ' + type;
+    }
+
+    function setSaveState(text, state = '') {
+      saveState.textContent = text;
+      saveState.className = 'quiz-save-state' + (state ? ' ' + state : '');
+    }
+
+    function formatDate(value) {
+      if (!value) return '';
+      return new Intl.DateTimeFormat(undefined, {
+        month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
+      }).format(new Date(value));
+    }
+
+    function queueSave(questionId, value) {
+      setSaveState('Saving…', 'saving');
+      saveQueue = saveQueue.then(async () => {
+        const result = await supabase.rpc('save_quiz_response', {
+          target_attempt: attempt.id,
+          target_question: questionId,
+          answer_text: value
+        });
+        if (result.error) throw result.error;
+        setSaveState('All changes saved', 'saved');
+      }).catch(error => {
+        setSaveState('Save failed', 'error');
+        showMessage(error.message || 'One of your answers could not be saved.');
+      });
+      return saveQueue;
+    }
+
+    function scheduleSave(textarea) {
+      const questionId = textarea.dataset.question;
+      window.clearTimeout(saveTimers.get(questionId));
+      setSaveState('Unsaved changes', 'saving');
+      saveTimers.set(questionId, window.setTimeout(() => {
+        saveTimers.delete(questionId);
+        queueSave(questionId, textarea.value);
+      }, 650));
+    }
+
+    async function flushPendingSaves() {
+      for (const [questionId, timer] of saveTimers) {
+        window.clearTimeout(timer);
+        saveTimers.delete(questionId);
+        const textarea = questionsContainer.querySelector('[data-question="' + questionId + '"]');
+        if (textarea) await queueSave(questionId, textarea.value);
+      }
+      await saveQueue;
+    }
+
+    async function loadQuiz() {
+      if (!quizId) throw new Error('Choose a quiz from your quiz list.');
+      const user = await requireApprovedUser();
+      if (!user) return;
+
+      const attemptResult = await supabase.rpc('start_quiz_attempt', { target_quiz: quizId });
+      if (attemptResult.error) throw attemptResult.error;
+
+      const [quizResult, questionResult, currentAttemptResult] = await Promise.all([
+        supabase.from('quizzes')
+          .select('id, title, description')
+          .eq('id', quizId)
+          .single(),
+        supabase.from('quiz_questions')
+          .select('id, position, chapter, prompt, max_points')
+          .eq('quiz_id', quizId)
+          .order('position'),
+        supabase.from('quiz_attempts')
+          .select('id, status, submitted_at, graded_at, score, overall_feedback')
+          .eq('id', attemptResult.data)
+          .single()
+      ]);
+
+      for (const result of [quizResult, questionResult, currentAttemptResult]) {
+        if (result.error) throw result.error;
+      }
+
+      attempt = currentAttemptResult.data;
+      const responseResult = await supabase.from('quiz_responses')
+        .select('question_id, response_text, points_awarded, grader_feedback')
+        .eq('attempt_id', attempt.id);
+      if (responseResult.error) throw responseResult.error;
+
+      const quiz = quizResult.data;
+      const questions = questionResult.data || [];
+      const responses = responseResult.data || [];
+      const editable = attempt.status === 'in_progress';
+      title.textContent = quiz.title;
+      document.title = 'AscendVine — ' + quiz.title;
+      description.textContent = quiz.description || 'Answer every question, then submit your quiz for grading.';
+
+      if (!questions.length) throw new Error('This quiz does not contain any questions yet.');
+
+      questionsContainer.innerHTML = questions.map(question => {
+        const response = responses.find(item => item.question_id === question.id) || {};
+        const feedback = attempt.status === 'graded' && (response.points_awarded != null || response.grader_feedback)
+          ? '<div class="quiz-question-feedback"><strong>' + esc(response.points_awarded ?? 0) + ' / ' + esc(question.max_points) + ' points</strong>' +
+            (response.grader_feedback ? '<p>' + esc(response.grader_feedback) + '</p>' : '') + '</div>'
+          : '';
+        return '<article class="quiz-question-card">' +
+          '<div class="quiz-question-heading"><span>Question ' + esc(question.position) + '</span>' +
+          '<span>' + esc(question.max_points) + ' point' + (Number(question.max_points) === 1 ? '' : 's') + '</span></div>' +
+          (question.chapter ? '<div class="quiz-question-chapter">' + esc(question.chapter) + '</div>' : '') +
+          '<h2>' + esc(question.prompt) + '</h2>' +
+          '<label>Your answer<textarea data-question="' + question.id + '" rows="7"' +
+          (editable ? '' : ' disabled') + '>' + esc(response.response_text || '') + '</textarea></label>' +
+          feedback + '</article>';
+      }).join('');
+
+      if (editable) {
+        setSaveState('All changes saved', 'saved');
+        submitBar.hidden = false;
+      } else if (attempt.status === 'submitted') {
+        setSaveState('Submitted ' + formatDate(attempt.submitted_at), 'submitted');
+        showMessage('Your quiz is submitted and waiting for a Senior or VP to grade it.', 'success');
+      } else {
+        setSaveState('Graded ' + formatDate(attempt.graded_at), 'submitted');
+        const scoreText = attempt.score == null ? 'Your quiz has been graded.' : 'Final score: ' + attempt.score;
+        showMessage(scoreText + (attempt.overall_feedback ? ' — ' + attempt.overall_feedback : ''), 'success');
+      }
+    }
+
+    questionsContainer.addEventListener('input', event => {
+      if (event.target.matches('textarea[data-question]') && attempt?.status === 'in_progress') {
+        scheduleSave(event.target);
+      }
+    });
+
+    questionsContainer.addEventListener('focusout', event => {
+      if (!event.target.matches('textarea[data-question]') || attempt?.status !== 'in_progress') return;
+      const questionId = event.target.dataset.question;
+      window.clearTimeout(saveTimers.get(questionId));
+      saveTimers.delete(questionId);
+      queueSave(questionId, event.target.value);
+    });
+
+    submitButton.addEventListener('click', async () => {
+      if (!window.confirm('Submit this quiz? You will not be able to edit your answers afterward.')) return;
+      try {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Submitting…';
+        await flushPendingSaves();
+        const result = await supabase.rpc('submit_quiz_attempt', { target_attempt: attempt.id });
+        if (result.error) throw result.error;
+        window.location.reload();
+      } catch (error) {
+        showMessage(error.message || 'Unable to submit this quiz.');
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit quiz';
+      }
+    });
+
+    try {
+      await loadQuiz();
+    } catch (error) {
+      title.textContent = 'Quiz unavailable';
+      description.textContent = 'Return to your quiz list and try again.';
+      setSaveState('');
+      showMessage(error.message || 'Unable to open this quiz.');
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AscendVine — Release Quizzes</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="account.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">AscendVine</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right account-nav"><a href="profile.html">Profile</a></div>
+  </nav>
+
+  <main class="quiz-topic-page">
+    <header class="quiz-topic-header">
+      <div>
+        <div class="home-eyebrow">Senior workspace</div>
+        <h1>Release quizzes</h1>
+        <p>Choose a ready quiz and push it to one of your groups.</p>
+      </div>
+      <label class="admin-semester-picker">Semester<select id="semester-select"></select></label>
+    </header>
+
+    <div class="account-message" id="release-message" role="status" aria-live="polite"></div>
+    <section id="release-list" class="quiz-topic-list"></section>
+  </main>
+
+  <script type="module">
+    import { supabase, requireApprovedUser } from './js/auth-client.js';
+
+    const semesterSelect = document.getElementById('semester-select');
+    const message = document.getElementById('release-message');
+    const list = document.getElementById('release-list');
+    let user;
+    let groups = [];
+    let releases = [];
+
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showMessage(text, type = 'error') {
+      message.textContent = text;
+      message.className = 'account-message visible ' + type;
+    }
+
+    function localDateValue(date) {
+      if (!date) return '';
+      const value = new Date(date);
+      const offset = value.getTimezoneOffset();
+      return new Date(value.getTime() - offset * 60000).toISOString().slice(0, 16);
+    }
+
+    async function loadSemesters() {
+      user = await requireApprovedUser();
+      const { data, error } = await supabase
+        .from('semester_memberships')
+        .select('semester_id, role, semesters(name)')
+        .eq('user_id', user.id)
+        .eq('role', 'senior');
+
+      if (error) throw error;
+      if (!data?.length) throw new Error('Quiz release is available only to Seniors.');
+
+      semesterSelect.innerHTML = data.map(item =>
+        '<option value="' + item.semester_id + '">' + esc(item.semesters.name) + '</option>'
+      ).join('');
+    }
+
+    async function refresh() {
+      const semesterId = semesterSelect.value;
+      const [groupResult, quizResult, releaseResult] = await Promise.all([
+        supabase.from('groups')
+          .select('id, name, senior_id')
+          .eq('semester_id', semesterId)
+          .eq('senior_id', user.id)
+          .order('name'),
+        supabase.from('quizzes')
+          .select('id, title, description, status, updated_at')
+          .eq('semester_id', semesterId)
+          .eq('status', 'ready')
+          .order('updated_at', { ascending: false }),
+        supabase.from('quiz_group_releases')
+          .select('id, quiz_id, group_id, released_at, due_at')
+      ]);
+
+      for (const result of [groupResult, quizResult, releaseResult]) if (result.error) throw result.error;
+      groups = groupResult.data || [];
+      const quizzes = quizResult.data || [];
+      releases = releaseResult.data || [];
+
+      if (!groups.length) {
+        list.innerHTML = '<div class="group-empty-state"><h2>No groups assigned</h2><p>An Admin must assign you as the Senior for a group before you can release quizzes.</p></div>';
+        return;
+      }
+
+      if (!quizzes.length) {
+        list.innerHTML = '<div class="group-empty-state"><h2>No quizzes ready</h2><p>An Admin must upload a quiz and mark it ready before it appears here.</p></div>';
+        return;
+      }
+
+      const groupOptions = groups.map(group =>
+        '<option value="' + group.id + '">' + esc(group.name) + '</option>'
+      ).join('');
+
+      list.innerHTML = quizzes.map((quiz, index) => {
+        const selectedGroup = groups[0];
+        const release = releases.find(item => item.quiz_id === quiz.id && item.group_id === selectedGroup.id);
+        return '<article class="quiz-topic-card" data-quiz="' + quiz.id + '">' +
+          '<div class="quiz-topic-copy"><span class="quiz-card-index">Q' + (index + 1) + '</span>' +
+          '<div><h2>' + esc(quiz.title) + '</h2><p>' + esc(quiz.description || 'Ready for group release') + '</p></div></div>' +
+          '<div class="quiz-release-controls">' +
+            '<select class="release-group" aria-label="Group">' + groupOptions + '</select>' +
+            '<input class="release-due" type="datetime-local" aria-label="Due date"' +
+              (release?.due_at ? ' value="' + localDateValue(release.due_at) + '"' : '') + '>' +
+            '<button class="quiz-card-action release-quiz" type="button">' +
+              (release ? 'Update push' : 'Push') + '</button>' +
+          '</div>' +
+        '</article>';
+      }).join('');
+    }
+
+    list.addEventListener('change', event => {
+      if (!event.target.classList.contains('release-group')) return;
+      const card = event.target.closest('.quiz-topic-card');
+      const release = releases.find(item =>
+        item.quiz_id === card.dataset.quiz && item.group_id === event.target.value
+      );
+      card.querySelector('.release-due').value = localDateValue(release?.due_at);
+      card.querySelector('.release-quiz').textContent = release ? 'Update push' : 'Push';
+    });
+
+    list.addEventListener('click', async event => {
+      if (!event.target.classList.contains('release-quiz')) return;
+      const card = event.target.closest('.quiz-topic-card');
+      const groupId = card.querySelector('.release-group').value;
+      const dueValue = card.querySelector('.release-due').value;
+
+      try {
+        event.target.disabled = true;
+        const result = await supabase.rpc('senior_release_quiz', {
+          target_quiz: card.dataset.quiz,
+          target_group: groupId,
+          target_due_at: dueValue ? new Date(dueValue).toISOString() : null
+        });
+        if (result.error) throw result.error;
+        const group = groups.find(item => item.id === groupId);
+        showMessage('Quiz pushed to ' + group.name + '.', 'success');
+        await refresh();
+      } catch (error) {
+        showMessage(error.message || 'Unable to release this quiz.');
+        event.target.disabled = false;
+      }
+    });
+
+    semesterSelect.addEventListener('change', () => refresh().catch(error => showMessage(error.message)));
+
+    try {
+      await loadSemesters();
+      await refresh();
+    } catch (error) {
+      showMessage(error.message || 'Unable to load quiz releases.');
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
