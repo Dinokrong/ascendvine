@@ -162,11 +162,12 @@
       }
 
       container.innerHTML = pending.map(profile =>
-        '<article class="admin-member pending-row" data-user="' + profile.id + '">' +
+        '<article class="admin-member pending-row" data-user="' + profile.id + '" data-email="' + esc(profile.email) + '">' +
           '<div><strong>' + esc(displayName(profile)) + '</strong><span>' + esc(profile.email) + '</span></div>' +
           '<select class="pending-role">' + roleOptions('analyst') + '</select>' +
           '<button class="admin-action approve-account" type="button">Approve</button>' +
           '<button class="admin-action reject-account secondary" type="button">Reject</button>' +
+          '<button class="admin-action delete-account danger" type="button">Delete</button>' +
         '</article>'
       ).join('');
     }
@@ -219,7 +220,7 @@
           esc(group.name) + '</option>'
         ).join('');
 
-        return '<article class="admin-member roster-row" data-user="' + profile.id + '">' +
+        return '<article class="admin-member roster-row" data-user="' + profile.id + '" data-email="' + esc(profile.email) + '">' +
           '<div><strong>' + esc(displayName(profile)) + '</strong><span>' + esc(profile.email) + '</span></div>' +
           '<select class="roster-role">' + roleOptions(membership.role) + '</select>' +
           (groupEligible
@@ -227,6 +228,7 @@
             : '<span class="admin-assignment-note">' +
                 (membership.role === 'senior' ? 'Leads groups selected above' : 'No group assignment required') +
               '</span>') +
+          '<button class="admin-action delete-account danger" type="button">Delete</button>' +
         '</article>';
       }).join('');
     }
@@ -277,6 +279,21 @@
       }
     });
 
+    async function permanentlyDeleteAccount(row) {
+      const email = row.dataset.email || 'this account';
+      const confirmation = window.prompt(
+        'Permanently delete ' + email + '? This removes the login, profile, role, and group membership. Type DELETE to continue.'
+      );
+      if (confirmation !== 'DELETE') return false;
+
+      const result = await supabase.rpc('admin_delete_account', {
+        target_user: row.dataset.user
+      });
+      if (result.error) throw result.error;
+      showMessage('Account permanently deleted.', 'success');
+      return true;
+    }
+
     document.getElementById('pending-list').addEventListener('click', async event => {
       const row = event.target.closest('.admin-member');
       if (!row) return;
@@ -297,12 +314,26 @@
           });
           if (result.error) throw result.error;
           showMessage('Account request rejected.', 'success');
+        } else if (event.target.classList.contains('delete-account')) {
+          if (!await permanentlyDeleteAccount(row)) return;
         } else {
           return;
         }
         await refresh();
       } catch (error) {
         showMessage(error.message || 'Unable to update this account.');
+      }
+    });
+
+    document.getElementById('roster-list').addEventListener('click', async event => {
+      if (!event.target.classList.contains('delete-account')) return;
+      const row = event.target.closest('.admin-member');
+      if (!row) return;
+
+      try {
+        if (await permanentlyDeleteAccount(row)) await refresh();
+      } catch (error) {
+        showMessage(error.message || 'Unable to delete this account.');
       }
     });
 

@@ -441,8 +441,22 @@
   background: var(--account-card);
 }
 
+.pending-row {
+  grid-template-columns: minmax(230px, 1fr) 170px 100px 100px 100px;
+}
+
 .roster-row {
-  grid-template-columns: minmax(230px, 1fr) 180px 240px;
+  grid-template-columns: minmax(230px, 1fr) 170px 220px 100px;
+}
+
+.admin-action.danger {
+  border: 1px solid #d9aaa2;
+  background: #fff4f1;
+  color: var(--account-danger);
+}
+
+.admin-action.danger:hover {
+  background: #f9e5e1;
 }
 
 .group-directory-header {
