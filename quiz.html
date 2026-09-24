@@ -31,6 +31,7 @@
     </header>
 
     <div class="account-message" id="quiz-message" role="status" aria-live="polite"></div>
+    <section class="quiz-result-summary" id="quiz-result" hidden></section>
     <section id="quiz-questions" class="quiz-question-list"></section>
     <div id="quiz-submit-bar" class="quiz-submit-bar" hidden>
       <div><strong>Ready to turn it in?</strong><span>Submission locks your answers for grading.</span></div>
@@ -132,7 +133,7 @@
           .eq('quiz_id', quizId)
           .order('position'),
         supabase.from('quiz_attempts')
-          .select('id, status, submitted_at, graded_at, score, overall_feedback')
+          .select('id, status, submitted_at, graded_at, graded_by, score, overall_feedback')
           .eq('id', attemptResult.data)
           .single()
       ]);
@@ -157,6 +158,52 @@
 
       if (!questions.length) throw new Error('This quiz does not contain any questions yet.');
 
+      // Once graded, show the correct answers and who graded it.
+      let answerKeys = [];
+      let graderName = '';
+      if (attempt.status === 'graded') {
+        const [keyResult, graderResult] = await Promise.all([
+          supabase.from('quiz_answer_keys')
+            .select('question_id, answer_key')
+            .in('question_id', questions.map(question => question.id)),
+          attempt.graded_by
+            ? supabase.from('profiles').select('first_name, last_name').eq('id', attempt.graded_by).maybeSingle()
+            : Promise.resolve({ data: null })
+        ]);
+        answerKeys = keyResult.error ? [] : keyResult.data || [];
+        graderName = [graderResult.data?.first_name, graderResult.data?.last_name].filter(Boolean).join(' ');
+      }
+
+      if (attempt.status === 'graded') {
+        questionsContainer.innerHTML = questions.map(question => {
+          const response = responses.find(item => item.question_id === question.id) || {};
+          const key = answerKeys.find(item => item.question_id === question.id);
+          return '<article class="quiz-question-card">' +
+            '<div class="quiz-question-heading"><span>Question ' + esc(question.position) + '</span>' +
+            '<span>' + esc(response.points_awarded ?? 0) + ' / ' + esc(question.max_points) + ' point' + (Number(question.max_points) === 1 ? '' : 's') + '</span></div>' +
+            (question.chapter ? '<div class="quiz-question-chapter">' + esc(question.chapter) + '</div>' : '') +
+            '<h2>' + esc(question.prompt) + '</h2>' +
+            '<div class="grading-comparison">' +
+              '<div><span>Your answer</span><p>' + esc(response.response_text || 'No answer') + '</p></div>' +
+              '<div class="answer-key-panel"><span>Correct answer</span><p>' + esc(key?.answer_key || 'Not available') + '</p></div>' +
+            '</div>' +
+            (response.grader_feedback
+              ? '<div class="quiz-question-feedback"><strong>Comment from ' + esc(graderName || 'your grader') + '</strong><p>' + esc(response.grader_feedback) + '</p></div>'
+              : '') +
+            '</article>';
+        }).join('');
+
+        const possible = questions.reduce((sum, question) => sum + Number(question.max_points), 0);
+        const result = document.getElementById('quiz-result');
+        result.innerHTML =
+          '<div class="quiz-result-score"><span>Your score</span><strong>' + esc(attempt.score ?? 0) + ' / ' + esc(possible) + '</strong></div>' +
+          '<div class="quiz-result-comment"><span>' + (graderName ? 'Graded by ' + esc(graderName) : 'Graded') + ' · ' + esc(formatDate(attempt.graded_at)) + '</span>' +
+          (attempt.overall_feedback ? '<p>' + esc(attempt.overall_feedback) + '</p>' : '<p class="quiz-result-empty">No overall comment.</p>') + '</div>';
+        result.hidden = false;
+        setSaveState('Graded ' + formatDate(attempt.graded_at), 'submitted');
+        return;
+      }
+
       questionsContainer.innerHTML = questions.map(question => {
         const response = responses.find(item => item.question_id === question.id) || {};
         const feedback = attempt.status === 'graded' && (response.points_awarded != null || response.grader_feedback)
@@ -180,10 +227,6 @@
       } else if (attempt.status === 'submitted') {
         setSaveState('Submitted ' + formatDate(attempt.submitted_at), 'submitted');
         showMessage('Your quiz is submitted and waiting for a Senior or Vice President to grade it.', 'success');
-      } else {
-        setSaveState('Graded ' + formatDate(attempt.graded_at), 'submitted');
-        const scoreText = attempt.score == null ? 'Your quiz has been graded.' : 'Final score: ' + attempt.score;
-        showMessage(scoreText + (attempt.overall_feedback ? ' — ' + attempt.overall_feedback : ''), 'success');
       }
     }
 
