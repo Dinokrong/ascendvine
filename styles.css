@@ -1002,99 +1002,88 @@ a { text-decoration: none; }
   color: var(--text);
 }
 
-/* Role badge with a menu of role-only pages */
-.role-menu {
+/* Dropdown nav items: hover (or tap on phones) shows their links below. */
+.nav-menu {
   position: relative;
 }
 
-.role-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: .4rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: .28rem .7rem;
-  background: var(--bg-card);
-  color: var(--text);
+.nav-menu-trigger,
+.account-nav .nav-sign-out {
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--text-muted);
   cursor: pointer;
   font: inherit;
-  font-size: .72rem;
-  font-weight: 600;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-  transition: border-color .15s, background .15s;
+  font-size: .84rem;
+  letter-spacing: .01em;
+  transition: color .15s, border-color .15s;
 }
 
-.role-badge.active,
-.role-badge:hover,
-.role-menu.open .role-badge {
-  border-color: var(--orange);
-  background: var(--orange-tint);
-}
-
-.role-caret {
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-top: 5px solid currentColor;
-  transition: transform .15s;
-}
-
-.role-menu:hover .role-caret,
-.role-menu.open .role-caret {
-  transform: rotate(180deg);
+.nav-menu-trigger:hover,
+.nav-menu-trigger.active,
+.nav-menu.open .nav-menu-trigger,
+.nav-menu:hover .nav-menu-trigger,
+.account-nav .nav-sign-out:hover {
+  color: var(--text);
+  border-bottom-color: var(--text);
 }
 
 /* The top padding bridges the gap so the menu stays open while the pointer
-   moves from the badge down to it. */
-.role-menu-panel {
+   moves down to it. */
+.nav-menu-panel {
   display: none;
   position: absolute;
   top: 100%;
-  right: 0;
+  left: 0;
   z-index: 110;
-  min-width: 190px;
-  padding-top: .5rem;
+  min-width: 180px;
+  padding-top: .55rem;
 }
 
-.role-menu:hover .role-menu-panel,
-.role-menu:focus-within .role-menu-panel,
-.role-menu.open .role-menu-panel {
+.nav-right .nav-menu-panel {
+  left: auto;
+  right: 0;
+}
+
+.nav-menu:hover .nav-menu-panel,
+.nav-menu:focus-within .nav-menu-panel,
+.nav-menu.open .nav-menu-panel {
   display: flex;
   flex-direction: column;
 }
 
-.role-menu-panel::before {
+.nav-menu-panel::before {
   content: '';
   position: absolute;
-  inset: .5rem 0 0;
+  inset: .55rem 0 0;
   z-index: -1;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 6px;
   background: var(--bg-card);
-  box-shadow: 0 10px 28px rgba(17, 17, 17, .1);
+  box-shadow: 0 10px 28px rgba(17, 17, 17, .08);
 }
 
-.account-nav .role-menu-panel a {
-  padding: .6rem .95rem;
+.nav-center .nav-menu-panel a,
+.account-nav .nav-menu-panel a {
+  border: 0;
+  padding: .55rem .95rem;
   color: var(--text-muted);
   font-size: .82rem;
   white-space: nowrap;
+  text-underline-offset: 4px;
 }
 
-.account-nav .role-menu-panel a:first-child {
-  margin-top: .3rem;
-}
+.nav-menu-panel a:first-child { margin-top: .35rem; }
+.nav-menu-panel a:last-child { margin-bottom: .35rem; }
 
-.account-nav .role-menu-panel a:last-child {
-  margin-bottom: .3rem;
-}
-
-.account-nav .role-menu-panel a:hover,
-.account-nav .role-menu-panel a.active {
-  background: var(--orange-tint);
+.nav-center .nav-menu-panel a:hover,
+.nav-center .nav-menu-panel a.active,
+.account-nav .nav-menu-panel a:hover,
+.account-nav .nav-menu-panel a.active {
   color: var(--text);
+  text-decoration: underline;
 }
 
 /* Phones: logo and account on the first row, page links on the second. */

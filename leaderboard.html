@@ -29,8 +29,8 @@
     </header>
 
     <div class="leaderboard-tabs" role="tablist" aria-label="Leaderboard">
-      <button type="button" role="tab" data-board="quiz">Quizzes</button>
-      <button type="button" role="tab" data-board="practice">Practice</button>
+      <button type="button" role="tab" data-board="quiz">Quiz Scores</button>
+      <button type="button" role="tab" data-board="practice">Study Time</button>
     </div>
 
     <div class="account-message" id="leaderboard-message" role="status" aria-live="polite"></div>
@@ -83,6 +83,10 @@
         .replace(/'/g, '&#039;');
     }
 
+    function roleLabel(role) {
+      return role ? role.charAt(0).toUpperCase() + role.slice(1) : '';
+    }
+
     function formatDuration(seconds) {
       const minutes = Math.floor(Number(seconds || 0) / 60);
       const hours = Math.floor(minutes / 60);
@@ -129,7 +133,7 @@
         '<div class="leaderboard-row' + (Number(member.rank) <= 3 ? ' top-three' : '') + '">' +
           '<strong class="leaderboard-rank">' + esc(member.rank) + '</strong>' +
           '<div class="leaderboard-person"><strong>' + esc(member.display_name) + '</strong>' +
-          '<span>' + esc(member.role) + '</span></div>' +
+          '<span>' + esc(roleLabel(member.role)) + (member.group_name ? ' · ' + esc(member.group_name) : ' · No group yet') + '</span></div>' +
           config.cells(member).map(cell => '<span>' + cell + '</span>').join('') +
         '</div>'
       ).join('');

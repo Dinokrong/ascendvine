@@ -15,70 +15,92 @@
 
       document.documentElement.style.visibility = '';
 
+      var memberships = await auth.getMyMemberships();
+      var roles = memberships.map(function(item) { return item.role; });
+      function has(role) { return roles.indexOf(role) !== -1; }
+      var board = new URLSearchParams(window.location.search).get('board') === 'practice' ? 'practice' : 'quiz';
+
+      // A nav item that shows its links underneath on hover (or tap on phones).
+      function navMenu(label, links) {
+        var isActive = links.some(function(link) { return link.active; });
+        return '<div class="nav-menu">' +
+          '<button type="button" class="nav-menu-trigger' + (isActive ? ' active' : '') + '" aria-haspopup="true" aria-expanded="false">' +
+            label + '</button>' +
+          '<div class="nav-menu-panel">' +
+            links.map(function(link) {
+              return '<a href="' + link.href + '"' + (link.active ? ' class="active"' : '') + '>' + link.label + '</a>';
+            }).join('') +
+          '</div>' +
+        '</div>';
+      }
+      function link(href, label, active) {
+        return { href: href, label: label, active: active === undefined ? page === href : active };
+      }
+
       // Pages every member uses sit in the center, next to Question Bank.
       var navCenter = document.querySelector('.nav-center');
-      if (navCenter && !navCenter.querySelector('a[href="leaderboard.html"]')) {
-        var leaderboardLink = document.createElement('a');
-        leaderboardLink.href = 'leaderboard.html';
-        leaderboardLink.textContent = 'Leaderboard';
-        if (page === 'leaderboard.html') leaderboardLink.classList.add('active');
-        navCenter.appendChild(leaderboardLink);
+      if (navCenter && !navCenter.querySelector('.nav-menu')) {
+        navCenter.insertAdjacentHTML('beforeend', navMenu('Leaderboard', [
+          link('leaderboard.html?board=quiz', 'Quiz Scores', page === 'leaderboard.html' && board === 'quiz'),
+          link('leaderboard.html?board=practice', 'Study Time', page === 'leaderboard.html' && board === 'practice')
+        ]));
       }
 
       var navRight = document.querySelector('.nav-right');
       if (!navRight) return;
 
-      var memberships = await auth.getMyMemberships();
-      var roles = memberships.map(function(item) { return item.role; });
-      function has(role) { return roles.indexOf(role) !== -1; }
-
-      // Role-only pages live in a menu under the member's role badge.
-      var ROLE_LABELS = { admin: 'Admin', senior: 'Senior', vp: 'VP', associate: 'Associate', analyst: 'Analyst' };
-      var topRole = ['admin', 'senior', 'vp', 'associate', 'analyst'].filter(has)[0];
-      var roleLinks = [['groups.html', 'Groups']];
-      if (has('associate') || has('analyst')) roleLinks.push(['quizzes.html', 'Quizzes']);
-      if (has('senior')) roleLinks.push(['quiz-release.html', 'Release quizzes']);
-      if (has('admin') || has('senior') || has('vp')) roleLinks.push(['grading.html', 'Grading']);
-      if (has('admin')) roleLinks.push(['quiz-admin.html', 'Quiz Admin'], ['admin.html', 'Accounts & groups']);
-
-      var onRolePage = roleLinks.some(function(link) { return link[0] === page; });
-      var roleMenu = topRole
-        ? '<div class="role-menu">' +
-            '<button type="button" class="role-badge' + (onRolePage ? ' active' : '') + '" aria-haspopup="true" aria-expanded="false">' +
-              ROLE_LABELS[topRole] + '<span class="role-caret" aria-hidden="true"></span>' +
-            '</button>' +
-            '<div class="role-menu-panel">' +
-              roleLinks.map(function(link) {
-                return '<a href="' + link[0] + '"' + (link[0] === page ? ' class="active"' : '') + '>' + link[1] + '</a>';
-              }).join('') +
-            '</div>' +
-          '</div>'
-        : '';
+      // Role-only pages sit under the member's role.
+      var roleMenu = '';
+      if (has('admin')) {
+        roleMenu = navMenu('Admin', [
+          link('admin.html', 'Members &amp; Groups'),
+          link('quiz-admin.html', 'Manage Quizzes')
+        ]);
+      } else if (has('senior')) {
+        roleMenu = navMenu('Senior', [
+          link('quiz-release.html', 'Release Quizzes'),
+          link('grading.html', 'Grade Quizzes')
+        ]);
+      } else if (has('vp')) {
+        roleMenu = navMenu('VP', [link('grading.html', 'Grade Quizzes')]);
+      } else if (has('associate') || has('analyst')) {
+        roleMenu = navMenu(has('associate') ? 'Associate' : 'Analyst', [link('quizzes.html', 'Weekly Quizzes')]);
+      }
 
       navRight.classList.add('account-nav');
       navRight.innerHTML =
         roleMenu +
-        '<a href="profile.html">Profile</a>' +
-        '<button type="button" class="nav-sign-out">Sign out</button>';
+        navMenu('Account', [
+          link('profile.html', 'My Profile'),
+          link('groups.html', 'My Group')
+        ]) +
+        '<button type="button" class="nav-sign-out">Sign Out</button>';
 
       navRight.querySelector('.nav-sign-out').addEventListener('click', auth.signOut);
 
-      var menu = navRight.querySelector('.role-menu');
-      if (menu) {
-        var badge = menu.querySelector('.role-badge');
-        function setOpen(open) {
-          menu.classList.toggle('open', open);
-          badge.setAttribute('aria-expanded', String(open));
-        }
-        // Hover opens it on desktop; tapping toggles it on phones.
-        badge.addEventListener('click', function() { setOpen(!menu.classList.contains('open')); });
-        document.addEventListener('click', function(event) {
-          if (!menu.contains(event.target)) setOpen(false);
-        });
-        document.addEventListener('keydown', function(event) {
-          if (event.key === 'Escape') setOpen(false);
+      var menus = document.querySelectorAll('.nav-menu');
+      function closeAll(except) {
+        menus.forEach(function(menu) {
+          if (menu === except) return;
+          menu.classList.remove('open');
+          menu.querySelector('.nav-menu-trigger').setAttribute('aria-expanded', 'false');
         });
       }
+      menus.forEach(function(menu) {
+        var trigger = menu.querySelector('.nav-menu-trigger');
+        trigger.addEventListener('click', function() {
+          var open = !menu.classList.contains('open');
+          closeAll(menu);
+          menu.classList.toggle('open', open);
+          trigger.setAttribute('aria-expanded', String(open));
+        });
+      });
+      document.addEventListener('click', function(event) {
+        if (!event.target.closest('.nav-menu')) closeAll();
+      });
+      document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape') closeAll();
+      });
     })
     .catch(function() {
       window.location.replace('index.html');

@@ -38,6 +38,8 @@ only the groups assigned to them; Admins retain an administrative override.
    submitted.
 8. Run `supabase/practice-time.sql` once to add Question Bank time tracking and
    the practice leaderboard.
+   - Then run `supabase/leaderboard-groups.sql` once to show each member's
+     group on both leaderboards.
 9. Under Authentication, enable email/password accounts.
 10. Require email confirmation.
 11. Set the production Site URL to the deployed AscendVine URL.
