@@ -54,8 +54,8 @@
     }
 
     function formatDate(value) {
-      if (!value) return 'No due date';
-      return 'Due ' + new Intl.DateTimeFormat(undefined, {
+      if (!value) return '';
+      return 'Released ' + new Intl.DateTimeFormat(undefined, {
         month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit'
       }).format(new Date(value));
     }
@@ -80,7 +80,7 @@
       const semesterId = semesterSelect.value;
       const releaseResult = await supabase
         .from('quiz_group_releases')
-        .select('quiz_id, group_id, released_at, due_at');
+        .select('quiz_id, group_id, released_at');
 
       if (releaseResult.error) throw releaseResult.error;
       const releases = releaseResult.data || [];
@@ -118,14 +118,10 @@
         const quiz = quizzes.find(item => item.id === release.quiz_id);
         if (!quiz) return '';
         const attempt = attempts.find(item => item.quiz_id === quiz.id);
-        const expired = release.due_at && new Date(release.due_at) < new Date() && !attempt;
         let action = '<a class="quiz-card-action" href="quiz.html?id=' + quiz.id + '">Start</a>';
         let status = 'Available';
 
-        if (expired) {
-          action = '<span class="quiz-card-action disabled">Closed</span>';
-          status = 'Past due';
-        } else if (attempt?.status === 'in_progress') {
+        if (attempt?.status === 'in_progress') {
           action = '<a class="quiz-card-action" href="quiz.html?id=' + quiz.id + '">Continue</a>';
           status = 'In progress';
         } else if (attempt?.status === 'submitted') {
@@ -138,7 +134,7 @@
 
         return '<article class="quiz-topic-card">' +
           '<div class="quiz-topic-copy"><span class="quiz-card-index">' + (index + 1) + '</span>' +
-          '<div><div class="quiz-card-meta"><span>' + esc(status) + '</span><span>' + esc(formatDate(release.due_at)) + '</span></div>' +
+          '<div><div class="quiz-card-meta"><span>' + esc(status) + '</span><span>' + esc(formatDate(release.released_at)) + '</span></div>' +
           '<h2>' + esc(quiz.title) + '</h2><p>' + esc(quiz.description || 'Weekly open-response quiz') + '</p></div></div>' +
           action + '</article>';
       }).join('');

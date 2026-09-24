@@ -15,31 +15,70 @@
 
       document.documentElement.style.visibility = '';
 
+      // Pages every member uses sit in the center, next to Question Bank.
+      var navCenter = document.querySelector('.nav-center');
+      if (navCenter && !navCenter.querySelector('a[href="leaderboard.html"]')) {
+        var leaderboardLink = document.createElement('a');
+        leaderboardLink.href = 'leaderboard.html';
+        leaderboardLink.textContent = 'Leaderboard';
+        if (page === 'leaderboard.html') leaderboardLink.classList.add('active');
+        navCenter.appendChild(leaderboardLink);
+      }
+
       var navRight = document.querySelector('.nav-right');
       if (!navRight) return;
 
       var memberships = await auth.getMyMemberships();
-      var isAdmin = memberships.some(function(item) { return item.role === 'admin'; });
-      var isSenior = memberships.some(function(item) { return item.role === 'senior'; });
-      var takesQuizzes = memberships.some(function(item) {
-        return item.role === 'associate' || item.role === 'analyst';
-      });
-      var canGrade = memberships.some(function(item) {
-        return item.role === 'admin' || item.role === 'senior' || item.role === 'vp';
-      });
+      var roles = memberships.map(function(item) { return item.role; });
+      function has(role) { return roles.indexOf(role) !== -1; }
+
+      // Role-only pages live in a menu under the member's role badge.
+      var ROLE_LABELS = { admin: 'Admin', senior: 'Senior', vp: 'VP', associate: 'Associate', analyst: 'Analyst' };
+      var topRole = ['admin', 'senior', 'vp', 'associate', 'analyst'].filter(has)[0];
+      var roleLinks = [['groups.html', 'Groups']];
+      if (has('associate') || has('analyst')) roleLinks.push(['quizzes.html', 'Quizzes']);
+      if (has('senior')) roleLinks.push(['quiz-release.html', 'Release quizzes']);
+      if (has('admin') || has('senior') || has('vp')) roleLinks.push(['grading.html', 'Grading']);
+      if (has('admin')) roleLinks.push(['quiz-admin.html', 'Quiz Admin'], ['admin.html', 'Accounts & groups']);
+
+      var onRolePage = roleLinks.some(function(link) { return link[0] === page; });
+      var roleMenu = topRole
+        ? '<div class="role-menu">' +
+            '<button type="button" class="role-badge' + (onRolePage ? ' active' : '') + '" aria-haspopup="true" aria-expanded="false">' +
+              ROLE_LABELS[topRole] + '<span class="role-caret" aria-hidden="true"></span>' +
+            '</button>' +
+            '<div class="role-menu-panel">' +
+              roleLinks.map(function(link) {
+                return '<a href="' + link[0] + '"' + (link[0] === page ? ' class="active"' : '') + '>' + link[1] + '</a>';
+              }).join('') +
+            '</div>' +
+          '</div>'
+        : '';
+
       navRight.classList.add('account-nav');
       navRight.innerHTML =
-        '<a href="groups.html">Groups</a>' +
-        (takesQuizzes ? '<a href="quizzes.html">Quizzes</a>' : '') +
-        (isSenior ? '<a href="quiz-release.html">Release</a>' : '') +
-        (canGrade ? '<a href="grading.html">Grading</a>' : '') +
-        '<a href="quiz-leaderboard.html">Quiz standings</a>' +
-        (isAdmin ? '<a href="quiz-admin.html">Quiz Admin</a>' : '') +
-        (isAdmin ? '<a href="admin.html">Admin</a>' : '') +
+        roleMenu +
         '<a href="profile.html">Profile</a>' +
         '<button type="button" class="nav-sign-out">Sign out</button>';
 
       navRight.querySelector('.nav-sign-out').addEventListener('click', auth.signOut);
+
+      var menu = navRight.querySelector('.role-menu');
+      if (menu) {
+        var badge = menu.querySelector('.role-badge');
+        function setOpen(open) {
+          menu.classList.toggle('open', open);
+          badge.setAttribute('aria-expanded', String(open));
+        }
+        // Hover opens it on desktop; tapping toggles it on phones.
+        badge.addEventListener('click', function() { setOpen(!menu.classList.contains('open')); });
+        document.addEventListener('click', function(event) {
+          if (!menu.contains(event.target)) setOpen(false);
+        });
+        document.addEventListener('keydown', function(event) {
+          if (event.key === 'Escape') setOpen(false);
+        });
+      }
     })
     .catch(function() {
       window.location.replace('index.html');

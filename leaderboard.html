@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AscendVine — Quiz Leaderboard</title>
+  <title>AscendVine — Leaderboard</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="account.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -22,17 +22,20 @@
     <header class="quiz-topic-header">
       <div>
         <div class="home-eyebrow">Semester standings</div>
-        <h1>Quiz leaderboard</h1>
-        <p>Cumulative points from graded weekly quizzes. The separate practice leaderboard will track Question Bank activity.</p>
+        <h1>Leaderboard</h1>
+        <p id="board-description"></p>
       </div>
       <label class="admin-semester-picker">Semester<select id="semester-select"></select></label>
     </header>
 
+    <div class="leaderboard-tabs" role="tablist" aria-label="Leaderboard">
+      <button type="button" role="tab" data-board="quiz">Quizzes</button>
+      <button type="button" role="tab" data-board="practice">Practice</button>
+    </div>
+
     <div class="account-message" id="leaderboard-message" role="status" aria-live="polite"></div>
     <section class="leaderboard-card">
-      <div class="leaderboard-heading">
-        <span>Rank</span><span>Member</span><span>Quizzes</span><span>Points</span><span>Average</span>
-      </div>
+      <div class="leaderboard-heading" id="leaderboard-heading"></div>
       <div id="leaderboard-rows"></div>
     </section>
   </main>
@@ -42,13 +45,49 @@
 
     const semesterSelect = document.getElementById('semester-select');
     const message = document.getElementById('leaderboard-message');
+    const description = document.getElementById('board-description');
+    const heading = document.getElementById('leaderboard-heading');
     const rows = document.getElementById('leaderboard-rows');
+    const tabs = document.querySelectorAll('.leaderboard-tabs [data-board]');
+
+    const BOARDS = {
+      quiz: {
+        description: 'Cumulative points from graded weekly quizzes.',
+        columns: ['Rank', 'Member', 'Quizzes', 'Points', 'Average'],
+        rpc: 'get_quiz_leaderboard',
+        cells: member => [
+          esc(member.quizzes_graded),
+          esc(member.points_earned) + ' / ' + esc(member.points_possible),
+          '<strong>' + esc(member.percentage) + '%</strong>'
+        ]
+      },
+      practice: {
+        description: 'Active time in the Question Bank. Time counts only while the page is open and in use.',
+        columns: ['Rank', 'Member', 'Days active', 'Active time', 'Per active day'],
+        rpc: 'get_practice_leaderboard',
+        cells: member => [
+          esc(member.days_active),
+          '<strong>' + esc(formatDuration(member.active_seconds)) + '</strong>',
+          esc(Number(member.days_active) ? formatDuration(member.active_seconds / member.days_active) : '—')
+        ]
+      }
+    };
+
+    let requestId = 0;
+    let board = new URLSearchParams(window.location.search).get('board') === 'practice' ? 'practice' : 'quiz';
 
     function esc(value) {
       return String(value ?? '')
         .replace(/&/g, '&amp;').replace(/</g, '&lt;')
         .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
+    }
+
+    function formatDuration(seconds) {
+      const minutes = Math.floor(Number(seconds || 0) / 60);
+      const hours = Math.floor(minutes / 60);
+      if (!hours) return minutes + 'm';
+      return hours + 'h ' + String(minutes % 60).padStart(2, '0') + 'm';
     }
 
     function showError(text) {
@@ -69,9 +108,15 @@
     }
 
     async function refresh() {
-      const result = await supabase.rpc('get_quiz_leaderboard', {
-        target_semester: semesterSelect.value
-      });
+      const config = BOARDS[board];
+      description.textContent = config.description;
+      heading.innerHTML = config.columns.map(column => '<span>' + esc(column) + '</span>').join('');
+      tabs.forEach(tab => tab.setAttribute('aria-selected', String(tab.dataset.board === board)));
+
+      const thisRequest = ++requestId;
+      rows.innerHTML = '';
+      const result = await supabase.rpc(config.rpc, { target_semester: semesterSelect.value });
+      if (thisRequest !== requestId) return; // a newer tab or semester was chosen
       if (result.error) throw result.error;
       const standings = result.data || [];
 
@@ -85,12 +130,16 @@
           '<strong class="leaderboard-rank">' + esc(member.rank) + '</strong>' +
           '<div class="leaderboard-person"><strong>' + esc(member.display_name) + '</strong>' +
           '<span>' + esc(member.role) + '</span></div>' +
-          '<span>' + esc(member.quizzes_graded) + '</span>' +
-          '<span>' + esc(member.points_earned) + ' / ' + esc(member.points_possible) + '</span>' +
-          '<strong>' + esc(member.percentage) + '%</strong>' +
+          config.cells(member).map(cell => '<span>' + cell + '</span>').join('') +
         '</div>'
       ).join('');
     }
+
+    tabs.forEach(tab => tab.addEventListener('click', () => {
+      board = tab.dataset.board;
+      history.replaceState(null, '', '?board=' + board);
+      refresh().catch(error => showError(error.message));
+    }));
 
     semesterSelect.addEventListener('change', () => refresh().catch(error => showError(error.message)));
 
@@ -98,7 +147,7 @@
       await loadSemesters();
       await refresh();
     } catch (error) {
-      showError(error.message || 'Unable to load quiz standings.');
+      showError(error.message || 'Unable to load standings.');
     }
   </script>
   <script src="app.js"></script>
