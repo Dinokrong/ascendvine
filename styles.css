@@ -521,6 +521,7 @@ a { text-decoration: none; }
 }
 
 .card-question {
+  white-space: pre-line;
   font-size: 1.05rem;
   line-height: 1.72;
   font-weight: 400;
@@ -592,6 +593,19 @@ a { text-decoration: none; }
   color: var(--text);
 }
 
+/* Where the question was reported (firm, office, round) */
+.card-reported,
+.gc-reported {
+  margin-top: 1rem;
+  color: var(--text-muted);
+  font-size: 0.76rem;
+  letter-spacing: 0.01em;
+}
+
+.gc-reported {
+  margin-top: 0.75rem;
+}
+
 .card-counter {
   font-size: 0.8rem;
   color: var(--grey);
@@ -660,6 +674,7 @@ a { text-decoration: none; }
 }
 
 .gc-question {
+  white-space: pre-line;
   font-size: 0.87rem;
   line-height: 1.65;
   color: var(--text);

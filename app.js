@@ -135,6 +135,7 @@
   // DOM refs
   var cardQuestion   = document.getElementById('card-question');
   var cardAnswerText = document.getElementById('card-answer-text');
+  var cardReported   = document.getElementById('card-reported');
   var cardAnswerSec  = document.getElementById('card-answer-section');
   var cardTopicBadge = document.getElementById('card-topic-badge');
   var cardCounter    = document.getElementById('card-counter');
@@ -186,6 +187,8 @@
     cardTopicBadge.textContent = card.topic || 'General';
     cardQuestion.textContent   = card.question;
     cardAnswerText.textContent = card.answer || 'No answer provided for this question.';
+    cardReported.textContent   = card.reported ? 'Source: ' + card.reported : '';
+    cardReported.hidden        = !card.reported;
     cardCounter.textContent    = 'Card ' + (currentIndex + 1) + ' of ' + filteredCards.length;
     qbCount.textContent        = filteredCards.length.toLocaleString() + ' questions';
 
@@ -233,6 +236,7 @@
             '<span class="gc-badge" style="color:' + tagColor + ';border-color:' + tagBorder + '">' + escHtml(card.topic || 'General') + '</span>' +
             '<p class="gc-answer-label">Answer</p>' +
             '<p class="gc-answer">' + escHtml(card.answer || 'No answer provided.') + '</p>' +
+            (card.reported ? '<p class="gc-reported">Source: ' + escHtml(card.reported) + '</p>' : '') +
           '</div>' +
         '</div>';
 
