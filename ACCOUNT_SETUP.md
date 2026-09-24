@@ -13,10 +13,11 @@ accounts. New accounts remain pending until an Admin approves them.
 | Associate | No | No | No | Yes |
 | Analyst | No | No | No | Yes |
 
-Quiz tables and submission screens will be added in the next implementation
-phase. The account schema plus `supabase/groups.sql` establish the roles and
-Senior-led groups those rules will use. VPs, Associates, and Analysts are group
-members; Seniors lead groups.
+The quiz workflow uses those same semester roles and Senior-led groups. Admins
+upload a draft and its answer key, mark it ready, and Seniors push it to their
+group. Associates and Analysts can then answer and submit it. Answer keys are
+stored separately and are never sent to quiz takers. VPs and Seniors can grade
+only the groups assigned to them; Admins retain an administrative override.
 
 ## 1. Create and configure Supabase
 
@@ -26,14 +27,16 @@ members; Seniors lead groups.
    and group-scoped permissions.
 4. Run `supabase/admin-delete-account.sql` once to enable guarded permanent
    deletion from the Admin page.
-5. Under Authentication, enable email/password accounts.
-6. Require email confirmation.
-7. Set the production Site URL to the deployed AscendVine URL.
-8. Add exact redirect URLs for:
+5. Run `supabase/quizzes.sql` once to add quiz uploads, protected answer keys,
+   group releases, attempts, and responses.
+6. Under Authentication, enable email/password accounts.
+7. Require email confirmation.
+8. Set the production Site URL to the deployed AscendVine URL.
+9. Add exact redirect URLs for:
    - `/profile.html`
    - `/reset-password.html`
    - the corresponding local-development URLs
-9. Configure custom SMTP before inviting users. Supabase's built-in mailer is for
+10. Configure custom SMTP before inviting users. Supabase's built-in mailer is for
    testing only and is currently limited to two Auth emails per hour per project.
 
 ## 2. Connect the browser client
@@ -102,3 +105,19 @@ deletion of a Senior who still leads a group. The operation removes the
 Supabase Auth user and cascades through the profile, roles, and group membership.
 A minimal deletion audit record retains the deleted user ID, email, name,
 deleting Admin, and timestamp.
+
+## Weekly quiz workflow
+
+1. An Admin opens `quiz-admin.html`, pastes the numbered Questions tab and the
+   matching Answer Key tab, then validates the pairs.
+2. The Admin creates a draft and marks it ready after reviewing the preview.
+3. A Senior opens `quiz-release.html`, selects their group and optional due time,
+   then pushes the quiz.
+4. Associates and Analysts open `quizzes.html`, choose the released quiz, and
+   answer it in `quiz.html`. Answers save automatically and lock on submission.
+5. The submitted records are visible only to the quiz taker, their group's
+   Senior and VP, and semester Admins.
+
+The bulk parser recognizes chapter headings plus numbered questions such as
+`1. Question text`. It pairs them, in order, with paragraphs beginning
+`Answer:`. The question and answer counts must match before upload.

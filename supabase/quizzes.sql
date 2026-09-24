@@ -454,10 +454,19 @@ declare
   selected_group uuid;
   selected_due_at timestamptz;
   attempt_id uuid;
-  existing_status text;
 begin
   if not public.is_approved_user() then
     raise exception 'Approved account required';
+  end if;
+
+  -- A submitted or graded attempt remains viewable even if an Admin later
+  -- archives the quiz or the original release due date has passed.
+  select id into attempt_id
+  from public.quiz_attempts
+  where quiz_id = target_quiz and user_id = auth.uid();
+
+  if attempt_id is not null then
+    return attempt_id;
   end if;
 
   select release.group_id, release.due_at
@@ -479,25 +488,19 @@ begin
     raise exception 'This quiz has not been released to your group';
   end if;
 
-  select id, status into attempt_id, existing_status
-  from public.quiz_attempts
-  where quiz_id = target_quiz and user_id = auth.uid();
-
-  if attempt_id is null then
-    if selected_due_at is not null and selected_due_at < now() then
-      raise exception 'The due time for this quiz has passed';
-    end if;
-
-    insert into public.quiz_attempts (quiz_id, group_id, user_id)
-    values (target_quiz, selected_group, auth.uid())
-    returning id into attempt_id;
-
-    insert into public.quiz_responses (attempt_id, question_id)
-    select attempt_id, question.id
-    from public.quiz_questions question
-    where question.quiz_id = target_quiz
-    order by question.position;
+  if selected_due_at is not null and selected_due_at < now() then
+    raise exception 'The due time for this quiz has passed';
   end if;
+
+  insert into public.quiz_attempts (quiz_id, group_id, user_id)
+  values (target_quiz, selected_group, auth.uid())
+  returning id into attempt_id;
+
+  insert into public.quiz_responses (attempt_id, question_id)
+  select attempt_id, question.id
+  from public.quiz_questions question
+  where question.quiz_id = target_quiz
+  order by question.position;
 
   return attempt_id;
 end;

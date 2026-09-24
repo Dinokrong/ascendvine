@@ -20,13 +20,20 @@
 
       var memberships = await auth.getMyMemberships();
       var isAdmin = memberships.some(function(item) { return item.role === 'admin'; });
+      var isSenior = memberships.some(function(item) { return item.role === 'senior'; });
+      var takesQuizzes = memberships.some(function(item) {
+        return item.role === 'associate' || item.role === 'analyst';
+      });
       var canGrade = memberships.some(function(item) {
         return item.role === 'admin' || item.role === 'senior' || item.role === 'vp';
       });
       navRight.classList.add('account-nav');
       navRight.innerHTML =
         '<a href="groups.html">Groups</a>' +
+        (takesQuizzes ? '<a href="quizzes.html">Quizzes</a>' : '') +
+        (isSenior ? '<a href="quiz-release.html">Release</a>' : '') +
         (canGrade ? '<a href="grading.html">Grading</a>' : '') +
+        (isAdmin ? '<a href="quiz-admin.html">Quiz Admin</a>' : '') +
         (isAdmin ? '<a href="admin.html">Admin</a>' : '') +
         '<a href="profile.html">Profile</a>' +
         '<button type="button" class="nav-sign-out">Sign out</button>';

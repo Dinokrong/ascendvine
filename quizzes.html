@@ -105,8 +105,16 @@
       if (attemptResult.error) throw attemptResult.error;
       const quizzes = quizResult.data || [];
       const attempts = attemptResult.data || [];
+      const visibleReleases = releases.filter(release =>
+        quizzes.some(quiz => quiz.id === release.quiz_id)
+      );
 
-      list.innerHTML = releases.map((release, index) => {
+      if (!visibleReleases.length) {
+        list.innerHTML = '<div class="group-empty-state"><h2>No quizzes released yet</h2><p>Your Senior will push each weekly quiz when your group is ready.</p></div>';
+        return;
+      }
+
+      list.innerHTML = visibleReleases.map((release, index) => {
         const quiz = quizzes.find(item => item.id === release.quiz_id);
         if (!quiz) return '';
         const attempt = attempts.find(item => item.quiz_id === quiz.id);
