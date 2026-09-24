@@ -1,4 +1,5 @@
 -- Add named Senior-led groups to an existing AscendVine account schema.
+-- Apply this migration after supabase/schema.sql.
 
 create table public.groups (
   id uuid primary key default gen_random_uuid(),
@@ -57,6 +58,52 @@ as $$
   );
 $$;
 
+create or replace function public.can_view_semester_member(
+  target_semester uuid,
+  target_user uuid
+)
+returns boolean
+language sql
+stable
+security definer
+set search_path = ''
+as $$
+  select public.is_approved_user() and (
+    target_user = auth.uid()
+    or public.is_semester_admin(target_semester)
+    or exists (
+      select 1
+      from public.groups selected_group
+      where selected_group.semester_id = target_semester
+        and selected_group.senior_id = auth.uid()
+        and (
+          selected_group.senior_id = target_user
+          or exists (
+            select 1 from public.group_memberships target_membership
+            where target_membership.group_id = selected_group.id
+              and target_membership.user_id = target_user
+          )
+        )
+    )
+    or exists (
+      select 1
+      from public.group_memberships viewer_membership
+      join public.groups selected_group
+        on selected_group.id = viewer_membership.group_id
+      where viewer_membership.semester_id = target_semester
+        and viewer_membership.user_id = auth.uid()
+        and (
+          selected_group.senior_id = target_user
+          or exists (
+            select 1 from public.group_memberships target_membership
+            where target_membership.group_id = viewer_membership.group_id
+              and target_membership.user_id = target_user
+          )
+        )
+    )
+  );
+$$;
+
 create policy "Users can view relevant groups"
 on public.groups for select
 to authenticated
@@ -76,20 +123,21 @@ on public.semester_memberships;
 create policy "Approved users can view relevant memberships"
 on public.semester_memberships for select
 to authenticated
+using (public.can_view_semester_member(semester_id, user_id));
+
+create policy "Group participants can view relevant profiles"
+on public.profiles for select
+to authenticated
 using (
-  public.is_approved_user()
-  and (
-    user_id = auth.uid()
-    or public.is_semester_admin(semester_id)
-    or exists (
-      select 1
-      from public.groups selected_group
-      join public.group_memberships group_member
-        on group_member.group_id = selected_group.id
-      where selected_group.semester_id = semester_memberships.semester_id
-        and selected_group.senior_id = auth.uid()
-        and group_member.user_id = semester_memberships.user_id
-    )
+  public.is_emory_user()
+  and exists (
+    select 1
+    from public.semester_memberships target_membership
+    where target_membership.user_id = profiles.id
+      and public.can_view_semester_member(
+        target_membership.semester_id,
+        target_membership.user_id
+      )
   )
 );
 
@@ -176,6 +224,28 @@ begin
     senior_id = target_senior,
     updated_at = now()
   where id = target_group;
+end;
+$$;
+
+create or replace function public.admin_delete_group(target_group uuid)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  target_semester uuid;
+begin
+  select semester_id into target_semester
+  from public.groups
+  where id = target_group;
+
+  if target_semester is null
+     or not public.is_semester_admin(target_semester) then
+    raise exception 'Admin permission required';
+  end if;
+
+  delete from public.groups where id = target_group;
 end;
 $$;
 
@@ -315,13 +385,17 @@ end;
 $$;
 
 revoke all on function public.can_view_group(uuid) from public;
+revoke all on function public.can_view_semester_member(uuid, uuid) from public;
 revoke all on function public.admin_create_group(uuid, text, uuid) from public;
 revoke all on function public.admin_update_group(uuid, text, uuid) from public;
+revoke all on function public.admin_delete_group(uuid) from public;
 revoke all on function public.admin_assign_group_member(uuid, uuid) from public;
 revoke all on function public.admin_remove_group_member(uuid, uuid) from public;
 
 grant execute on function public.can_view_group(uuid) to authenticated;
+grant execute on function public.can_view_semester_member(uuid, uuid) to authenticated;
 grant execute on function public.admin_create_group(uuid, text, uuid) to authenticated;
 grant execute on function public.admin_update_group(uuid, text, uuid) to authenticated;
+grant execute on function public.admin_delete_group(uuid) to authenticated;
 grant execute on function public.admin_assign_group_member(uuid, uuid) to authenticated;
 grant execute on function public.admin_remove_group_member(uuid, uuid) to authenticated;
