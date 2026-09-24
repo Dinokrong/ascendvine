@@ -866,11 +866,58 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 1rem;
+}
+
+.quiz-admin-item {
   border-bottom: 1px solid var(--account-border);
 }
 
-.quiz-admin-row:last-child {
+.quiz-admin-item:last-child {
   border-bottom: 0;
+}
+
+/* Full question list under a quiz, opened with View */
+.quiz-admin-detail {
+  margin: 0 1rem 1rem;
+  overflow: hidden;
+  border: 1px solid var(--account-border);
+  border-radius: 7px;
+  background: #fff;
+}
+
+.quiz-admin-detail td {
+  white-space: pre-line;
+  vertical-align: top;
+}
+
+/* Filters above the quiz list: underline on hover, like the top bar */
+.quiz-admin-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem;
+  margin-bottom: .9rem;
+}
+
+.quiz-filter {
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 4px 0;
+  background: transparent;
+  color: var(--account-muted);
+  cursor: pointer;
+  font: inherit;
+  font-size: .86rem;
+}
+
+.quiz-filter span {
+  margin-left: .2rem;
+  font-size: .76rem;
+}
+
+.quiz-filter:hover,
+.quiz-filter.active {
+  color: var(--account-text);
+  border-bottom-color: var(--account-text);
 }
 
 .quiz-admin-row h3 {

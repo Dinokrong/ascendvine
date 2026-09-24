@@ -78,6 +78,7 @@
           <p>Drafts remain Admin-only. Mark a quiz ready when Seniors may release it to their groups.</p>
         </div>
       </div>
+      <nav class="quiz-admin-filters" id="quiz-filters" aria-label="Filter quizzes"></nav>
       <div id="quiz-list" class="quiz-admin-list"></div>
     </section>
   </main>
@@ -249,6 +250,17 @@
       semesterSelect.value = data[0].semester_id;
     }
 
+    const FILTERS = [
+      ['all', 'All'],
+      ['draft', 'Drafts'],
+      ['ready', 'Ready'],
+      ['archived', 'Archived']
+    ];
+    let quizzes = [];
+    let questionCounts = {};
+    let releaseCounts = {};
+    let filter = 'all';
+
     async function loadQuizzes() {
       const semesterId = semesterSelect.value;
       if (!semesterId) throw new Error('Choose a semester before loading quizzes.');
@@ -259,20 +271,35 @@
         .order('created_at', { ascending: false });
 
       if (quizResult.error) throw quizResult.error;
-      const quizzes = quizResult.data || [];
-      let questionCounts = {};
+      quizzes = quizResult.data || [];
+      questionCounts = {};
+      releaseCounts = {};
 
       if (quizzes.length) {
-        const questionResult = await supabase
-          .from('quiz_questions')
-          .select('quiz_id')
-          .in('quiz_id', quizzes.map(quiz => quiz.id));
+        const ids = quizzes.map(quiz => quiz.id);
+        const [questionResult, releaseResult] = await Promise.all([
+          supabase.from('quiz_questions').select('quiz_id').in('quiz_id', ids),
+          supabase.from('quiz_group_releases').select('quiz_id').in('quiz_id', ids)
+        ]);
         if (questionResult.error) throw questionResult.error;
-        questionCounts = (questionResult.data || []).reduce((counts, question) => {
-          counts[question.quiz_id] = (counts[question.quiz_id] || 0) + 1;
+        if (releaseResult.error) throw releaseResult.error;
+        const countBy = rows => (rows || []).reduce((counts, row) => {
+          counts[row.quiz_id] = (counts[row.quiz_id] || 0) + 1;
           return counts;
         }, {});
+        questionCounts = countBy(questionResult.data);
+        releaseCounts = countBy(releaseResult.data);
       }
+
+      renderQuizzes();
+    }
+
+    function renderQuizzes() {
+      document.getElementById('quiz-filters').innerHTML = FILTERS.map(([value, label]) => {
+        const count = value === 'all' ? quizzes.length : quizzes.filter(quiz => quiz.status === value).length;
+        return '<button type="button" class="quiz-filter' + (filter === value ? ' active' : '') + '" data-filter="' + value + '">' +
+          label + ' <span>' + count + '</span></button>';
+      }).join('');
 
       const container = document.getElementById('quiz-list');
       if (!quizzes.length) {
@@ -280,22 +307,84 @@
         return;
       }
 
-      container.innerHTML = quizzes.map(quiz => {
+      const shown = filter === 'all' ? quizzes : quizzes.filter(quiz => quiz.status === filter);
+      if (!shown.length) {
+        const label = FILTERS.find(([value]) => value === filter)[1].toLowerCase();
+        container.innerHTML = '<p class="admin-empty">No ' + label + ' quizzes for this semester.</p>';
+        return;
+      }
+
+      container.innerHTML = shown.map(quiz => {
         const nextAction = quiz.status === 'draft'
           ? '<button class="admin-action quiz-status" data-status="ready" type="button">Mark ready</button>'
           : quiz.status === 'ready'
             ? '<button class="admin-action secondary quiz-status" data-status="draft" type="button">Return to draft</button>'
             : '<button class="admin-action secondary quiz-status" data-status="ready" type="button">Restore</button>';
 
-        return '<article class="quiz-admin-row" data-quiz="' + quiz.id + '">' +
+        const releases = releaseCounts[quiz.id] || 0;
+        return '<article class="quiz-admin-item" data-quiz="' + quiz.id + '"><div class="quiz-admin-row">' +
           '<div><span class="role-pill">' + esc(quiz.status) + '</span><h3>' + esc(quiz.title) + '</h3>' +
-          '<p>' + (questionCounts[quiz.id] || 0) + ' questions' +
+          '<p>' + (questionCounts[quiz.id] || 0) + ((questionCounts[quiz.id] || 0) === 1 ? ' question' : ' questions') +
+          (releases ? ' · Released to ' + releases + ' group' + (releases === 1 ? '' : 's') : '') +
           (quiz.description ? ' · ' + esc(quiz.description) : '') + '</p></div>' +
-          '<div class="quiz-row-actions">' + nextAction +
+          '<div class="quiz-row-actions">' +
+          '<button class="admin-action secondary view-quiz" type="button" aria-expanded="false">View</button>' +
+          nextAction +
           (quiz.status === 'draft' ? '<button class="admin-action danger delete-quiz" type="button">Delete draft</button>' : '') +
-          '</div></article>';
+          '</div></div><div class="quiz-admin-detail quiz-preview" hidden></div></article>';
       }).join('');
     }
+
+    // Shows every question with its answer key under the quiz row.
+    async function toggleQuizDetail(item, button) {
+      const detail = item.querySelector('.quiz-admin-detail');
+      if (!detail.hidden) {
+        detail.hidden = true;
+        button.textContent = 'View';
+        button.setAttribute('aria-expanded', 'false');
+        return;
+      }
+
+      if (!detail.dataset.loaded) {
+        detail.innerHTML = '<p class="quiz-preview-note">Loading questions…</p>';
+        detail.hidden = false;
+        const questionResult = await supabase.from('quiz_questions')
+          .select('id, position, chapter, prompt, max_points')
+          .eq('quiz_id', item.dataset.quiz)
+          .order('position');
+        if (questionResult.error) throw questionResult.error;
+        const questions = questionResult.data || [];
+        const keyResult = questions.length
+          ? await supabase.from('quiz_answer_keys').select('question_id, answer_key').in('question_id', questions.map(q => q.id))
+          : { data: [], error: null };
+        if (keyResult.error) throw keyResult.error;
+        const keys = keyResult.data || [];
+        const total = questions.reduce((sum, q) => sum + Number(q.max_points), 0);
+
+        detail.innerHTML = questions.length
+          ? '<div class="quiz-preview-summary"><strong>' + questions.length + ' questions</strong><span>' + total + ' total points</span></div>' +
+            '<div class="quiz-preview-table"><table><thead><tr><th>#</th><th>Chapter</th><th>Question</th><th>Answer key</th><th>Points</th></tr></thead><tbody>' +
+            questions.map(q =>
+              '<tr><td>' + esc(q.position) + '</td><td>' + esc(q.chapter || 'Uncategorized') + '</td>' +
+              '<td>' + esc(q.prompt) + '</td><td>' + esc(keys.find(k => k.question_id === q.id)?.answer_key || '—') + '</td>' +
+              '<td>' + esc(q.max_points) + '</td></tr>'
+            ).join('') +
+            '</tbody></table></div>'
+          : '<p class="quiz-preview-note">This quiz has no questions.</p>';
+        detail.dataset.loaded = 'true';
+      }
+
+      detail.hidden = false;
+      button.textContent = 'Hide';
+      button.setAttribute('aria-expanded', 'true');
+    }
+
+    document.getElementById('quiz-filters').addEventListener('click', event => {
+      const button = event.target.closest('[data-filter]');
+      if (!button) return;
+      filter = button.dataset.filter;
+      renderQuizzes();
+    });
 
     document.getElementById('preview-quiz').addEventListener('click', buildPreview);
 
@@ -331,10 +420,14 @@
     });
 
     document.getElementById('quiz-list').addEventListener('click', async event => {
-      const row = event.target.closest('.quiz-admin-row');
+      const row = event.target.closest('.quiz-admin-item');
       if (!row) return;
 
       try {
+        if (event.target.classList.contains('view-quiz')) {
+          await toggleQuizDetail(row, event.target);
+          return;
+        }
         if (event.target.classList.contains('quiz-status')) {
           const result = await supabase.rpc('admin_set_quiz_status', {
             target_quiz: row.dataset.quiz,
