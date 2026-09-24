@@ -23,7 +23,7 @@
       <div>
         <div class="home-eyebrow">Account administration</div>
         <h1>Members, roles, and groups</h1>
-        <p>Approve accounts, assign semester roles, and place VPs, Associates, and Analysts into Senior-led groups.</p>
+        <p>Approve accounts, assign semester roles, and place Vice Presidents, Associates, and Analysts into Senior-led groups.</p>
       </div>
       <label class="admin-semester-picker">
         Semester
@@ -42,7 +42,7 @@
       <div class="admin-section-heading">
         <div>
           <h2>Senior-led groups</h2>
-          <p>Each VP, Associate, or Analyst can belong to one group per semester.</p>
+          <p>Each Vice President, Associate, or Analyst can belong to one group per semester.</p>
         </div>
       </div>
       <form id="create-group-form" class="group-create-form">
@@ -88,7 +88,7 @@
     }
 
     function roleLabel(role) {
-      return role.charAt(0).toUpperCase() + role.slice(1);
+      return { admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst' }[role] || role;
     }
 
     function roleOptions(selected) {

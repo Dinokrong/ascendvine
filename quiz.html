@@ -25,6 +25,7 @@
         <div class="home-eyebrow">Weekly quiz</div>
         <h1 id="quiz-title">Loading quiz…</h1>
         <p id="quiz-description">Your work saves as you move between questions.</p>
+        <p class="quiz-away-notice" id="quiz-away-notice" hidden>Stay on this page until you submit. Leaving it (switching tabs, windows, or apps) is recorded and shown to your Senior and Vice President.</p>
       </div>
       <div class="quiz-save-state" id="save-state" aria-live="polite">Loading…</div>
     </header>
@@ -175,9 +176,10 @@
       if (editable) {
         setSaveState('All changes saved', 'saved');
         submitBar.hidden = false;
+        document.getElementById('quiz-away-notice').hidden = false;
       } else if (attempt.status === 'submitted') {
         setSaveState('Submitted ' + formatDate(attempt.submitted_at), 'submitted');
-        showMessage('Your quiz is submitted and waiting for a Senior or VP to grade it.', 'success');
+        showMessage('Your quiz is submitted and waiting for a Senior or Vice President to grade it.', 'success');
       } else {
         setSaveState('Graded ' + formatDate(attempt.graded_at), 'submitted');
         const scoreText = attempt.score == null ? 'Your quiz has been graded.' : 'Final score: ' + attempt.score;
@@ -199,8 +201,46 @@
       queueSave(questionId, event.target.value);
     });
 
+    // Leaving the page mid-quiz is recorded, with the question the member was
+    // on, and shown to the group's Senior and Vice President when grading.
+    let currentQuestion = null;
+    let away = false;
+    let inOwnDialog = false;
+
+    function markAway() {
+      if (away || inOwnDialog || attempt?.status !== 'in_progress') return;
+      away = true;
+      flushPendingSaves();
+      supabase.rpc('record_quiz_away', {
+        target_attempt: attempt.id,
+        target_question: currentQuestion
+      }).then(() => {});
+    }
+
+    function markBack() {
+      if (!away) return;
+      away = false;
+      supabase.rpc('record_quiz_return', { target_attempt: attempt.id }).then(() => {});
+    }
+
+    function onHide() {
+      if (document.visibilityState === 'hidden') markAway();
+      else markBack();
+    }
+
+    questionsContainer.addEventListener('focusin', event => {
+      if (event.target.matches('textarea[data-question]')) currentQuestion = event.target.dataset.question;
+    });
+    document.addEventListener("visibilitychange", onHide);
+    // Also catches clicking into another window while this tab stays visible.
+    window.addEventListener('blur', markAway);
+    window.addEventListener('focus', markBack);
+
     submitButton.addEventListener('click', async () => {
-      if (!window.confirm('Submit this quiz? You will not be able to edit your answers afterward.')) return;
+      inOwnDialog = true;
+      const confirmed = window.confirm('Submit this quiz? You will not be able to edit your answers afterward.');
+      inOwnDialog = false;
+      if (!confirmed) return;
       try {
         submitButton.disabled = true;
         submitButton.textContent = 'Submitting…';

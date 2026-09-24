@@ -30,6 +30,7 @@
     </header>
 
     <div class="account-message" id="grading-message" role="status" aria-live="polite"></div>
+    <div class="quiz-away-summary" id="away-summary" hidden></div>
     <section id="grading-questions" class="quiz-question-list"></section>
     <section id="grading-submit" class="grading-submit-card" hidden>
       <label>Overall feedback
@@ -75,6 +76,38 @@
         || profile?.email || 'AscendVine member';
     }
 
+    function awaySeconds(events) {
+      return events.reduce((sum, event) => {
+        const end = event.returned_at ? new Date(event.returned_at) : null;
+        return end ? sum + Math.max(0, (end - new Date(event.left_at)) / 1000) : sum;
+      }, 0);
+    }
+
+    function formatAway(events) {
+      const seconds = Math.round(awaySeconds(events));
+      const open = events.some(event => !event.returned_at);
+      const text = seconds >= 60
+        ? Math.floor(seconds / 60) + 'm ' + String(seconds % 60).padStart(2, '0') + 's'
+        : seconds + 's';
+      return open ? text + '+, did not come back before submitting' : text;
+    }
+
+    function renderAwaySummary(events, questions) {
+      const summary = document.getElementById('away-summary');
+      if (!events.length) {
+        summary.hidden = true;
+        return;
+      }
+      const onQuestions = [...new Set(events.map(event =>
+        questions.find(question => question.id === event.question_id)?.position
+      ).filter(Boolean))].sort((a, b) => a - b);
+      summary.innerHTML = '<strong>Left the quiz page ' + events.length + (events.length === 1 ? ' time' : ' times') +
+        '</strong><span>' + esc(formatAway(events)) + ' away in total' +
+        (onQuestions.length ? ' · while on question ' + onQuestions.join(', ') : '') + '.</span>' +
+        '<span>Switching tabs, windows, or apps is recorded. It may be innocent, but it is worth a look.</span>';
+      summary.hidden = false;
+    }
+
     function updateScorePreview() {
       const awarded = [...questionsContainer.querySelectorAll('.grade-points')]
         .reduce((sum, input) => sum + (Number(input.value) || 0), 0);
@@ -117,6 +150,15 @@
       if (keyResult.error) throw keyResult.error;
       const answerKeys = keyResult.data || [];
 
+      // Times the member left the quiz page while taking it. If this feature
+      // isn't installed in the database yet, just show nothing.
+      const awayResult = await supabase.from('quiz_away_events')
+        .select('question_id, left_at, returned_at')
+        .eq('attempt_id', attempt.id)
+        .order('left_at');
+      const awayEvents = awayResult.error ? [] : awayResult.data || [];
+      renderAwaySummary(awayEvents, questions);
+
       title.textContent = quizResult.data.title;
       studentName.textContent = 'Submission from ' + nameOf(profileResult.data);
       status.textContent = attempt.status === 'graded' ? 'Graded' : 'Awaiting grade';
@@ -126,11 +168,16 @@
       questionsContainer.innerHTML = questions.map(question => {
         const response = responses.find(item => item.question_id === question.id) || {};
         const key = answerKeys.find(item => item.question_id === question.id);
+        const awayHere = awayEvents.filter(event => event.question_id === question.id);
         return '<article class="quiz-question-card grading-question" data-question="' + question.id + '">' +
           '<div class="quiz-question-heading"><span>Question ' + esc(question.position) + '</span>' +
           '<span>' + esc(question.max_points) + ' points possible</span></div>' +
           (question.chapter ? '<div class="quiz-question-chapter">' + esc(question.chapter) + '</div>' : '') +
           '<h2>' + esc(question.prompt) + '</h2>' +
+          (awayHere.length
+            ? '<div class="quiz-away-flag">Left the quiz page ' + awayHere.length + (awayHere.length === 1 ? ' time' : ' times') +
+              ' while on this question (' + esc(formatAway(awayHere)) + ' away)</div>'
+            : '') +
           '<div class="grading-comparison"><div><span>Member response</span><p>' + esc(response.response_text || 'No response') + '</p></div>' +
           '<div class="answer-key-panel"><span>Protected answer key</span><p>' + esc(key?.answer_key || 'No answer key available') + '</p></div></div>' +
           '<div class="grading-fields"><label>Points awarded<input class="grade-points" type="number" min="0" max="' +
