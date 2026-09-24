@@ -31,6 +31,9 @@ only the groups assigned to them; Admins retain an administrative override.
    group releases, attempts, and responses.
    - If `quizzes.sql` was installed before the grading phase, also run
      `supabase/quiz-grading.sql` once to add grading and quiz standings.
+   - Existing projects can run `supabase/quiz-unpublish.sql` once to let Seniors
+     remove a quiz release from their group. Existing attempts remain available,
+     but members who have not started can no longer begin it.
 6. Under Authentication, enable email/password accounts.
 7. Require email confirmation.
 8. Set the production Site URL to the deployed AscendVine URL.

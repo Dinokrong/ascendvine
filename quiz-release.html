@@ -123,8 +123,10 @@
             '<select class="release-group" aria-label="Group">' + groupOptions + '</select>' +
             '<input class="release-due" type="datetime-local" aria-label="Due date"' +
               (release?.due_at ? ' value="' + localDateValue(release.due_at) + '"' : '') + '>' +
-            '<button class="quiz-card-action release-quiz" type="button">' +
+            '<div class="quiz-release-actions"><button class="quiz-card-action release-quiz" type="button">' +
               (release ? 'Update push' : 'Push') + '</button>' +
+            '<button class="quiz-unpublish unpublish-quiz" type="button"' +
+              (release ? '' : ' hidden') + '>Unpublish</button></div>' +
           '</div>' +
         '</article>';
       }).join('');
@@ -138,23 +140,41 @@
       );
       card.querySelector('.release-due').value = localDateValue(release?.due_at);
       card.querySelector('.release-quiz').textContent = release ? 'Update push' : 'Push';
+      card.querySelector('.unpublish-quiz').hidden = !release;
     });
 
     list.addEventListener('click', async event => {
-      if (!event.target.classList.contains('release-quiz')) return;
+      if (!event.target.classList.contains('release-quiz') &&
+          !event.target.classList.contains('unpublish-quiz')) return;
       const card = event.target.closest('.quiz-topic-card');
       const groupId = card.querySelector('.release-group').value;
       const dueValue = card.querySelector('.release-due').value;
 
       try {
         event.target.disabled = true;
+        const group = groups.find(item => item.id === groupId);
+
+        if (event.target.classList.contains('unpublish-quiz')) {
+          if (!window.confirm('Unpublish this quiz from ' + group.name + '? Members who already started can keep their work, but no one new can begin.')) {
+            event.target.disabled = false;
+            return;
+          }
+          const result = await supabase.rpc('senior_unpublish_quiz', {
+            target_quiz: card.dataset.quiz,
+            target_group: groupId
+          });
+          if (result.error) throw result.error;
+          showMessage('Quiz unpublished from ' + group.name + '.', 'success');
+          await refresh();
+          return;
+        }
+
         const result = await supabase.rpc('senior_release_quiz', {
           target_quiz: card.dataset.quiz,
           target_group: groupId,
           target_due_at: dueValue ? new Date(dueValue).toISOString() : null
         });
         if (result.error) throw result.error;
-        const group = groups.find(item => item.id === groupId);
         showMessage('Quiz pushed to ' + group.name + '.', 'success');
         await refresh();
       } catch (error) {
