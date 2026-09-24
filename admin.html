@@ -62,7 +62,7 @@
   <script type="module">
     import { supabase, requireApprovedUser } from './js/auth-client.js';
 
-    const ROLES = ['admin', 'senior', 'vp', 'associate', 'analyst'];
+    const ROLES = ['admin', 'senior', 'vp', 'associate', 'analyst', 'general'];
     const message = document.getElementById('admin-message');
     const semesterSelect = document.getElementById('semester-select');
     let profiles = [];
@@ -102,7 +102,7 @@
     }
 
     function roleLabel(role) {
-      return { admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst' }[role] || role;
+      return { admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst', general: 'General' }[role] || role;
     }
 
     function roleOptions(selected) {

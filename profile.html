@@ -71,6 +71,7 @@
     }
 
     try {
+      const ROLE_LABELS = { admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst', general: 'General' };
       const [profile, memberships] = await Promise.all([
         getMyProfile(),
         getMyMemberships()
@@ -86,7 +87,7 @@
       }
 
       const summary = memberships.length
-        ? memberships.map(item => item.semesters.name + ' · ' + item.role).join(' | ')
+        ? memberships.map(item => item.semesters.name + ' · ' + (ROLE_LABELS[item.role] || item.role)).join(' | ')
         : 'No semester role has been assigned.';
       document.getElementById('membership-summary').textContent = summary;
     } catch (error) {
