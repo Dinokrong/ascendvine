@@ -415,3 +415,27 @@ grant execute on function public.admin_assign_senior(uuid, uuid, uuid) to authen
 -- Membership and assignment writes have no direct browser-table policy.
 -- They can only occur through the guarded Admin functions above.
 -- Never put the secret/service-role key in this repository.
+
+
+create or replace function public.admin_approve_member(
+  target_user uuid,
+  target_semester uuid,
+  target_role text
+)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+as $$
+begin
+  if not public.is_semester_admin(target_semester) then
+    raise exception 'Admin permission required';
+  end if;
+
+  perform public.admin_set_account_status(target_user, 'approved');
+  perform public.admin_set_member_role(target_semester, target_user, target_role);
+end;
+$$;
+
+revoke all on function public.admin_approve_member(uuid, uuid, text) from public;
+grant execute on function public.admin_approve_member(uuid, uuid, text) to authenticated;
