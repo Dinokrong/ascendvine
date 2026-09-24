@@ -44,6 +44,8 @@ only the groups assigned to them; Admins retain an administrative override.
    the practice leaderboard.
    - Then run `supabase/leaderboard-groups-streaks.sql` once to show each
      member's group on both leaderboards and study streaks on the practice one.
+   - Run `supabase/graded-answer-review.sql` once so members can compare
+     their answers with the answer key after their quiz is graded.
    - Run `supabase/general-members.sql` once to add the General role (see
      below).
    - Run `supabase/quiz-away-alerts.sql` once to record when members leave the

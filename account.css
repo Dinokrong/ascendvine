@@ -1385,3 +1385,45 @@
     min-width: 780px;
   }
 }
+
+/* Graded quiz: score and overall comment above the questions */
+.quiz-result-summary {
+  display: grid;
+  grid-template-columns: 170px 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #bdd7c6;
+  border-radius: 8px;
+  padding: 1rem 1.15rem;
+  background: #edf5f0;
+  color: #24533c;
+}
+
+.quiz-result-summary span {
+  display: block;
+  color: var(--account-muted);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.quiz-result-score strong {
+  display: block;
+  margin-top: .3rem;
+  font-size: 1.6rem;
+}
+
+.quiz-result-comment p {
+  margin: .35rem 0 0;
+  white-space: pre-wrap;
+  line-height: 1.55;
+}
+
+.quiz-result-empty {
+  color: var(--account-muted);
+}
+
+@media (max-width: 600px) {
+  .quiz-result-summary { grid-template-columns: 1fr; }
+}
