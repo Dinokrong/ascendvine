@@ -29,6 +29,8 @@ only the groups assigned to them; Admins retain an administrative override.
    deletion from the Admin page.
 5. Run `supabase/quizzes.sql` once to add quiz uploads, protected answer keys,
    group releases, attempts, and responses.
+   - If `quizzes.sql` was installed before the grading phase, also run
+     `supabase/quiz-grading.sql` once to add grading and quiz standings.
 6. Under Authentication, enable email/password accounts.
 7. Require email confirmation.
 8. Set the production Site URL to the deployed AscendVine URL.
@@ -117,6 +119,10 @@ deleting Admin, and timestamp.
    answer it in `quiz.html`. Answers save automatically and lock on submission.
 5. The submitted records are visible only to the quiz taker, their group's
    Senior and VP, and semester Admins.
+6. Seniors, VPs, and Admins open `grading.html`, review the member response
+   beside the protected answer key, award points, and publish feedback.
+7. `quiz-leaderboard.html` totals graded quiz points across the semester. This
+   is separate from the future Question Bank practice leaderboard.
 
 The bulk parser recognizes chapter headings plus numbered questions such as
 `1. Question text`. It pairs them, in order, with paragraphs beginning

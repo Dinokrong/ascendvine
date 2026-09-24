@@ -233,10 +233,11 @@
     }
 
     async function loadSemesters() {
-      await requireApprovedUser();
+      const user = await requireApprovedUser();
       const { data, error } = await supabase
         .from('semester_memberships')
         .select('semester_id, role, semesters(name)')
+        .eq('user_id', user.id)
         .eq('role', 'admin');
 
       if (error) throw error;
@@ -245,10 +246,12 @@
       semesterSelect.innerHTML = data.map(item =>
         '<option value="' + item.semester_id + '">' + esc(item.semesters.name) + '</option>'
       ).join('');
+      semesterSelect.value = data[0].semester_id;
     }
 
     async function loadQuizzes() {
       const semesterId = semesterSelect.value;
+      if (!semesterId) throw new Error('Choose a semester before loading quizzes.');
       const quizResult = await supabase
         .from('quizzes')
         .select('id, title, description, status, created_at')
