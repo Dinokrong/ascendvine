@@ -1120,17 +1120,64 @@
 
 .grading-submission {
   display: flex;
+  flex: 1;
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
   padding: .85rem 0;
-  border-bottom: 1px solid var(--account-border);
   color: var(--account-text);
   text-decoration: none;
 }
 
-.grading-submission:last-child {
+/* A submission row: the link to grade it, then its PDF button */
+.grading-submission-row {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  border-bottom: 1px solid var(--account-border);
+}
+
+.grading-submission-row:last-child {
   border-bottom: 0;
+}
+
+.grading-quiz-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .9rem 0 .35rem;
+  border-bottom: 1px solid var(--account-border);
+  font-size: .86rem;
+}
+
+.grading-pdf,
+.grading-pdf-all {
+  border: 1px solid var(--account-border);
+  border-radius: 999px;
+  padding: .36rem .65rem;
+  background: #fff;
+  color: var(--account-text);
+  cursor: pointer;
+  font: inherit;
+  font-size: .74rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.grading-pdf-all {
+  font-weight: 600;
+}
+
+.grading-pdf:hover,
+.grading-pdf-all:hover {
+  border-color: var(--account-text);
+}
+
+.grading-pdf:disabled,
+.grading-pdf-all:disabled {
+  cursor: wait;
+  opacity: .6;
 }
 
 .grading-submission > div {

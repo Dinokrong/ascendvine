@@ -37,6 +37,7 @@
 
   <script type="module">
     import { supabase, requireApprovedUser } from './js/auth-client.js';
+    import { downloadSubmissionPdf, downloadQuizPdf } from './js/quiz-pdf.js';
 
     const ALLOWED_ROLES = ['admin', 'senior', 'vp'];
     const message = document.getElementById('grading-message');
@@ -148,23 +149,53 @@
           '<div><span class="role-pill">' + esc({ admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst', general: 'General' }[currentRole] || currentRole) + ' access</span>' +
           '<h2>' + esc(group.name) + '</h2>' +
           '<p>' + count + ' assigned member' + (count === 1 ? '' : 's') + '</p></div>' +
-          (submissions.length ? '<div class="grading-submission-list">' + submissions.map(attempt => {
-            const profile = profiles.find(item => item.id === attempt.user_id);
-            const quiz = quizzes.find(item => item.id === attempt.quiz_id);
-            return '<a class="grading-submission" href="grade-quiz.html?id=' + attempt.id + '">' +
-              '<div><strong>' + esc(nameOf(profile)) +
-              (awayCounts[attempt.id]
-                ? '<span class="grading-away-badge">Left page ' + awayCounts[attempt.id] + '×</span>'
-                : '') +
-              '</strong><span>' + esc(quiz?.title || 'Weekly quiz') +
-              ' · ' + esc(formatDate(attempt.submitted_at)) + '</span></div>' +
-              '<span class="grading-submission-status ' + attempt.status + '">' +
-              (attempt.status === 'graded' ? esc(attempt.score ?? 'Graded') : 'Grade') + '</span></a>';
-          }).join('') + '</div>' : '<div class="grading-empty"><strong>No submissions waiting</strong>' +
+          (submissions.length ? '<div class="grading-submission-list">' +
+            // One section per quiz, newest submission first, with a PDF of all its responses.
+            [...new Set(submissions.map(attempt => attempt.quiz_id))].map(quizId => {
+              const quiz = quizzes.find(item => item.id === quizId);
+              const forQuiz = submissions.filter(attempt => attempt.quiz_id === quizId);
+              return '<div class="grading-quiz-heading"><strong>' + esc(quiz?.title || 'Weekly quiz') + '</strong>' +
+                '<button type="button" class="grading-pdf-all" data-attempts="' + forQuiz.map(attempt => attempt.id).join(',') + '"' +
+                ' data-title="' + esc((quiz?.title || 'Weekly quiz') + ' - ' + group.name) + '">Download all (PDF)</button></div>' +
+                forQuiz.map(attempt => {
+                  const profile = profiles.find(item => item.id === attempt.user_id);
+                  return '<div class="grading-submission-row">' +
+                    '<a class="grading-submission" href="grade-quiz.html?id=' + attempt.id + '">' +
+                    '<div><strong>' + esc(nameOf(profile)) +
+                    (awayCounts[attempt.id]
+                      ? '<span class="grading-away-badge">Left page ' + awayCounts[attempt.id] + '×</span>'
+                      : '') +
+                    '</strong><span>Submitted ' + esc(formatDate(attempt.submitted_at)) + '</span></div>' +
+                    '<span class="grading-submission-status ' + attempt.status + '">' +
+                    (attempt.status === 'graded' ? esc(attempt.score ?? 'Graded') : 'Grade') + '</span></a>' +
+                    '<button type="button" class="grading-pdf" data-attempt="' + attempt.id + '" aria-label="Download ' +
+                    esc(nameOf(profile)) + '\'s responses as PDF">PDF</button></div>';
+                }).join('');
+            }).join('') + '</div>' : '<div class="grading-empty"><strong>No submissions waiting</strong>' +
             '<span>Submitted quizzes from this group will appear here.</span></div>') +
         '</article>';
       }).join('');
     }
+
+    grid.addEventListener('click', async event => {
+      const button = event.target.closest('.grading-pdf, .grading-pdf-all');
+      if (!button) return;
+      const label = button.textContent;
+      button.disabled = true;
+      button.textContent = 'Preparing…';
+      try {
+        if (button.classList.contains('grading-pdf')) {
+          await downloadSubmissionPdf(supabase, button.dataset.attempt);
+        } else {
+          await downloadQuizPdf(supabase, button.dataset.attempts.split(','), button.dataset.title);
+        }
+      } catch (error) {
+        showError(error.message || 'Unable to create the PDF.');
+      } finally {
+        button.disabled = false;
+        button.textContent = label;
+      }
+    });
 
     semesterSelect.addEventListener('change', () => refresh().catch(error => showError(error.message)));
 
