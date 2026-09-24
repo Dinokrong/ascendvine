@@ -87,6 +87,20 @@
         || profile?.email || 'Unknown member';
     }
 
+    // Roster order: Admins, Seniors, Vice Presidents, Associates, Analysts;
+    // alphabetical by last name (then first name) within each role.
+    function byRoleThenLastName(a, b) {
+      const rank = profile => {
+        const role = memberships.find(item => item.user_id === profile.id)?.role;
+        return role ? ROLES.indexOf(role) : ROLES.length;
+      };
+      const roleGap = rank(a) - rank(b);
+      if (roleGap) return roleGap;
+      const last = (a.last_name || '').localeCompare(b.last_name || '', undefined, { sensitivity: 'base' });
+      if (last) return last;
+      return (a.first_name || '').localeCompare(b.first_name || '', undefined, { sensitivity: 'base' });
+    }
+
     function roleLabel(role) {
       return { admin: 'Admin', senior: 'Senior', vp: 'Vice President', associate: 'Associate', analyst: 'Analyst' }[role] || role;
     }
@@ -201,7 +215,9 @@
 
     function renderRoster() {
       const container = document.getElementById('roster-list');
-      const approved = profiles.filter(profile => profile.approval_status === 'approved');
+      const approved = profiles
+        .filter(profile => profile.approval_status === 'approved')
+        .sort(byRoleThenLastName);
 
       if (!approved.length) {
         container.innerHTML = '<p class="admin-empty">No approved members.</p>';
