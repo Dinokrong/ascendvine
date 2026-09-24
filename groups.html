@@ -50,6 +50,17 @@
         .replace(/'/g, '&#039;');
     }
 
+    // Vice Presidents first, then Associates, then Analysts; alphabetical by
+    // last name (then first name) within each.
+    const ROLE_ORDER = { vp: 0, associate: 1, analyst: 2 };
+    function byRoleThenLastName(a, b) {
+      const roleGap = (ROLE_ORDER[a.role] ?? 3) - (ROLE_ORDER[b.role] ?? 3);
+      if (roleGap) return roleGap;
+      const last = (a.profile.last_name || '').localeCompare(b.profile.last_name || '', undefined, { sensitivity: 'base' });
+      if (last) return last;
+      return (a.profile.first_name || '').localeCompare(b.profile.first_name || '', undefined, { sensitivity: 'base' });
+    }
+
     function nameOf(profile) {
       return ((profile?.first_name || '') + ' ' + (profile?.last_name || '')).trim()
         || profile?.email || 'Unknown member';
@@ -126,7 +137,7 @@
             role: roles.find(role => role.user_id === member.user_id)?.role
           }))
           .filter(item => item.profile)
-          .sort((a, b) => nameOf(a.profile).localeCompare(nameOf(b.profile)));
+          .sort(byRoleThenLastName);
 
         return '<article class="group-directory-card">' +
           '<div class="group-directory-header"><div><span>Senior-led group</span><h2>' + esc(group.name) + '</h2></div>' +
