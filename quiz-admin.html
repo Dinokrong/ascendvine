@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AscendVine — Quiz Admin</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="account.css">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-left"><a href="home.html" class="navbar-logo">AscendVine</a></div>
+    <div class="nav-center">
+      <a href="questionbank.html">Question Bank</a>
+      <a href="studyguide.html">Study Guide</a>
+    </div>
+    <div class="nav-right account-nav"><a href="profile.html">Profile</a></div>
+  </nav>
+
+  <main class="admin-page quiz-admin-page">
+    <header class="admin-header">
+      <div>
+        <div class="home-eyebrow">Quiz administration</div>
+        <h1>Upload a weekly quiz</h1>
+        <p>Paste chapter-organized questions and the matching answer key. AscendVine validates each pair before creating a draft.</p>
+      </div>
+      <label class="admin-semester-picker">
+        Semester
+        <select id="semester-select"></select>
+      </label>
+    </header>
+
+    <div class="account-message" id="quiz-message" role="status" aria-live="polite"></div>
+
+    <section class="quiz-builder">
+      <div class="quiz-builder-meta">
+        <label>Quiz title
+          <input id="quiz-title" type="text" maxlength="120" placeholder="Chapters 1 & 2 Quiz" required>
+        </label>
+        <label>Default points per question
+          <input id="default-points" type="number" min="0.25" step="0.25" value="1">
+        </label>
+        <label class="quiz-field-wide">Description
+          <textarea id="quiz-description" rows="2" placeholder="Optional instructions for Seniors and quiz takers"></textarea>
+        </label>
+        <label>Source label
+          <input id="source-label" type="text" value="[AIG] Fall 2026 Edu Plan">
+        </label>
+        <label>Source document
+          <input id="source-url" type="url" value="https://docs.google.com/document/d/1iBYSkgnNDRiwCZQXYuHWEgqUGhPH3XfJRoY7w7jkx88/edit">
+        </label>
+      </div>
+
+      <div class="quiz-paste-grid">
+        <label>Questions
+          <span>Paste chapter headings and numbered questions from a Questions tab.</span>
+          <textarea id="questions-input" rows="18" placeholder="Chapter 1: Introduction&#10;1. First question...&#10;2. Second question..."></textarea>
+        </label>
+        <label>Answer key
+          <span>Paste the matching Answer Key tab. Each “Answer:” paragraph is paired in order.</span>
+          <textarea id="answers-input" rows="18" placeholder="1. First question...&#10;Answer: First answer...&#10;2. Second question...&#10;Answer: Second answer..."></textarea>
+        </label>
+      </div>
+
+      <div class="quiz-builder-actions">
+        <button id="preview-quiz" class="admin-action secondary" type="button">Validate and preview</button>
+        <button id="upload-quiz" class="admin-action" type="button" disabled>Create draft quiz</button>
+      </div>
+
+      <div id="quiz-preview" class="quiz-preview" hidden></div>
+    </section>
+
+    <section class="admin-section">
+      <div class="admin-section-heading">
+        <div>
+          <h2>Uploaded quizzes</h2>
+          <p>Drafts remain Admin-only. Mark a quiz ready when Seniors may release it to their groups.</p>
+        </div>
+      </div>
+      <div id="quiz-list" class="quiz-admin-list"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { supabase, requireApprovedUser } from './js/auth-client.js';
+
+    const message = document.getElementById('quiz-message');
+    const semesterSelect = document.getElementById('semester-select');
+    const uploadButton = document.getElementById('upload-quiz');
+    const preview = document.getElementById('quiz-preview');
+    let parsedRows = [];
+
+    function esc(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showMessage(text, type = 'error') {
+      message.textContent = text;
+      message.className = 'account-message visible ' + type;
+    }
+
+    function clearMessage() {
+      message.textContent = '';
+      message.className = 'account-message';
+    }
+
+    function linesOf(value) {
+      return String(value || '').split(/\r?\n/).map(line => line.trim()).filter(Boolean);
+    }
+
+    function isSectionHeading(line) {
+      return /^Chapter\s+\d+\s*:/i.test(line)
+        || /(?:Review|Exercises)$/i.test(line);
+    }
+
+    function parseQuestions(raw) {
+      const questions = [];
+      let chapter = '';
+      let current = null;
+
+      function flush() {
+        if (!current) return;
+        current.prompt = current.prompt.trim();
+        if (current.prompt) questions.push(current);
+        current = null;
+      }
+
+      for (const line of linesOf(raw)) {
+        if (isSectionHeading(line)) {
+          flush();
+          chapter = line;
+          continue;
+        }
+
+        const numbered = line.match(/^\d+\.\s+(.+)$/);
+        if (numbered) {
+          flush();
+          current = { chapter, prompt: numbered[1].trim() };
+          continue;
+        }
+
+        if (current && !/^Answer:\s*/i.test(line)) {
+          current.prompt += ' ' + line;
+        }
+      }
+
+      flush();
+      return questions;
+    }
+
+    function parseAnswers(raw) {
+      const answers = [];
+      let current = null;
+
+      function flush() {
+        if (current !== null && current.trim()) answers.push(current.trim());
+        current = null;
+      }
+
+      for (const line of linesOf(raw)) {
+        const answer = line.match(/^Answer:\s*(.*)$/i);
+        if (answer) {
+          flush();
+          current = answer[1].trim();
+          continue;
+        }
+
+        if (/^\d+\.\s+/.test(line) || isSectionHeading(line)) {
+          flush();
+          continue;
+        }
+
+        if (current !== null) current += ' ' + line;
+      }
+
+      flush();
+      return answers;
+    }
+
+    function buildPreview() {
+      clearMessage();
+      uploadButton.disabled = true;
+      parsedRows = [];
+
+      const questions = parseQuestions(document.getElementById('questions-input').value);
+      const answers = parseAnswers(document.getElementById('answers-input').value);
+      const points = Number(document.getElementById('default-points').value);
+
+      if (!questions.length) {
+        showMessage('No numbered questions were found. Start each question with a number and period, such as “1. Question”.');
+        preview.hidden = true;
+        return;
+      }
+      if (questions.length !== answers.length) {
+        showMessage('Found ' + questions.length + ' questions but ' + answers.length + ' answers. The counts must match before upload.');
+        preview.hidden = true;
+        return;
+      }
+      if (!Number.isFinite(points) || points <= 0) {
+        showMessage('Default points must be greater than zero.');
+        preview.hidden = true;
+        return;
+      }
+
+      parsedRows = questions.map((question, index) => ({
+        chapter: question.chapter || null,
+        prompt: question.prompt,
+        answer_key: answers[index],
+        max_points: points
+      }));
+
+      const chapters = [...new Set(parsedRows.map(row => row.chapter).filter(Boolean))];
+      const previewRows = parsedRows.slice(0, 8).map((row, index) =>
+        '<tr><td>' + (index + 1) + '</td><td>' + esc(row.chapter || 'Uncategorized') + '</td>' +
+        '<td>' + esc(row.prompt) + '</td><td>' + esc(row.answer_key) + '</td></tr>'
+      ).join('');
+
+      preview.innerHTML =
+        '<div class="quiz-preview-summary"><strong>' + parsedRows.length + ' matched questions</strong>' +
+        '<span>' + chapters.length + ' chapter section' + (chapters.length === 1 ? '' : 's') +
+        ' · ' + (parsedRows.length * points) + ' total points</span></div>' +
+        '<div class="quiz-preview-table"><table><thead><tr><th>#</th><th>Chapter</th><th>Question</th><th>Answer key</th></tr></thead>' +
+        '<tbody>' + previewRows + '</tbody></table></div>' +
+        (parsedRows.length > 8 ? '<p class="quiz-preview-note">Showing the first 8 questions. All ' + parsedRows.length + ' will be uploaded.</p>' : '');
+
+      preview.hidden = false;
+      uploadButton.disabled = false;
+      showMessage('Questions and answers match. Review the preview, then create the draft.', 'success');
+    }
+
+    async function loadSemesters() {
+      await requireApprovedUser();
+      const { data, error } = await supabase
+        .from('semester_memberships')
+        .select('semester_id, role, semesters(name)')
+        .eq('role', 'admin');
+
+      if (error) throw error;
+      if (!data?.length) throw new Error('This page requires an Admin role.');
+
+      semesterSelect.innerHTML = data.map(item =>
+        '<option value="' + item.semester_id + '">' + esc(item.semesters.name) + '</option>'
+      ).join('');
+    }
+
+    async function loadQuizzes() {
+      const semesterId = semesterSelect.value;
+      const quizResult = await supabase
+        .from('quizzes')
+        .select('id, title, description, status, created_at')
+        .eq('semester_id', semesterId)
+        .order('created_at', { ascending: false });
+
+      if (quizResult.error) throw quizResult.error;
+      const quizzes = quizResult.data || [];
+      let questionCounts = {};
+
+      if (quizzes.length) {
+        const questionResult = await supabase
+          .from('quiz_questions')
+          .select('quiz_id')
+          .in('quiz_id', quizzes.map(quiz => quiz.id));
+        if (questionResult.error) throw questionResult.error;
+        questionCounts = (questionResult.data || []).reduce((counts, question) => {
+          counts[question.quiz_id] = (counts[question.quiz_id] || 0) + 1;
+          return counts;
+        }, {});
+      }
+
+      const container = document.getElementById('quiz-list');
+      if (!quizzes.length) {
+        container.innerHTML = '<p class="admin-empty">No quizzes uploaded for this semester.</p>';
+        return;
+      }
+
+      container.innerHTML = quizzes.map(quiz => {
+        const nextAction = quiz.status === 'draft'
+          ? '<button class="admin-action quiz-status" data-status="ready" type="button">Mark ready</button>'
+          : quiz.status === 'ready'
+            ? '<button class="admin-action secondary quiz-status" data-status="draft" type="button">Return to draft</button>'
+            : '<button class="admin-action secondary quiz-status" data-status="ready" type="button">Restore</button>';
+
+        return '<article class="quiz-admin-row" data-quiz="' + quiz.id + '">' +
+          '<div><span class="role-pill">' + esc(quiz.status) + '</span><h3>' + esc(quiz.title) + '</h3>' +
+          '<p>' + (questionCounts[quiz.id] || 0) + ' questions' +
+          (quiz.description ? ' · ' + esc(quiz.description) : '') + '</p></div>' +
+          '<div class="quiz-row-actions">' + nextAction +
+          (quiz.status === 'draft' ? '<button class="admin-action danger delete-quiz" type="button">Delete draft</button>' : '') +
+          '</div></article>';
+      }).join('');
+    }
+
+    document.getElementById('preview-quiz').addEventListener('click', buildPreview);
+
+    uploadButton.addEventListener('click', async () => {
+      try {
+        if (!parsedRows.length) return buildPreview();
+        const title = document.getElementById('quiz-title').value.trim();
+        if (title.length < 2) throw new Error('Add a quiz title before uploading.');
+
+        uploadButton.disabled = true;
+        const result = await supabase.rpc('admin_create_quiz', {
+          target_semester: semesterSelect.value,
+          quiz_title: title,
+          quiz_description: document.getElementById('quiz-description').value,
+          quiz_source_label: document.getElementById('source-label').value,
+          quiz_source_url: document.getElementById('source-url').value,
+          question_rows: parsedRows
+        });
+        if (result.error) throw result.error;
+
+        showMessage('Draft quiz created. It remains hidden until you mark it ready.', 'success');
+        parsedRows = [];
+        preview.hidden = true;
+        document.getElementById('quiz-title').value = '';
+        document.getElementById('quiz-description').value = '';
+        document.getElementById('questions-input').value = '';
+        document.getElementById('answers-input').value = '';
+        await loadQuizzes();
+      } catch (error) {
+        showMessage(error.message || 'Unable to create this quiz.');
+        uploadButton.disabled = false;
+      }
+    });
+
+    document.getElementById('quiz-list').addEventListener('click', async event => {
+      const row = event.target.closest('.quiz-admin-row');
+      if (!row) return;
+
+      try {
+        if (event.target.classList.contains('quiz-status')) {
+          const result = await supabase.rpc('admin_set_quiz_status', {
+            target_quiz: row.dataset.quiz,
+            target_status: event.target.dataset.status
+          });
+          if (result.error) throw result.error;
+          showMessage(event.target.dataset.status === 'ready'
+            ? 'Quiz is ready for Seniors to release.'
+            : 'Quiz returned to draft.', 'success');
+        } else if (event.target.classList.contains('delete-quiz')) {
+          if (window.prompt('Type DELETE to permanently remove this draft quiz.') !== 'DELETE') return;
+          const result = await supabase.rpc('admin_delete_draft_quiz', {
+            target_quiz: row.dataset.quiz
+          });
+          if (result.error) throw result.error;
+          showMessage('Draft quiz deleted.', 'success');
+        } else {
+          return;
+        }
+
+        await loadQuizzes();
+      } catch (error) {
+        showMessage(error.message || 'Unable to update this quiz.');
+      }
+    });
+
+    semesterSelect.addEventListener('change', () => loadQuizzes().catch(error => showMessage(error.message)));
+
+    try {
+      await loadSemesters();
+      await loadQuizzes();
+    } catch (error) {
+      showMessage(error.message || 'Unable to load quiz administration.');
+      document.querySelectorAll('.quiz-builder, .admin-section').forEach(section => section.hidden = true);
+    }
+  </script>
+  <script src="app.js"></script>
+</body>
+</html>
