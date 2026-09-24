@@ -204,9 +204,9 @@ begin
     select 1 from public.semester_memberships
     where semester_id = target_semester
       and user_id = target_user
-      and role in ('associate', 'analyst')
+      and role in ('vp', 'associate', 'analyst')
   ) then
-    raise exception 'Only Associates and Analysts can join a group';
+    raise exception 'Only VPs, Associates, and Analysts can join a group';
   end if;
 
   insert into public.group_memberships (
@@ -307,7 +307,7 @@ begin
     values (target_semester, target_user, old_role, target_role, auth.uid());
   end if;
 
-  if target_role not in ('associate', 'analyst') then
+  if target_role not in ('vp', 'associate', 'analyst') then
     delete from public.group_memberships
     where semester_id = target_semester and user_id = target_user;
   end if;
