@@ -450,9 +450,14 @@
 }
 
 .admin-action.danger {
+  justify-self: end;
+  width: auto;
   border: 1px solid #d9aaa2;
+  padding: .42rem .62rem;
   background: #fff4f1;
   color: var(--account-danger);
+  font-size: .72rem;
+  line-height: 1.1;
 }
 
 .admin-action.danger:hover {
