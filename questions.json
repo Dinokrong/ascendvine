@@ -2617,7 +2617,7 @@
   },
   {
     "id": 328,
-    "question": "In a DCF valuation, which of the following actions increases the valuation the most:\n$10 decrease in capital expenditures$10 decrease in expenses$10 increase in revenues",
+    "question": "In a DCF valuation, which of the following actions increases the valuation the most:\n$10 decrease in capital expenditures\n$10 decrease in expenses\n$10 increase in revenues",
     "answer": "The $10 decrease in CapEx has the most significant impact on valuation. Decreasing CapEx by $10 directly increases FCF by $10 with no tax effect. Reducing expenses by $10 increases FCF by $10 x (1 - tax rate), which is less than $10. Increasing revenues by $10 also increases FCF by $10 x (1 - tax rate), which is less than $10.",
     "topic": "DCF",
     "difficulty": "Advanced",
@@ -2777,7 +2777,7 @@
   },
   {
     "id": 348,
-    "question": "Company A has a P/E of 5x and Company B has a P/E of 8x. Company A's cost of debt is 5%, cost of cash interest is 2%, and tax rate is 50%.\nIf Company A purchases Company B using:50% stock25% debt25% cash\nIs the deal accretive or dilutive?",
+    "question": "Company A has a P/E of 5x and Company B has a P/E of 8x. Company A's cost of debt is 5%, cost of cash interest is 2%, and tax rate is 50%.\nIf Company A purchases Company B using:\n50% stock\n25% debt\n25% cash\nIs the deal accretive or dilutive?",
     "answer": "Since the weighted cost of acquisition (10.875%) is less than Company B’s yield (12.5%), the deal is accretive. Cost of equity = 20% (1 ÷ P/E of 5x). After-tax cost of debt = 2.5% (5% x (1 - 50% tax rate)). After-tax cost of cash = 1% (2% x (1 - 50% tax rate)). Weighted cost of acquisition = (0.5 x 20%) + (0.25 x 2.5%) + (0.25 x 1%) = 10% + 0.625% + 0.25% = 10.875%. Yield of Company B = 12.5% (1 ÷ P/E of 8x).",
     "topic": "Merger Model (M&A)",
     "difficulty": "Advanced",
@@ -3897,7 +3897,7 @@
   },
   {
     "id": 464,
-    "question": "Looking at a company's Income Statement: Which affects Net Income most?10% increase in Price10% increase in Volume10% reduction in COGSFollow-up: Could there be a situation where COGS has a larger impact than price?",
+    "question": "Looking at a company's Income Statement: Which affects Net Income most?\n10% increase in Price\n10% increase in Volume\n10% reduction in COGS\nFollow-up: Could there be a situation where COGS has a larger impact than price?",
     "answer": "The 10% price increase usually has the biggest impact. Price rises boost revenue dollar‑for‑dollar with no extra cost, so the entire uplift flows to Net Income. Volume increases add variable costs, diluting the benefit. COGS cuts save only the cost line. If gross margins are extremely thin or demand is highly price‑elastic, a COGS cut could outweigh a price hike.",
     "topic": "Accounting",
     "difficulty": "Basic",
@@ -4216,7 +4216,7 @@
   },
   {
     "id": 491,
-    "question": "A company has $30 in A/R, $50 in Inventory, and $20 in A/P at year-end.\nIn Q1 next year, revenue is $90 with an 80% gross margin.DSO is 90, DIO is 45, DPO is 60 (AR based on revenue; Inv/AP based on COGS; 90 days in Q1).\nHow much did cash flow change due to changes in working capital?",
+    "question": "A company has $30 in A/R, $50 in Inventory, and $20 in A/P at year-end.\nIn Q1 next year, revenue is $90 with an 80% gross margin.\nDSO is 90, DIO is 45, DPO is 60 (AR based on revenue; Inv/AP based on COGS; 90 days in Q1).\nHow much did cash flow change due to changes in working capital?",
     "answer": "Cash flow decreased by $27 due to changes in working capital. Calculation: Previous Operating Working Capital (OWC) = $30 + $50 - $20 = $60 Q1 Revenue = $90 Q1 COGS = $90 * (1 - 0.80) = $18 New A/R = $90 * (90 / 90) = $90 New Inventory = $18 * (45 / 90) = $9 New A/P = $18 * (60 / 90) = $12 New Operating Working Capital = $90 + $9 - $12 = $87 Change in Working Capital = $87 - $60 = +$27 Increase in OWC means cash flow decreased by $27.",
     "topic": "Accounting",
     "difficulty": "Advanced",
@@ -5239,7 +5239,7 @@
   },
   {
     "id": 577,
-    "question": "Walk me from Enterprise Value to Equity Value for the following two companies:\nCompany A: EV of $1.5B, Debt of $500M, Cash of $200MCompany B: EV of $1.0B, Debt of $100M, Cash of $500M",
+    "question": "Walk me from Enterprise Value to Equity Value for the following two companies:\nCompany A: EV of $1.5B, Debt of $500M, Cash of $200M\nCompany B: EV of $1.0B, Debt of $100M, Cash of $500M",
     "answer": "Equity Value = EV - Debt + Cash Company A: Equity Value = $1.5B - $500M + $200M = $1.2B Company B: Equity Value = $1.0B - $100M + $500M = $1.4B",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Basic",
@@ -5359,7 +5359,7 @@
   },
   {
     "id": 587,
-    "question": "Consider the following list of valuation multiples. Which of them are conceptually valid?\nEV/Sales\nPrice/SalesEV/EBITDAP/E",
+    "question": "Consider the following list of valuation multiples. Which of them are conceptually valid?\nEV/Sales\nPrice/Sales\nEV/EBITDA\nP/E",
     "answer": "EV/Sales, EV/EBITDA, and P/E are valid; Price/Sales is conceptually flawed. Enterprise numerator (EV) should pair with pre‑interest denominators (Sales, EBITDA). Equity numerator (Price) must pair with post‑interest Net Income. Price/Sales mixes equity value with a metric available to all capital providers.",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Basic",
@@ -5371,7 +5371,7 @@
   },
   {
     "id": 588,
-    "question": "From the following list, which valuation multiples are conceptually flawed because they mismatch capital structure claims? Explain why.EV/EBITDAPrice/EBITDAEV/Net IncomeP/E",
+    "question": "From the following list, which valuation multiples are conceptually flawed because they mismatch capital structure claims? Explain why.\nEV/EBITDA\nPrice/EBITDA\nEV/Net Income\nP/E",
     "answer": "Price/EBITDA and EV/Net Income are flawed. Price/EBITDA pairs equity value with a pre‑interest metric. EV/Net Income pairs enterprise value with a post‑interest metric. EV/EBITDA and P/E are correctly matched.",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Basic",
@@ -5455,7 +5455,7 @@
   },
   {
     "id": 595,
-    "question": "Given the following information, what is the company's share price?\nEBITDA: $100 millionEV/EBITDA Multiple: 7.0x\nNet Debt: $400 million\nShares Outstanding: 50 million",
+    "question": "Given the following information, what is the company's share price?\nEBITDA: $100 million\nEV/EBITDA Multiple: 7.0x\nNet Debt: $400 million\nShares Outstanding: 50 million",
     "answer": "Answer: $6 per share Calculation: Enterprise Value = $100m × 7.0x = $700m. Equity Value = $700m - $400m Net Debt = $300m. Share Price = $300m / 50m shares = $6.",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Basic",
@@ -5742,7 +5742,7 @@
   },
   {
     "id": 619,
-    "question": "A company has the following information. Calculate the share price:\nP/E = 25xEV/EBITDA = 12x\nTax Rate = 25%\nRevenue = $2,000MShares Outstanding = 150MGross Margin = 50%$1,000M debt at 10% interestSG&A (including D&A) = $500MAssume no other liabilities or equity line items besides debt and common shareholders' equity.",
+    "question": "A company has the following information. Calculate the share price:\nP/E = 25x\nEV/EBITDA = 12x\nTax Rate = 25%\nRevenue = $2,000M\nShares Outstanding = 150M\nGross Margin = 50%\n$1,000M debt at 10% interest\nSG&A (including D&A) = $500M\nAssume no other liabilities or equity line items besides debt and common shareholders' equity.",
     "answer": "The answer is $50 per share. First, build an Income Statement: Revenue: $2,000M Gross Profit: $1,000M (given Gross Margin of 50%) SG&A: $(500M) EBIT: $500M Interest: $(100M) Pre-Tax Income: $400M Taxes: $(100M) Net Income: $300M Then, calculate the valuation: P/E Ratio = Equity Value / Net Income = 25x Equity Value = 25 * $300M = $7.5B Share Price = Equity Value / Shares Outstanding = $7.5B / 150M shares = $50 / share",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Advanced",
@@ -5850,7 +5850,7 @@
   },
   {
     "id": 628,
-    "question": "Use the following information:\nEnterprise value – $1,500\nMarket value of equity – $1,000\nBook value of equity – $500\nNon‑controlling interest – $50\nNet income – $100\nNet income margin – 25%EPS – $2\nAnswer the following:\nNet debt\nCurrent share priceP/E multiple\nRevenueEV / Revenue multiple\nWhy might you use P/E instead of EV / Revenue?",
+    "question": "Use the following information:\nEnterprise value – $1,500\nMarket value of equity – $1,000\nBook value of equity – $500\nNon‑controlling interest – $50\nNet income – $100\nNet income margin – 25%\nEPS – $2\nAnswer the following:\nNet debt\nCurrent share price\nP/E multiple\nRevenue\nEV / Revenue multiple\nWhy might you use P/E instead of EV / Revenue?",
     "answer": "Part 1 – Net Debt: $450 Net debt = EV − Equity value − NCI = 1,500 − 1,000 − 50 = 450. Part 2 – Share Price: $20 Shares = Net income / EPS = 100 / 2 = 50. Price = Market cap / Shares = 1,000 / 50 = 20. Part 3 – P/E Multiple: 10× P/E = Price / EPS = 20 / 2 = 10×. Part 4 – Revenue: $400 Revenue = Net income / Margin = 100 / 25% = 400. Part 5 – EV / Revenue: 3.75× 1,500 / 400 = 3.75×. Part 6 – P/E vs. EV / Revenue P/E is widely available for profitable public companies and reflects equity‑holder economics. EV / Revenue is useful when earnings are negative or distorted but is a cruder measure because it ignores margins and capital structure.",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Advanced",
@@ -5946,7 +5946,7 @@
   },
   {
     "id": 636,
-    "question": "A company provides the following financial data:\nRevenue: $2,000SG&A: $500\nTotal Debt: $1,000\nInterest Rate on Debt: 10%\nTax Rate: 25%\nShares Outstanding: 100P/E Multiple: 20.0x\nWhat is the company's current share price?",
+    "question": "A company provides the following financial data:\nRevenue: $2,000\nSG&A: $500\nTotal Debt: $1,000\nInterest Rate on Debt: 10%\nTax Rate: 25%\nShares Outstanding: 100P/E Multiple: 20.0x\nWhat is the company's current share price?",
     "answer": "$210 EBIT = 2,000 − 500 = 1,500. Interest = 1,000 × 10% = 100. Pre‑tax = 1,400 ⇒ NI = 1,400 × (1 − 25%) = 1,050. EPS = 1,050 / 100 = 10.5. Price = EPS × P/E = 10.5 × 20 = 210.",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Advanced",
@@ -6018,7 +6018,7 @@
   },
   {
     "id": 642,
-    "question": "A company has the following metrics:\nGross Debt / EBITDA = 5.0xEV / EBITDA = 10.0x\nMarket Cap = $400MCash = $100MCalculate its Total Enterprise Value (TEV).",
+    "question": "A company has the following metrics:\nGross Debt / EBITDA = 5.0x\nEV / EBITDA = 10.0x\nMarket Cap = $400M\nCash = $100M\nCalculate its Total Enterprise Value (TEV).",
     "answer": "Answer: $600M Calculation: Debt = 5.0x * EBITDA and EV = $400M + 5.0x * EBITDA - $100M = 10.0x * EBITDA $300M + 5.0x * EBITDA = 10.0x * EBITDA $300M = 5.0x * EBITDA EBITDA = $60M TEV = 10.0x * $60M = $600M",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Advanced",
@@ -6076,7 +6076,7 @@
   },
   {
     "id": 647,
-    "question": "Calculate Enterprise Value given the following information. Assume a 20% tax rate.\nAnnual Interest Expense = $20\nEquity Value = $1,000EV/EBITDA = 12xP/E = 25x\nCost of Debt = 10%\nAnnual D&A = $30",
+    "question": "Calculate Enterprise Value given the following information. Assume a 20% tax rate.\nAnnual Interest Expense = $20\nEquity Value = $1,000\nEV/EBITDA = 12x\nP/E = 25x\nCost of Debt = 10%\nAnnual D&A = $30",
     "answer": "Answer: $1,200 Method 1 (Shortcut): Total Debt = Interest Expense / Cost of Debt = $20 / 10% = $200 EV = Equity Value + Debt = $1,000 + $200 = $1,200 (assuming no cash) Method 2 (Income Statement walk): From P/E = 25x and Equity Value = $1,000, find Net Income: NI = $1,000 / 25 = $40 Find Pre-Tax Income (EBT): EBT = NI / (1 - Tax Rate) = $40 / (1 - 0.20) = $50 Find EBIT: EBIT = EBT + Interest Expense = $50 + $20 = $70 Find EBITDA: EBITDA = EBIT + D&A = $70 + $30 = $100 Calculate Enterprise Value: EV = EBITDA * EV/EBITDA Multiple = $100 * 12x = $1,200",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Advanced",
@@ -6447,7 +6447,7 @@
   },
   {
     "id": 678,
-    "question": "A company has the following metrics:\nEBITDA Margin: 20%EV/Revenue Multiple: 3.0x\nRevenue: $30\nWhat is the company's EV/EBITDA multiple?",
+    "question": "A company has the following metrics:\nEBITDA Margin: 20%\nEV/Revenue Multiple: 3.0x\nRevenue: $30\nWhat is the company's EV/EBITDA multiple?",
     "answer": "Answer: 15x Calculation: EBITDA = Revenue * EBITDA Margin = $30 * 20% = $6. EV = Revenue * EV/Revenue = $30 * 3.0 = $90. EV/EBITDA = $90 / $6 = 15x.",
     "topic": "Valuation",
     "difficulty": "Basic",
@@ -6963,7 +6963,7 @@
   },
   {
     "id": 721,
-    "question": "Given the following four multiples, which can you use as a valuation metric and which can you not? Why?\nEV / EarningsEV / EBITDAPrice / EBITDAPrice / Earnings",
+    "question": "Given the following four multiples, which can you use as a valuation metric and which can you not? Why?\nEV / Earnings\nEV / EBITDA\nPrice / EBITDA\nPrice / Earnings",
     "answer": "Valid Multiples: EV / EBITDA: ✓ Enterprise metric (EV) to enterprise metric (EBITDA). Price / Earnings: ✓ Equity metric (Price) to equity metric (Earnings). Invalid Multiples: EV / Earnings: ✗ Mismatch. EV is enterprise-level, Earnings is equity-level (post-interest). Price / EBITDA: ✗ Mismatch. Price is equity-level, EBITDA is enterprise-level (pre-interest). Valid multiples compare metrics at the same capital structure level (both enterprise or both equity). Mismatched multiples are conceptually flawed.",
     "topic": "Valuation",
     "difficulty": "Basic",
@@ -7436,7 +7436,7 @@
   },
   {
     "id": 761,
-    "question": "A company provides the following financial data:\nLevered Free Cash Flow (LFCF) Yield: 10%EBITDA: $100\nCapital Expenditures: $5\nInterest Expense: $25\nDecrease in Working Capital: $10\nTax Expense: $5\nWhat is the company's market capitalization?",
+    "question": "A company provides the following financial data:\nLevered Free Cash Flow (LFCF) Yield: 10%\nEBITDA: $100\nCapital Expenditures: $5\nInterest Expense: $25\nDecrease in Working Capital: $10\nTax Expense: $5\nWhat is the company's market capitalization?",
     "answer": "Answer: $750 Calculation: LFCF = EBITDA - Cash Interest - Cash Taxes - CapEx - Change in NWC. LFCF = $100 - $25 - $5 - $5 - (-$10) = $75. Note: We add back the decrease in NWC since it represents a source of cash. Market Cap = LFCF / LFCF Yield = $75 / 10% = $750.",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -7556,7 +7556,7 @@
   },
   {
     "id": 771,
-    "question": "A company reports the following financials:\nRevenue: $100\nGross Margin: 60%SG&A: $20 (includes all D&A)P/E Multiple: 25xEV/EBITDA Multiple: 10x\nTax Rate: 20%\nCash: $0\nDebt: $200 at 5% interest\nBonds: $200 at 10% interest\nWhat is the company's Depreciation & Amortization expense?",
+    "question": "A company reports the following financials:\nRevenue: $100\nGross Margin: 60%\nSG&A: $20 (includes all D&A)\nP/E Multiple: 25x\nEV/EBITDA Multiple: 10x\nTax Rate: 20%\nCash: $0\nDebt: $200 at 5% interest\nBonds: $200 at 10% interest\nWhat is the company's Depreciation & Amortization expense?",
     "answer": "Answer: $20 Calculation: Gross Profit = Revenue * Gross Margin = $100 * 60% = $60. EBIT = GP - SG&A = $60 - $20 = $40. Interest Expense = ($200 * 5%) + ($200 * 10%) = $10 + $20 = $30. EBT = EBIT - Interest = $40 - $30 = $10. NI = EBT * (1 - Tax Rate) = $10 * (1 - 20%) = $8. Equity Value = NI * P/E = $8 * 25x = $200. EV = Equity Value + Debt - Cash = $200 + $400 - $0 = $600. EBITDA = EV / (EV/EBITDA) = $600 / 10x = $60. Since SG&A includes D&A, EBIT = GP - SG&A already reflects D&A. EBITDA = EBIT + D&A, so D&A = EBITDA - EBIT = $60 - $40 = $20.",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -7832,7 +7832,7 @@
   },
   {
     "id": 794,
-    "question": "Company has $120M in perpetual unlevered free cash flow; no debt initially.RFR = 4%, Beta = 1, ERP = 6%.\nPart 1: What is EV?\nPart 2: Company raises $800M debt, tax rate 25%, interest 10%. What is EV now?\nPart 3: Assume CoD is 5% and the target capital structure mix is 60% equity / 40% debt. What is WACC?",
+    "question": "Company has $120M in perpetual unlevered free cash flow; no debt initially.\nRFR = 4%, Beta = 1, ERP = 6%.\nPart 1: What is EV?\nPart 2: Company raises $800M debt, tax rate 25%, interest 10%. What is EV now?\nPart 3: Assume CoD is 5% and the target capital structure mix is 60% equity / 40% debt. What is WACC?",
     "answer": "Part 1: Cost of Equity = 4% + 1 × 6% = 10%. EV = 120 ÷ 0.10 = $1.2 billion. Part 2: Raising $800 million debt and holding the cash leaves EV unchanged at $1.2 billion (Debt and Cash offset). Part 3: WACC (60% equity, 40% debt): After‑tax Cost of Debt = 5% × (1 − 25%) = 3.75%. WACC = 0.6 × 10% + 0.4 × 3.75% = 7.5%.",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -7988,7 +7988,7 @@
   },
   {
     "id": 807,
-    "question": "A company provides the following financial data:\nRevenue: $2,000\nGross Margin: 50%\nOperating Expenses (including D&A): $500\nTotal Debt: $1,000\nInterest Rate on Debt: 10%EV/EBITDA = 7.5x\nTax Rate: 25%\nShares Outstanding: 100P/E Multiple: 20.0x\nGiven this information, what is the company's share price?",
+    "question": "A company provides the following financial data:\nRevenue: $2,000\nGross Margin: 50%\nOperating Expenses (including D&A): $500\nTotal Debt: $1,000\nInterest Rate on Debt: 10%\nEV/EBITDA = 7.5x\nTax Rate: 25%\nShares Outstanding: 100P/E Multiple: 20.0x\nGiven this information, what is the company's share price?",
     "answer": "Answer: $60 per share Calculation: Gross Profit = $2,000 × 50% = $1,000. EBIT = $1,000 - $500 = $500. Interest Expense = $1,000 × 10% = $100. EBT = $500 - $100 = $400. Tax = $400 × 25% = $100. Net Income = $400 - $100 = $300. EPS = $300 / 100 shares = $3. Share Price = $3 × 20.0x P/E = $60. Note: The EV/EBITDA multiple of 7.5x is not needed for this calculation.",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -8144,7 +8144,7 @@
   },
   {
     "id": 820,
-    "question": "A target company has the following characteristics:\nEV/EBITDA Multiple: 10xEBITDA: $200 million\nTotal Debt: $900 million\nCash: $100 million\nAn acquirer purchases the company at a 25% premium to its standalone equity value.\nAnswer the following:\nWhat is the total equity purchase price?\nWhat is the enterprise value of the transaction?",
+    "question": "A target company has the following characteristics:\nEV/EBITDA Multiple: 10x\nEBITDA: $200 million\nTotal Debt: $900 million\nCash: $100 million\nAn acquirer purchases the company at a 25% premium to its standalone equity value.\nAnswer the following:\nWhat is the total equity purchase price?\nWhat is the enterprise value of the transaction?",
     "answer": "Part 1: Total Equity Purchase Price Answer: $1,500M Standalone EV = 10x * $200M = $2,000M Standalone Equity Value = $2,000M - $900M + $100M = $1,200M Purchase Price = $1,200M * 1.25 = $1,500M Part 2: Enterprise Value of Transaction Answer: $2,300M Transaction EV = Equity Purchase Price + Debt - Cash Transaction EV = $1,500M + $900M - $100M = $2,300M",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -8188,7 +8188,7 @@
   },
   {
     "id": 824,
-    "question": "Calculate the implied tax rate for a company with the following metrics:\nP/E Multiple: 20xEV/EBITDA Multiple: 10x\nMarket Cap: $200\nInterest Expense: $20\nPre-tax Cost of Debt: 5%D&A: $20\nThe company has no cash on its balance sheet.",
+    "question": "Calculate the implied tax rate for a company with the following metrics:\nP/E Multiple: 20x\nEV/EBITDA Multiple: 10x\nMarket Cap: $200\nInterest Expense: $20\nPre-tax Cost of Debt: 5%D&A: $20\nThe company has no cash on its balance sheet.",
     "answer": "Answer: 50% Calculation: NI = Market Cap / P/E = $200 / 20x = $10 Debt = Interest Expense / Cost of Debt = $20 / 5% = $400 EV = Market Cap + Debt = $200 + $400 = $600 (no cash, preferred, NCI) EBITDA = EV / (EV/EBITDA) = $600 / 10x = $60 EBIT = EBITDA - D&A = $60 - $20 = $40 Pre-tax Income (EBT) = EBIT - Interest = $40 - $20 = $20 Tax = EBT - NI = $20 - $10 = $10 Tax Rate = Tax / EBT = $10 / $20 = 50%",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -8199,7 +8199,7 @@
   },
   {
     "id": 825,
-    "question": "Given the following forward multiples for a company:1Y Forward EV/EBITDA = 12x2Y Forward EV/EBITDA = 10x1Y Forward P/E = 18x2Y Forward P/E = 20x\nPart 1: What is implied by the change in each multiple from Year 1 to Year 2?\nPart 2: What is the likely cause for the change in the denominators (i.e., EBITDA and Earnings) between the two periods?",
+    "question": "Given the following forward multiples for a company:\n1Y Forward EV/EBITDA = 12x\n2Y Forward EV/EBITDA = 10x\n1Y Forward P/E = 18x\n2Y Forward P/E = 20x\nPart 1: What is implied by the change in each multiple from Year 1 to Year 2?\nPart 2: What is the likely cause for the change in the denominators (i.e., EBITDA and Earnings) between the two periods?",
     "answer": "Part 1: EV/EBITDA compression (12x to 10x) implies EBITDA growth outpacing EV growth, suggesting strong operational improvement P/E expansion (18x to 20x) implies earnings growth lagging equity value growth, or market assigning higher valuation to future earnings Part 2: The divergence suggests the company is experiencing EBITDA growth but margin compression or increased expenses below the EBITDA line. Likely causes: Increased D&A from capital investments (reduces earnings relative to EBITDA) Rising interest expense from new debt (widens gap between EBITDA and earnings) Higher tax rate or one-time charges impacting net income disproportionately The company is growing EBITDA faster than net income, causing P/E to rise while EV/EBITDA falls.",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -9079,7 +9079,7 @@
   },
   {
     "id": 899,
-    "question": "Two companies:1 - A coal company whose cash flows go from 100 down to 0 over 10 years.2 - A tech company whose cash flows go from 0 up to 100 over 10 years.\nOver this time, the FED rate goes from 3% to 8%. Which company is valued higher?",
+    "question": "Two companies:\n1 - A coal company whose cash flows go from 100 down to 0 over 10 years.\n2 - A tech company whose cash flows go from 0 up to 100 over 10 years.\nOver this time, the FED rate goes from 3% to 8%. Which company is valued higher?",
     "answer": "At 8%, the coal company may be valued higher. Its cash is front‑loaded, so higher discount rates hurt less. Tech’s long‑duration cash flows get heavily discounted, crushing terminal value. At low rates the result reverses; duration drives sensitivity.",
     "topic": "DCF",
     "difficulty": "Advanced",
@@ -10315,7 +10315,7 @@
   },
   {
     "id": 1003,
-    "question": "You are analyzing a potential acquisition with the following details:\nTarget Company:\nEBIT: $80 million\nAssumed Tax Rate: 25%\nAssumed Cost of Debt: 4%\nAcquirer Company:\nShares Outstanding: 200 millionP/E Multiple: 20x\nShare Price: $20\nAnswer the following:\nWhat is the maximum amount of debt that can be used to acquire the target such that the interest expense is fully covered by the target's EBIT (i.e., the deal is breakeven on a pre-tax basis)?\nUsing the value from Part 1 as the purchase price, if the deal is financed with 50% stock and 50% debt, is the transaction accretive or dilutive?",
+    "question": "You are analyzing a potential acquisition with the following details:\nTarget Company:\nEBIT: $80 million\nAssumed Tax Rate: 25%\nAssumed Cost of Debt: 4%\nAcquirer Company:\nShares Outstanding: 200 million\nP/E Multiple: 20x\nShare Price: $20\nAnswer the following:\nWhat is the maximum amount of debt that can be used to acquire the target such that the interest expense is fully covered by the target's EBIT (i.e., the deal is breakeven on a pre-tax basis)?\nUsing the value from Part 1 as the purchase price, if the deal is financed with 50% stock and 50% debt, is the transaction accretive or dilutive?",
     "answer": "Part 1: Maximum Debt for Breakeven Answer: $2,000M For breakeven pre-tax: Interest Expense = EBIT, so $80M = Debt * 4%. Debt = $80M / 4% = $2,000M. Part 2: Accretion/Dilution Analysis The deal is dilutive. Purchase Price = $2,000M (from Part 1). Stock Financing = $2,000M * 50% = $1,000M. New Shares Issued = $1,000M / $20 = 50M shares. PF Shares = 200M + 50M = 250M. Debt Financing = $1,000M. Interest Expense = $1,000M * 4% = $40M. Target EBIT = $80M. Target NI Contribution = ($80M - $40M interest) * (1 - 25%) = $30M. Acquirer Standalone NI = Market Cap / P/E = ($20 * 200M) / 20 = $200M. PF NI = $200M + $30M = $230M. PF EPS = $230M / 250M = $0.92. Standalone EPS = $200M / 200M = $1.00. The transaction is 8% dilutive.",
     "topic": "Merger Model (M&A)",
     "difficulty": "Advanced",
@@ -11169,7 +11169,7 @@
   },
   {
     "id": 1076,
-    "question": "Calculate the IRR for a leveraged buyout with the following assumptions:\nYear 0 EBITDA: $350m\nEntry Multiple: 6.0x EV/EBITDALeverage Ratio: 5.0x Debt/EBITDAYear 5 EBITDA: $400m\nExit Multiple: 6.0x EV/EBITDALeverage at Exit: 5.0x Debt/EBITDA",
+    "question": "Calculate the IRR for a leveraged buyout with the following assumptions:\nYear 0 EBITDA: $350m\nEntry Multiple: 6.0x EV/EBITDA\nLeverage Ratio: 5.0x Debt/EBITDA\nYear 5 EBITDA: $400m\nExit Multiple: 6.0x EV/EBITDA\nLeverage at Exit: 5.0x Debt/EBITDA",
     "answer": "Answer: ~3% IRR Calculation: Entry EV = $350m * 6.0x = $2,100m Entry Debt = $350m * 5.0x = $1,750m Initial Equity = $2,100m - $1,750m = $350m Exit EV = $400m * 6.0x = $2,400m Exit Debt = $400m * 5.0x = $2,000m Exit Equity Proceeds = $2,400m - $2,000m = $400m MOIC = $400m / $350m = 1.14x IRR = (1.14)^(1/5) - 1 = 2.7% ≈ 3% Note: With the same entry and exit multiples and leverage maintained, the return is driven primarily by EBITDA growth. The modest 14% growth over 5 years yields a low single-digit IRR.",
     "topic": "Leveraged Buyouts (LBOs)",
     "difficulty": "Advanced",
@@ -11181,7 +11181,7 @@
   },
   {
     "id": 1077,
-    "question": "You acquire a company with $80mm in EBITDA at a 10x multiple, funding the purchase with 60% debt. You hold the investment for 5 years.EBITDA remains flat at $80mm every year until the year of sale, when it is $90mm. Assume the company generates $30mm in free cash flow each year to pay down debt.\nIf you sell the company at the same 10x multiple, what is your approximate IRR and MoM multiple?",
+    "question": "You acquire a company with $80mm in EBITDA at a 10x multiple, funding the purchase with 60% debt. You hold the investment for 5 years.\nEBITDA remains flat at $80mm every year until the year of sale, when it is $90mm. Assume the company generates $30mm in free cash flow each year to pay down debt.\nIf you sell the company at the same 10x multiple, what is your approximate IRR and MoM multiple?",
     "answer": "Answer: ~12% IRR, ~1.8x MoM Calculation: Entry EV = $80m * 10x = $800m Entry Debt = $800m * 60% = $480m Initial Equity = $800m * 40% = $320m Exit EV = $90m * 10x = $900m Total Debt Paydown = $30m FCF * 5 years = $150m Exit Debt = $480m - $150m = $330m Exit Equity = $900m - $330m = $570m MoM = $570m / $320m ≈ 1.78x IRR ≈ (1.78)^(1/5) - 1 ≈ 12.2% Note: This is rough interview math. The returns fall around ~12% IRR with a MOIC of ~1.8x depending on exact terminal rounding.",
     "topic": "Leveraged Buyouts (LBOs)",
     "difficulty": "Advanced",
@@ -11277,7 +11277,7 @@
   },
   {
     "id": 1085,
-    "question": "Calculate the IRR based on the following assumptions for an LBO:\nYear 0 EBITDA: $350m\nEntry Multiple: 6.0x EV/EBITDALeverage Ratio: 5.0x\nYear 5 EBITDA: $400m\nExit Multiple: 6.0x EV/EBITDAAssume the same leverage ratio at exit.",
+    "question": "Calculate the IRR based on the following assumptions for an LBO:\nYear 0 EBITDA: $350m\nEntry Multiple: 6.0x EV/EBITDA\nLeverage Ratio: 5.0x\nYear 5 EBITDA: $400m\nExit Multiple: 6.0x EV/EBITDA\nAssume the same leverage ratio at exit.",
     "answer": "Answer: ~2.7% IRR Calculation: Entry EV = $350m * 6.0x = $2,100m Entry Debt = $350m * 5.0x = $1,750m Initial Equity = $2,100m - $1,750m = $350m Exit EV = $400m * 6.0x = $2,400m Exit Debt = $400m * 5.0x = $2,000m Exit Equity Proceeds = $2,400m - $2,000m = $400m MOIC = $400m / $350m = 1.14x IRR = (1.14)^(1/5) - 1 ≈ 2.7% This low IRR reflects flat multiples and modest EBITDA growth with maintained leverage, resulting in minimal equity value creation.",
     "topic": "Leveraged Buyouts (LBOs)",
     "difficulty": "Advanced",
@@ -11752,7 +11752,7 @@
   },
   {
     "id": 1125,
-    "question": "Calculate the Multiple on Invested Capital (MoM) for an LBO with the following assumptions:\nEntry & Exit Multiple: 10x EBITDAInitial EBITDA: $50m\nInitial Capital Structure: 60% Debt, 40% EquityEBITDA Growth: 15% CAGR over a 5-year hold period\nDebt Paydown: 1/3 of the initial debt balance is paid down over the hold period.",
+    "question": "Calculate the Multiple on Invested Capital (MoM) for an LBO with the following assumptions:\nEntry & Exit Multiple: 10x EBITDA\nInitial EBITDA: $50m\nInitial Capital Structure: 60% Debt, 40% EquityEBITDA Growth: 15% CAGR over a 5-year hold period\nDebt Paydown: 1/3 of the initial debt balance is paid down over the hold period.",
     "answer": "Answer: 4.03x MoM Calculation: Initial EV: $50m * 10x = $500m Initial Debt: $500m * 60% = $300m Initial Equity: $500m * 40% = $200m Exit EBITDA: $50m * (1.15)^5 = $50m * 2.011 = $100.6m Exit EV: $100.6m * 10x = $1,006m Debt Paydown: $300m * (1/3) = $100m Exit Debt: $300m - $100m = $200m Exit Equity: $1,006m - $200m = $806m Equity Proceeds: $806m MoM: $806m / $200m = 4.03x",
     "topic": "Leveraged Buyouts (LBOs)",
     "difficulty": "Advanced",
@@ -11796,7 +11796,7 @@
   },
   {
     "id": 1129,
-    "question": "Please walk me through the following paper LBO:\nEntry Assumptions:\n$100M Revenue, 20% EBITDA Margin10x LTM EV/EBITDA Purchase Multiple\nLevered 4x LTM EBITDAExit Assumptions (5-Year Hold):\n$120M Revenue, 30% EBITDA Margin\nAssume same 10x EV/EBITDA Exit Multiple\nFree cash flow generated was used to pay down 50% of the initial debt balance.\nDetermine the Cash-on-Cash multiple and the approximate IRR.",
+    "question": "Please walk me through the following paper LBO:\nEntry Assumptions:\n$100M Revenue, 20% EBITDA Margin\n10x LTM EV/EBITDA Purchase Multiple\nLevered 4x LTM EBITDA\nExit Assumptions (5-Year Hold):\n$120M Revenue, 30% EBITDA Margin\nAssume same 10x EV/EBITDA Exit Multiple\nFree cash flow generated was used to pay down 50% of the initial debt balance.\nDetermine the Cash-on-Cash multiple and the approximate IRR.",
     "answer": "Answer: 2.67x MOIC, ~22% IRR Entry: Entry EBITDA = $100M * 20% = $20M Entry EV = $20M * 10x = $200M Entry Debt = $20M * 4x = $80M Entry Equity = $200M - $80M = $120M Exit: Exit EBITDA = $120M * 30% = $36M Exit EV = $36M * 10x = $360M Debt Paydown = $80M * 50% = $40M Exit Debt = $80M - $40M = $40M Exit Equity = $360M - $40M = $320M Returns: MOIC = $320M / $120M = 2.67x IRR = (2.67x)^(1/5) - 1 = 21.7% ≈ 22%",
     "topic": "Leveraged Buyouts (LBOs)",
     "difficulty": "Advanced",
@@ -12105,7 +12105,7 @@
   },
   {
     "id": 1155,
-    "question": "You are offered two choices:\n$100 today$110 in one year\nWhich option is preferable and why?\nFollow‑up: Using a 10% required return, how much would you accept today instead of receiving $100 in one year? (Round to the nearest dollar.)",
+    "question": "You are offered two choices:\n$100 today\n$110 in one year\nWhich option is preferable and why?\nFollow‑up: Using a 10% required return, how much would you accept today instead of receiving $100 in one year? (Round to the nearest dollar.)",
     "answer": "You are indifferent at exactly a 10% required return; if you can reinvest at >10% you prefer $100 today, otherwise take $110 in one year. Follow-up: Present value of $100 in one year at 10% is roughly $91. PV = 100 / (1 + 10%) ≈ 91 Trial and error can help make an informed guess: 90 * 1.1 = 99 (too low) while 92 * 1.1 = 101 (too high)",
     "topic": "Finance Brain Teasers",
     "difficulty": "Basic",
@@ -13128,7 +13128,7 @@
   },
   {
     "id": 1241,
-    "question": "Find the missing number in the following series and explain the pattern:3, 12, 39, __, 363",
+    "question": "Find the missing number in the following series and explain the pattern:\n3, 12, 39, __, 363",
     "answer": "Answer: 120 Pattern: 3 * 3 + 3 = 12 12 * 3 + 3 = 39 39 * 3 + 3 = 120 120 * 3 + 3 = 363 Each term is obtained by multiplying the previous term by 3 and adding 3.",
     "topic": "General Brain Teasers",
     "difficulty": "Advanced",
@@ -15100,7 +15100,7 @@
   },
   {
     "id": 1407,
-    "question": "Given the following for a company:\nEBITDA: $50mEV/EBITDA Multiple: 4x\nSenior Debt: $100m\nJunior Debt: $200m\nCash: $0\nPart 1: What is the company's Enterprise Value and Equity Value?\nPart 2: What does the result suggest about the company's financial situation?",
+    "question": "Given the following for a company:\nEBITDA: $50m\nEV/EBITDA Multiple: 4x\nSenior Debt: $100m\nJunior Debt: $200m\nCash: $0\nPart 1: What is the company's Enterprise Value and Equity Value?\nPart 2: What does the result suggest about the company's financial situation?",
     "answer": "Part 1: Enterprise Value: $200m. Equity Value: -$100m. Calculation: EV = EBITDA * Multiple = $50m * 4x = $200m Equity Value = EV - Total Debt + Cash Equity Value = $200m - $300m + $0 = -$100m Part 2: The negative equity value indicates the company is insolvent or distressed. The enterprise value is insufficient to cover total debt obligations. This suggests the junior debt holders face impairment and equity holders are likely wiped out. The company may be a candidate for restructuring or bankruptcy.",
     "topic": "Restructuring / Distressed M&A",
     "difficulty": "Advanced",
@@ -15122,7 +15122,7 @@
   },
   {
     "id": 1409,
-    "question": "A company has the following characteristics:\nEBITDA: $100EV/EBITDA Multiple: 7.5x\nCash: $0\nSenior Secured Debt: 1.5x EBITDABank Debt: 1.0x EBITDAUnsecured Debt: 2.5x EBITDAPart 1: What is the Equity Value?\nPart 2 (Follow-up): Now assume EBITDA falls to $60. What is the new Equity Value, and at what percentage of par value does the Unsecured Debt trade?",
+    "question": "A company has the following characteristics:\nEBITDA: $100\nEV/EBITDA Multiple: 7.5x\nCash: $0\nSenior Secured Debt: 1.5x EBITDA\nBank Debt: 1.0x EBITDA\nUnsecured Debt: 2.5x EBITDA\nPart 1: What is the Equity Value?\nPart 2 (Follow-up): Now assume EBITDA falls to $60. What is the new Equity Value, and at what percentage of par value does the Unsecured Debt trade?",
     "answer": "Part 1: Equity Value Answer: $250 EV = 7.5x * $100 = $750 Total Debt = (1.5x + 1.0x + 2.5x) * $100 = $500 Equity Value = EV - Net Debt = $750 - $500 = $250 Part 2: New Equity Value & Unsecured Debt Recovery New Equity Value: $0 (negative, but floors at zero) Unsecured Debt trades at: 80% of par New EV = 7.5x * $60 = $450 The company's debt balance does not change when EBITDA falls. The original debt amounts were: Senior Secured Debt = 1.5x * $100 = $150 Bank Debt = 1.0x * $100 = $100 Unsecured Debt = 2.5x * $100 = $250 Total Debt = $500 Since Total Debt ($500) is greater than New EV ($450), Equity Value is theoretically negative, but in practice is $0 Value Available to Unsecured = $450 - $150 (Senior) - $100 (Bank) = $200 Unsecured Recovery = $200 / $250 = 80% of par",
     "topic": "Restructuring / Distressed M&A",
     "difficulty": "Advanced",

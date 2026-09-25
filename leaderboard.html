@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AscendVine — Leaderboard</title>
+  <title>Avine — Leaderboard</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="account.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -120,7 +120,7 @@
       description.textContent = config.description;
       heading.innerHTML = config.columns.map(column => '<span>' + esc(column) + '</span>').join('');
       boardTitle.textContent = config.title;
-      document.title = 'AscendVine — ' + config.title;
+      document.title = 'Avine — ' + config.title;
       document.querySelector('.leaderboard-card').classList.toggle('practice', board === 'practice');
 
       const thisRequest = ++requestId;

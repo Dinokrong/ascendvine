@@ -757,7 +757,7 @@ const RESTRUCTURING_DISTRESSED_MA = [
   },
   {
     "id": 1407,
-    "question": "Given the following for a company:\nEBITDA: $50mEV/EBITDA Multiple: 4x\nSenior Debt: $100m\nJunior Debt: $200m\nCash: $0\nPart 1: What is the company's Enterprise Value and Equity Value?\nPart 2: What does the result suggest about the company's financial situation?",
+    "question": "Given the following for a company:\nEBITDA: $50m\nEV/EBITDA Multiple: 4x\nSenior Debt: $100m\nJunior Debt: $200m\nCash: $0\nPart 1: What is the company's Enterprise Value and Equity Value?\nPart 2: What does the result suggest about the company's financial situation?",
     "answer": "Part 1: Enterprise Value: $200m. Equity Value: -$100m. Calculation: EV = EBITDA * Multiple = $50m * 4x = $200m Equity Value = EV - Total Debt + Cash Equity Value = $200m - $300m + $0 = -$100m Part 2: The negative equity value indicates the company is insolvent or distressed. The enterprise value is insufficient to cover total debt obligations. This suggests the junior debt holders face impairment and equity holders are likely wiped out. The company may be a candidate for restructuring or bankruptcy.",
     "topic": "Restructuring / Distressed M&A",
     "difficulty": "Advanced",
@@ -779,7 +779,7 @@ const RESTRUCTURING_DISTRESSED_MA = [
   },
   {
     "id": 1409,
-    "question": "A company has the following characteristics:\nEBITDA: $100EV/EBITDA Multiple: 7.5x\nCash: $0\nSenior Secured Debt: 1.5x EBITDABank Debt: 1.0x EBITDAUnsecured Debt: 2.5x EBITDAPart 1: What is the Equity Value?\nPart 2 (Follow-up): Now assume EBITDA falls to $60. What is the new Equity Value, and at what percentage of par value does the Unsecured Debt trade?",
+    "question": "A company has the following characteristics:\nEBITDA: $100\nEV/EBITDA Multiple: 7.5x\nCash: $0\nSenior Secured Debt: 1.5x EBITDA\nBank Debt: 1.0x EBITDA\nUnsecured Debt: 2.5x EBITDA\nPart 1: What is the Equity Value?\nPart 2 (Follow-up): Now assume EBITDA falls to $60. What is the new Equity Value, and at what percentage of par value does the Unsecured Debt trade?",
     "answer": "Part 1: Equity Value Answer: $250 EV = 7.5x * $100 = $750 Total Debt = (1.5x + 1.0x + 2.5x) * $100 = $500 Equity Value = EV - Net Debt = $750 - $500 = $250 Part 2: New Equity Value & Unsecured Debt Recovery New Equity Value: $0 (negative, but floors at zero) Unsecured Debt trades at: 80% of par New EV = 7.5x * $60 = $450 The company's debt balance does not change when EBITDA falls. The original debt amounts were: Senior Secured Debt = 1.5x * $100 = $150 Bank Debt = 1.0x * $100 = $100 Unsecured Debt = 2.5x * $100 = $250 Total Debt = $500 Since Total Debt ($500) is greater than New EV ($450), Equity Value is theoretically negative, but in practice is $0 Value Available to Unsecured = $450 - $150 (Senior) - $100 (Bank) = $200 Unsecured Recovery = $200 / $250 = 80% of par",
     "topic": "Restructuring / Distressed M&A",
     "difficulty": "Advanced",

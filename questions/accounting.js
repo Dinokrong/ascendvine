@@ -1027,7 +1027,7 @@ const ACCOUNTING = [
   },
   {
     "id": 464,
-    "question": "Looking at a company's Income Statement: Which affects Net Income most?10% increase in Price10% increase in Volume10% reduction in COGSFollow-up: Could there be a situation where COGS has a larger impact than price?",
+    "question": "Looking at a company's Income Statement: Which affects Net Income most?\n10% increase in Price\n10% increase in Volume\n10% reduction in COGS\nFollow-up: Could there be a situation where COGS has a larger impact than price?",
     "answer": "The 10% price increase usually has the biggest impact. Price rises boost revenue dollar‑for‑dollar with no extra cost, so the entire uplift flows to Net Income. Volume increases add variable costs, diluting the benefit. COGS cuts save only the cost line. If gross margins are extremely thin or demand is highly price‑elastic, a COGS cut could outweigh a price hike.",
     "topic": "Accounting",
     "difficulty": "Basic",
@@ -1346,7 +1346,7 @@ const ACCOUNTING = [
   },
   {
     "id": 491,
-    "question": "A company has $30 in A/R, $50 in Inventory, and $20 in A/P at year-end.\nIn Q1 next year, revenue is $90 with an 80% gross margin.DSO is 90, DIO is 45, DPO is 60 (AR based on revenue; Inv/AP based on COGS; 90 days in Q1).\nHow much did cash flow change due to changes in working capital?",
+    "question": "A company has $30 in A/R, $50 in Inventory, and $20 in A/P at year-end.\nIn Q1 next year, revenue is $90 with an 80% gross margin.\nDSO is 90, DIO is 45, DPO is 60 (AR based on revenue; Inv/AP based on COGS; 90 days in Q1).\nHow much did cash flow change due to changes in working capital?",
     "answer": "Cash flow decreased by $27 due to changes in working capital. Calculation: Previous Operating Working Capital (OWC) = $30 + $50 - $20 = $60 Q1 Revenue = $90 Q1 COGS = $90 * (1 - 0.80) = $18 New A/R = $90 * (90 / 90) = $90 New Inventory = $18 * (45 / 90) = $9 New A/P = $18 * (60 / 90) = $12 New Operating Working Capital = $90 + $9 - $12 = $87 Change in Working Capital = $87 - $60 = +$27 Increase in OWC means cash flow decreased by $27.",
     "topic": "Accounting",
     "difficulty": "Advanced",

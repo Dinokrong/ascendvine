@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AscendVine — Take Quiz</title>
+  <title>Avine — Take Quiz</title>
   <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="account.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -154,7 +154,7 @@
       const responses = responseResult.data || [];
       const editable = attempt.status === 'in_progress';
       title.textContent = quiz.title;
-      document.title = 'AscendVine — ' + quiz.title;
+      document.title = 'Avine — ' + quiz.title;
       description.textContent = quiz.description || 'Answer every question, then submit your quiz for grading.';
 
       if (!questions.length) throw new Error('This quiz does not contain any questions yet.');
