@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="account.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="admin-board.css">
 </head>
 <body>
   <nav class="navbar">
@@ -23,8 +24,8 @@
     <header class="admin-header">
       <div>
         <div class="home-eyebrow">Account administration</div>
-        <h1>Members, roles, and groups</h1>
-        <p>Approve accounts, assign semester roles, and place Vice Presidents, Associates, and Analysts into Senior-led groups.</p>
+        <h1>Members &amp; <em>Groups</em></h1>
+        <p>Approve accounts, then drag Vice Presidents, Associates, and Analysts into Senior-led groups.</p>
       </div>
       <label class="admin-semester-picker">
         Semester
@@ -40,23 +41,24 @@
     </section>
 
     <section class="admin-section">
-      <div class="admin-section-heading">
-        <div>
-          <h2>Senior-led groups</h2>
-          <p>Each Vice President, Associate, or Analyst can belong to one group per semester.</p>
-        </div>
+      <h2>Groups</h2>
+      <div class="board-tools">
+        <input type="search" id="board-search" placeholder="Find someone…" aria-label="Find someone">
+        <button class="admin-action secondary" type="button" id="new-group-toggle">+ New group</button>
+        <span class="board-hint">Drag cards between groups · click a card to move, change role, or delete</span>
       </div>
-      <form id="create-group-form" class="group-create-form">
+      <form id="create-group-form" class="group-create-form" hidden>
         <input id="group-name" type="text" minlength="2" maxlength="80" placeholder="Group name" required>
         <select id="group-senior" required></select>
         <button class="admin-action" type="submit">Create group</button>
       </form>
-      <div id="group-list" class="group-admin-grid"></div>
+      <div id="group-board" class="group-board"></div>
     </section>
 
     <section class="admin-section">
-      <h2>Semester roster</h2>
-      <div id="roster-list" class="admin-list"></div>
+      <h2>Not in a group</h2>
+      <p class="board-note">Seniors, Admins, General members, and anyone without a role this semester. Click a card to change role or delete.</p>
+      <div id="others-list" class="others-list"></div>
     </section>
   </main>
 
@@ -187,68 +189,240 @@
       ).join('');
     }
 
+    const GROUP_ROLES = ['vp', 'associate', 'analyst'];
+    const byId = id => profiles.find(profile => profile.id === id);
+    const roleOf = userId => memberships.find(item => item.user_id === userId)?.role || null;
+    const groupOf = userId => groupMemberships.find(item => item.user_id === userId)?.group_id || null;
+
+    function memberCard(profile, draggable) {
+      const role = roleOf(profile.id);
+      return '<div class="board-card" data-user="' + profile.id + '" data-email="' + esc(profile.email) + '" draggable="' + draggable + '"' +
+        ' tabindex="0" role="button" aria-haspopup="menu">' +
+        '<span>' + esc(displayName(profile)) + '</span>' +
+        '<span class="role-tag ' + (role || 'none') + '">' + (role ? roleLabel(role) : 'No role') + '</span></div>';
+    }
+
+    // Board: Unassigned first, then one column per Senior-led group.
     function renderGroups() {
       const seniorSelect = document.getElementById('group-senior');
       seniorSelect.innerHTML = seniorOptions('', 'Choose group Senior…');
-      seniorSelect.disabled = !memberships.some(item => item.role === 'senior');
 
-      const container = document.getElementById('group-list');
-      if (!groups.length) {
-        container.innerHTML = '<p class="admin-empty group-empty">Create the first Senior-led group for this semester.</p>';
-        return;
-      }
+      const query = document.getElementById('board-search').value.trim().toLowerCase();
+      const matches = profile => !query || displayName(profile).toLowerCase().includes(query) ||
+        (profile.email || '').toLowerCase().includes(query);
+      const approved = profiles.filter(profile => profile.approval_status === 'approved');
+      const groupable = approved.filter(profile => GROUP_ROLES.includes(roleOf(profile.id)));
+      const inGroup = groupId => groupable.filter(profile => groupOf(profile.id) === groupId);
+      const biggest = Math.max(1, ...groups.map(group => inGroup(group.id).length));
 
-      container.innerHTML = groups.map(group => {
-        const memberCount = groupMemberships.filter(item => item.group_id === group.id).length;
-        return '<article class="group-admin-card" data-group="' + group.id + '">' +
-          '<label>Group name<input class="group-name-input" value="' + esc(group.name) + '" maxlength="80"></label>' +
-          '<label>Senior<select class="group-senior-input">' +
-            seniorOptions(group.senior_id) +
-          '</select></label>' +
-          '<div class="group-card-footer">' +
-            '<span>' + memberCount + ' assigned member' + (memberCount === 1 ? '' : 's') + '</span>' +
-            '<div><button class="admin-action save-group" type="button">Save</button>' +
-            '<button class="admin-action secondary delete-group" type="button">Delete</button></div>' +
-          '</div>' +
-        '</article>';
-      }).join('');
+      const columns = [{ id: null, name: 'Unassigned' }].concat(groups);
+      document.getElementById('group-board').innerHTML = columns.map(group => {
+        const all = inGroup(group.id);
+        const shown = all.filter(matches).sort(byRoleThenLastName);
+        const counts = GROUP_ROLES.map(role => all.filter(profile => roleOf(profile.id) === role).length);
+        const head = group.id
+          ? '<div class="col-title"><h3>' + esc(group.name) + '</h3>' +
+              '<span>' + all.length + ' member' + (all.length === 1 ? '' : 's') + '</span>' +
+              '<button type="button" class="col-menu-button" data-group-menu="' + group.id + '" aria-label="Group options for ' + esc(group.name) + '">⋯</button></div>' +
+            '<div class="col-sub">Senior · <b>' + esc(displayName(byId(group.senior_id))) + '</b></div>' +
+            '<div class="col-sub">' + counts[0] + ' VP · ' + counts[1] + ' Associate · ' + counts[2] + ' Analyst</div>' +
+            '<div class="size-bar"><i style="width:' + Math.round(all.length / biggest * 100) + '%"></i></div>'
+          : '<div class="col-title"><h3>Unassigned</h3>' +
+              (all.length ? '<span class="warn-tag">' + all.length + ' to place</span>' : '<span>0</span>') + '</div>' +
+            '<div class="col-sub">Drag people into a group</div>';
+        return '<section class="board-col' + (group.id ? '' : ' unassigned') + '" data-group="' + (group.id || '') + '">' +
+          '<div class="col-head">' + head + '</div><div class="col-body">' +
+          (shown.length ? shown.map(profile => memberCard(profile, true)).join('')
+            : '<div class="col-empty">' + (query ? 'No matches' : group.id ? 'No members yet' : 'Everyone is placed') + '</div>') +
+          '</div></section>';
+      }).join('') + (groups.length ? '' : '<p class="board-note board-first">Create the first Senior-led group with “+ New group”.</p>');
     }
 
+    // Everyone who is approved but not in a group-eligible role.
     function renderRoster() {
-      const container = document.getElementById('roster-list');
-      const approved = profiles
-        .filter(profile => profile.approval_status === 'approved')
+      const query = document.getElementById('board-search').value.trim().toLowerCase();
+      const others = profiles
+        .filter(profile => profile.approval_status === 'approved' && !GROUP_ROLES.includes(roleOf(profile.id)))
+        .filter(profile => !query || displayName(profile).toLowerCase().includes(query))
         .sort(byRoleThenLastName);
+      document.getElementById('others-list').innerHTML = others.length
+        ? others.map(profile => memberCard(profile, false)).join('')
+        : '<p class="board-note">' + (query ? 'No matches.' : 'Nobody here.') + '</p>';
+    }
 
-      if (!approved.length) {
-        container.innerHTML = '<p class="admin-empty">No approved members.</p>';
+    async function run(label, request, success) {
+      closeMenus();
+      try {
+        const result = await request;
+        if (result.error) throw result.error;
+        showMessage(success, 'success');
+      } catch (error) {
+        showMessage(error.message || label);
+      }
+      await refresh();
+    }
+
+    function moveToGroup(userId, groupId) {
+      if ((groupOf(userId) || null) === (groupId || null)) return;
+      const name = displayName(byId(userId));
+      const group = groups.find(item => item.id === groupId);
+      return run('Unable to move this member.',
+        groupId
+          ? supabase.rpc('admin_assign_group_member', { target_group: groupId, target_user: userId })
+          : supabase.rpc('admin_remove_group_member', { target_semester: semesterSelect.value, target_user: userId }),
+        name + (group ? ' moved to ' + group.name + '.' : ' is now unassigned.'));
+    }
+
+    function setRole(userId, role) {
+      return run('Unable to change this role.',
+        supabase.rpc('admin_set_member_role', { target_semester: semesterSelect.value, target_user: userId, target_role: role }),
+        displayName(byId(userId)) + ' is now ' + roleLabel(role) + '.');
+    }
+
+    // ---------- Menus (fixed to the page so the scrolling board can't clip them) ----------
+    function closeMenus() { document.querySelectorAll('.board-menu').forEach(menu => menu.remove()); }
+
+    function openMenu(anchor, html, data) {
+      closeMenus();
+      const menu = document.createElement('div');
+      menu.className = 'board-menu';
+      menu.setAttribute('role', 'menu');
+      Object.assign(menu.dataset, data);
+      menu.innerHTML = html;
+      document.body.appendChild(menu);
+      const rect = anchor.getBoundingClientRect();
+      const left = Math.min(rect.right - menu.offsetWidth, window.innerWidth - menu.offsetWidth - 8);
+      const below = rect.bottom + 6;
+      const top = below + menu.offsetHeight > window.innerHeight - 8 ? Math.max(8, rect.top - menu.offsetHeight - 6) : below;
+      menu.style.left = Math.max(8, left) + 'px';
+      menu.style.top = top + 'px';
+      menu.querySelector('button')?.focus();
+    }
+
+    function openMemberMenu(card) {
+      const userId = card.dataset.user;
+      const role = roleOf(userId);
+      const current = groupOf(userId) || '';
+      const moveTo = GROUP_ROLES.includes(role)
+        ? '<h5>Move to</h5>' + [{ id: '', name: 'Unassigned' }].concat(groups).map(group =>
+            '<button type="button" data-move="' + (group.id || '') + '"' + (current === (group.id || '') ? ' class="cur"' : '') + '>' + esc(group.name) + '</button>'
+          ).join('') + '<hr>'
+        : '';
+      const roles = '<h5>Role</h5>' + ROLES.map(item =>
+        '<button type="button" data-role="' + item + '"' + (item === role ? ' class="cur"' : '') + '>' + roleLabel(item) + '</button>'
+      ).join('');
+      openMenu(card, moveTo + roles + '<hr><button type="button" class="danger" data-delete>Delete account…</button>',
+        { user: userId, email: card.dataset.email });
+    }
+
+    function openGroupMenu(button) {
+      const group = groups.find(item => item.id === button.dataset.groupMenu);
+      const seniors = memberships.filter(item => item.role === 'senior').map(item => byId(item.user_id)).filter(Boolean);
+      openMenu(button,
+        '<h5>' + esc(group.name) + '</h5><button type="button" data-rename>Rename…</button><hr><h5>Senior</h5>' +
+        seniors.map(senior => '<button type="button" data-senior="' + senior.id + '"' + (senior.id === group.senior_id ? ' class="cur"' : '') + '>' + esc(displayName(senior)) + '</button>').join('') +
+        '<hr><button type="button" class="danger" data-delete-group>Delete group…</button>',
+        { group: group.id });
+    }
+
+    document.addEventListener('click', async event => {
+      const option = event.target.closest('.board-menu button');
+      if (option) {
+        const menu = option.closest('.board-menu');
+        if (menu.dataset.user) {
+          const userId = menu.dataset.user;
+          if (option.dataset.move !== undefined) return moveToGroup(userId, option.dataset.move || null);
+          if (option.dataset.role) return setRole(userId, option.dataset.role);
+          if (option.hasAttribute('data-delete')) {
+            closeMenus();
+            try {
+              if (await permanentlyDeleteAccount({ dataset: { user: userId, email: menu.dataset.email } })) await refresh();
+            } catch (error) {
+              showMessage(error.message || 'Unable to delete this account.');
+            }
+          }
+          return;
+        }
+        const group = groups.find(item => item.id === menu.dataset.group);
+        if (option.hasAttribute('data-rename')) {
+          closeMenus();
+          const name = window.prompt('Rename ' + group.name + ' to:', group.name);
+          if (!name || name.trim() === group.name) return;
+          return run('Unable to rename this group.',
+            supabase.rpc('admin_update_group', { target_group: group.id, group_name: name.trim(), target_senior: group.senior_id }),
+            'Group renamed to ' + name.trim() + '.');
+        }
+        if (option.dataset.senior) {
+          return run('Unable to change the Senior.',
+            supabase.rpc('admin_update_group', { target_group: group.id, group_name: group.name, target_senior: option.dataset.senior }),
+            displayName(byId(option.dataset.senior)) + ' now leads ' + group.name + '.');
+        }
+        if (option.hasAttribute('data-delete-group')) {
+          closeMenus();
+          if (!window.confirm('Delete ' + group.name + '? Its members will become unassigned.')) return;
+          return run('Unable to delete this group.',
+            supabase.rpc('admin_delete_group', { target_group: group.id }),
+            group.name + ' deleted. Its members are now unassigned.');
+        }
         return;
       }
+      const groupButton = event.target.closest('[data-group-menu]');
+      if (groupButton) return openGroupMenu(groupButton);
+      const card = event.target.closest('.board-card');
+      if (card) return openMemberMenu(card);
+      if (!event.target.closest('.board-menu')) closeMenus();
+    });
 
-      container.innerHTML = approved.map(profile => {
-        const membership = memberships.find(item => item.user_id === profile.id);
-        if (!membership) return '';
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape') closeMenus();
+      const card = event.target.closest?.('.board-card');
+      if (card && (event.key === 'Enter' || event.key === ' ')) {
+        event.preventDefault();
+        openMemberMenu(card);
+      }
+    });
+    window.addEventListener('resize', closeMenus);
+    window.addEventListener('scroll', closeMenus, { passive: true });
 
-        const groupMembership = groupMemberships.find(item => item.user_id === profile.id);
-        const groupEligible = ['vp', 'associate', 'analyst'].includes(membership.role);
-        const groupOptions = groups.map(group =>
-          '<option value="' + group.id + '"' +
-          (groupMembership?.group_id === group.id ? ' selected' : '') + '>' +
-          esc(group.name) + '</option>'
-        ).join('');
+    // ---------- Drag and drop between columns ----------
+    const board = document.getElementById('group-board');
+    let draggedUser = null;
+    board.addEventListener('scroll', closeMenus);
+    board.addEventListener('dragstart', event => {
+      const card = event.target.closest('.board-card[draggable="true"]');
+      if (!card) return;
+      draggedUser = card.dataset.user;
+      card.classList.add('dragging');
+      event.dataTransfer.effectAllowed = 'move';
+      event.dataTransfer.setData('text/plain', draggedUser);
+    });
+    board.addEventListener('dragend', event => event.target.closest('.board-card')?.classList.remove('dragging'));
+    board.addEventListener('dragover', event => {
+      const column = event.target.closest('.board-col');
+      if (!column) return;
+      event.preventDefault();
+      board.querySelectorAll('.board-col.over').forEach(item => item !== column && item.classList.remove('over'));
+      column.classList.add('over');
+    });
+    board.addEventListener('dragleave', event => {
+      const column = event.target.closest('.board-col');
+      if (column && !column.contains(event.relatedTarget)) column.classList.remove('over');
+    });
+    board.addEventListener('drop', event => {
+      const column = event.target.closest('.board-col');
+      if (!column || !draggedUser) return;
+      event.preventDefault();
+      column.classList.remove('over');
+      moveToGroup(draggedUser, column.dataset.group || null);
+      draggedUser = null;
+    });
 
-        return '<article class="admin-member roster-row" data-user="' + profile.id + '" data-email="' + esc(profile.email) + '">' +
-          '<div><strong>' + esc(displayName(profile)) + '</strong><span>' + esc(profile.email) + '</span></div>' +
-          '<select class="roster-role">' + roleOptions(membership.role) + '</select>' +
-          (groupEligible
-            ? '<select class="group-assignment"><option value="">No group assigned</option>' + groupOptions + '</select>'
-            : '<span class="admin-assignment-note">' +
-                (membership.role === 'senior' ? 'Leads groups selected above' : 'No group assignment required') +
-              '</span>') +
-          '<button class="admin-action delete-account danger" type="button">Delete</button>' +
-        '</article>';
-      }).join('');
-    }
+    document.getElementById('board-search').addEventListener('input', () => { renderGroups(); renderRoster(); });
+    document.getElementById('new-group-toggle').addEventListener('click', () => {
+      const form = document.getElementById('create-group-form');
+      form.hidden = !form.hidden;
+      if (!form.hidden) document.getElementById('group-name').focus();
+    });
 
     document.getElementById('create-group-form').addEventListener('submit', async event => {
       event.preventDefault();
@@ -260,39 +434,11 @@
         });
         if (result.error) throw result.error;
         event.target.reset();
+        event.target.hidden = true;
         showMessage('Group created.', 'success');
         await refresh();
       } catch (error) {
         showMessage(error.message || 'Unable to create the group.');
-      }
-    });
-
-    document.getElementById('group-list').addEventListener('click', async event => {
-      const card = event.target.closest('.group-admin-card');
-      if (!card) return;
-
-      try {
-        if (event.target.classList.contains('save-group')) {
-          const result = await supabase.rpc('admin_update_group', {
-            target_group: card.dataset.group,
-            group_name: card.querySelector('.group-name-input').value,
-            target_senior: card.querySelector('.group-senior-input').value
-          });
-          if (result.error) throw result.error;
-          showMessage('Group updated.', 'success');
-        } else if (event.target.classList.contains('delete-group')) {
-          if (!window.confirm('Delete this group? Members will become unassigned.')) return;
-          const result = await supabase.rpc('admin_delete_group', {
-            target_group: card.dataset.group
-          });
-          if (result.error) throw result.error;
-          showMessage('Group deleted. Its members are now unassigned.', 'success');
-        } else {
-          return;
-        }
-        await refresh();
-      } catch (error) {
-        showMessage(error.message || 'Unable to update this group.');
       }
     });
 
@@ -339,47 +485,6 @@
         await refresh();
       } catch (error) {
         showMessage(error.message || 'Unable to update this account.');
-      }
-    });
-
-    document.getElementById('roster-list').addEventListener('click', async event => {
-      if (!event.target.classList.contains('delete-account')) return;
-      const row = event.target.closest('.admin-member');
-      if (!row) return;
-
-      try {
-        if (await permanentlyDeleteAccount(row)) await refresh();
-      } catch (error) {
-        showMessage(error.message || 'Unable to delete this account.');
-      }
-    });
-
-    document.getElementById('roster-list').addEventListener('change', async event => {
-      const row = event.target.closest('.admin-member');
-      if (!row) return;
-
-      try {
-        if (event.target.classList.contains('roster-role')) {
-          const result = await supabase.rpc('admin_set_member_role', {
-            target_semester: semesterSelect.value,
-            target_user: row.dataset.user,
-            target_role: event.target.value
-          });
-          if (result.error) throw result.error;
-          showMessage('Role updated.', 'success');
-        } else if (event.target.classList.contains('group-assignment')) {
-          const rpc = event.target.value ? 'admin_assign_group_member' : 'admin_remove_group_member';
-          const args = event.target.value
-            ? { target_group: event.target.value, target_user: row.dataset.user }
-            : { target_semester: semesterSelect.value, target_user: row.dataset.user };
-          const result = await supabase.rpc(rpc, args);
-          if (result.error) throw result.error;
-          showMessage(event.target.value ? 'Group assignment updated.' : 'Member removed from group.', 'success');
-        }
-        await refresh();
-      } catch (error) {
-        showMessage(error.message || 'Unable to update the roster.');
-        await refresh();
       }
     });
 
