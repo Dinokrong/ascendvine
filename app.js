@@ -51,8 +51,8 @@
       var navCenter = document.querySelector('.nav-center');
       if (navCenter && !generalOnly && !navCenter.querySelector('.nav-menu')) {
         navCenter.insertAdjacentHTML('beforeend', navMenu('Leaderboard', [
-          link('leaderboard.html?board=quiz', 'Quiz Scores', page === 'leaderboard.html' && board === 'quiz'),
-          link('leaderboard.html?board=practice', 'Study Time', page === 'leaderboard.html' && board === 'practice')
+          link('leaderboard.html?board=quiz', 'Quiz Scores<small>Points from graded weekly quizzes</small>', page === 'leaderboard.html' && board === 'quiz'),
+          link('leaderboard.html?board=practice', 'Study Time<small>Active time, streaks, and days active</small>', page === 'leaderboard.html' && board === 'practice')
         ]));
       }
 
