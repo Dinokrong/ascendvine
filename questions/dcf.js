@@ -419,7 +419,7 @@ const DCF = [
   },
   {
     "id": 328,
-    "question": "In a DCF valuation, which of the following actions increases the valuation the most:\n$10 decrease in capital expenditures$10 decrease in expenses$10 increase in revenues",
+    "question": "In a DCF valuation, which of the following actions increases the valuation the most:\n$10 decrease in capital expenditures\n$10 decrease in expenses\n$10 increase in revenues",
     "answer": "The $10 decrease in CapEx has the most significant impact on valuation. Decreasing CapEx by $10 directly increases FCF by $10 with no tax effect. Reducing expenses by $10 increases FCF by $10 x (1 - tax rate), which is less than $10. Increasing revenues by $10 also increases FCF by $10 x (1 - tax rate), which is less than $10.",
     "topic": "DCF",
     "difficulty": "Advanced",
@@ -1342,7 +1342,7 @@ const DCF = [
   },
   {
     "id": 899,
-    "question": "Two companies:1 - A coal company whose cash flows go from 100 down to 0 over 10 years.2 - A tech company whose cash flows go from 0 up to 100 over 10 years.\nOver this time, the FED rate goes from 3% to 8%. Which company is valued higher?",
+    "question": "Two companies:\n1 - A coal company whose cash flows go from 100 down to 0 over 10 years.\n2 - A tech company whose cash flows go from 0 up to 100 over 10 years.\nOver this time, the FED rate goes from 3% to 8%. Which company is valued higher?",
     "answer": "At 8%, the coal company may be valued higher. Its cash is front‑loaded, so higher discount rates hurt less. Tech’s long‑duration cash flows get heavily discounted, crushing terminal value. At low rates the result reverses; duration drives sensitivity.",
     "topic": "DCF",
     "difficulty": "Advanced",

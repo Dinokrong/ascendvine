@@ -32,7 +32,7 @@ function plain(value) {
 
 function nameOf(profile) {
   return ((profile?.first_name || '') + ' ' + (profile?.last_name || '')).trim()
-    || profile?.email || 'AscendVine member';
+    || profile?.email || 'Avine member';
 }
 
 function formatDate(value) {

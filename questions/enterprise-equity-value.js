@@ -743,7 +743,7 @@ const ENTERPRISE_EQUITY_VALUE = [
   },
   {
     "id": 577,
-    "question": "Walk me from Enterprise Value to Equity Value for the following two companies:\nCompany A: EV of $1.5B, Debt of $500M, Cash of $200MCompany B: EV of $1.0B, Debt of $100M, Cash of $500M",
+    "question": "Walk me from Enterprise Value to Equity Value for the following two companies:\nCompany A: EV of $1.5B, Debt of $500M, Cash of $200M\nCompany B: EV of $1.0B, Debt of $100M, Cash of $500M",
     "answer": "Equity Value = EV - Debt + Cash Company A: Equity Value = $1.5B - $500M + $200M = $1.2B Company B: Equity Value = $1.0B - $100M + $500M = $1.4B",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Basic",
@@ -863,7 +863,7 @@ const ENTERPRISE_EQUITY_VALUE = [
   },
   {
     "id": 587,
-    "question": "Consider the following list of valuation multiples. Which of them are conceptually valid?\nEV/Sales\nPrice/SalesEV/EBITDAP/E",
+    "question": "Consider the following list of valuation multiples. Which of them are conceptually valid?\nEV/Sales\nPrice/Sales\nEV/EBITDA\nP/E",
     "answer": "EV/Sales, EV/EBITDA, and P/E are valid; Price/Sales is conceptually flawed. Enterprise numerator (EV) should pair with pre‑interest denominators (Sales, EBITDA). Equity numerator (Price) must pair with post‑interest Net Income. Price/Sales mixes equity value with a metric available to all capital providers.",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Basic",
@@ -875,7 +875,7 @@ const ENTERPRISE_EQUITY_VALUE = [
   },
   {
     "id": 588,
-    "question": "From the following list, which valuation multiples are conceptually flawed because they mismatch capital structure claims? Explain why.EV/EBITDAPrice/EBITDAEV/Net IncomeP/E",
+    "question": "From the following list, which valuation multiples are conceptually flawed because they mismatch capital structure claims? Explain why.\nEV/EBITDA\nPrice/EBITDA\nEV/Net Income\nP/E",
     "answer": "Price/EBITDA and EV/Net Income are flawed. Price/EBITDA pairs equity value with a pre‑interest metric. EV/Net Income pairs enterprise value with a post‑interest metric. EV/EBITDA and P/E are correctly matched.",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Basic",
@@ -959,7 +959,7 @@ const ENTERPRISE_EQUITY_VALUE = [
   },
   {
     "id": 595,
-    "question": "Given the following information, what is the company's share price?\nEBITDA: $100 millionEV/EBITDA Multiple: 7.0x\nNet Debt: $400 million\nShares Outstanding: 50 million",
+    "question": "Given the following information, what is the company's share price?\nEBITDA: $100 million\nEV/EBITDA Multiple: 7.0x\nNet Debt: $400 million\nShares Outstanding: 50 million",
     "answer": "Answer: $6 per share Calculation: Enterprise Value = $100m × 7.0x = $700m. Equity Value = $700m - $400m Net Debt = $300m. Share Price = $300m / 50m shares = $6.",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Basic",
@@ -1246,7 +1246,7 @@ const ENTERPRISE_EQUITY_VALUE = [
   },
   {
     "id": 619,
-    "question": "A company has the following information. Calculate the share price:\nP/E = 25xEV/EBITDA = 12x\nTax Rate = 25%\nRevenue = $2,000MShares Outstanding = 150MGross Margin = 50%$1,000M debt at 10% interestSG&A (including D&A) = $500MAssume no other liabilities or equity line items besides debt and common shareholders' equity.",
+    "question": "A company has the following information. Calculate the share price:\nP/E = 25x\nEV/EBITDA = 12x\nTax Rate = 25%\nRevenue = $2,000M\nShares Outstanding = 150M\nGross Margin = 50%\n$1,000M debt at 10% interest\nSG&A (including D&A) = $500M\nAssume no other liabilities or equity line items besides debt and common shareholders' equity.",
     "answer": "The answer is $50 per share. First, build an Income Statement: Revenue: $2,000M Gross Profit: $1,000M (given Gross Margin of 50%) SG&A: $(500M) EBIT: $500M Interest: $(100M) Pre-Tax Income: $400M Taxes: $(100M) Net Income: $300M Then, calculate the valuation: P/E Ratio = Equity Value / Net Income = 25x Equity Value = 25 * $300M = $7.5B Share Price = Equity Value / Shares Outstanding = $7.5B / 150M shares = $50 / share",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Advanced",
@@ -1354,7 +1354,7 @@ const ENTERPRISE_EQUITY_VALUE = [
   },
   {
     "id": 628,
-    "question": "Use the following information:\nEnterprise value – $1,500\nMarket value of equity – $1,000\nBook value of equity – $500\nNon‑controlling interest – $50\nNet income – $100\nNet income margin – 25%EPS – $2\nAnswer the following:\nNet debt\nCurrent share priceP/E multiple\nRevenueEV / Revenue multiple\nWhy might you use P/E instead of EV / Revenue?",
+    "question": "Use the following information:\nEnterprise value – $1,500\nMarket value of equity – $1,000\nBook value of equity – $500\nNon‑controlling interest – $50\nNet income – $100\nNet income margin – 25%\nEPS – $2\nAnswer the following:\nNet debt\nCurrent share price\nP/E multiple\nRevenue\nEV / Revenue multiple\nWhy might you use P/E instead of EV / Revenue?",
     "answer": "Part 1 – Net Debt: $450 Net debt = EV − Equity value − NCI = 1,500 − 1,000 − 50 = 450. Part 2 – Share Price: $20 Shares = Net income / EPS = 100 / 2 = 50. Price = Market cap / Shares = 1,000 / 50 = 20. Part 3 – P/E Multiple: 10× P/E = Price / EPS = 20 / 2 = 10×. Part 4 – Revenue: $400 Revenue = Net income / Margin = 100 / 25% = 400. Part 5 – EV / Revenue: 3.75× 1,500 / 400 = 3.75×. Part 6 – P/E vs. EV / Revenue P/E is widely available for profitable public companies and reflects equity‑holder economics. EV / Revenue is useful when earnings are negative or distorted but is a cruder measure because it ignores margins and capital structure.",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Advanced",
@@ -1450,7 +1450,7 @@ const ENTERPRISE_EQUITY_VALUE = [
   },
   {
     "id": 636,
-    "question": "A company provides the following financial data:\nRevenue: $2,000SG&A: $500\nTotal Debt: $1,000\nInterest Rate on Debt: 10%\nTax Rate: 25%\nShares Outstanding: 100P/E Multiple: 20.0x\nWhat is the company's current share price?",
+    "question": "A company provides the following financial data:\nRevenue: $2,000\nSG&A: $500\nTotal Debt: $1,000\nInterest Rate on Debt: 10%\nTax Rate: 25%\nShares Outstanding: 100P/E Multiple: 20.0x\nWhat is the company's current share price?",
     "answer": "$210 EBIT = 2,000 − 500 = 1,500. Interest = 1,000 × 10% = 100. Pre‑tax = 1,400 ⇒ NI = 1,400 × (1 − 25%) = 1,050. EPS = 1,050 / 100 = 10.5. Price = EPS × P/E = 10.5 × 20 = 210.",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Advanced",
@@ -1522,7 +1522,7 @@ const ENTERPRISE_EQUITY_VALUE = [
   },
   {
     "id": 642,
-    "question": "A company has the following metrics:\nGross Debt / EBITDA = 5.0xEV / EBITDA = 10.0x\nMarket Cap = $400MCash = $100MCalculate its Total Enterprise Value (TEV).",
+    "question": "A company has the following metrics:\nGross Debt / EBITDA = 5.0x\nEV / EBITDA = 10.0x\nMarket Cap = $400M\nCash = $100M\nCalculate its Total Enterprise Value (TEV).",
     "answer": "Answer: $600M Calculation: Debt = 5.0x * EBITDA and EV = $400M + 5.0x * EBITDA - $100M = 10.0x * EBITDA $300M + 5.0x * EBITDA = 10.0x * EBITDA $300M = 5.0x * EBITDA EBITDA = $60M TEV = 10.0x * $60M = $600M",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Advanced",
@@ -1580,7 +1580,7 @@ const ENTERPRISE_EQUITY_VALUE = [
   },
   {
     "id": 647,
-    "question": "Calculate Enterprise Value given the following information. Assume a 20% tax rate.\nAnnual Interest Expense = $20\nEquity Value = $1,000EV/EBITDA = 12xP/E = 25x\nCost of Debt = 10%\nAnnual D&A = $30",
+    "question": "Calculate Enterprise Value given the following information. Assume a 20% tax rate.\nAnnual Interest Expense = $20\nEquity Value = $1,000\nEV/EBITDA = 12x\nP/E = 25x\nCost of Debt = 10%\nAnnual D&A = $30",
     "answer": "Answer: $1,200 Method 1 (Shortcut): Total Debt = Interest Expense / Cost of Debt = $20 / 10% = $200 EV = Equity Value + Debt = $1,000 + $200 = $1,200 (assuming no cash) Method 2 (Income Statement walk): From P/E = 25x and Equity Value = $1,000, find Net Income: NI = $1,000 / 25 = $40 Find Pre-Tax Income (EBT): EBT = NI / (1 - Tax Rate) = $40 / (1 - 0.20) = $50 Find EBIT: EBIT = EBT + Interest Expense = $50 + $20 = $70 Find EBITDA: EBITDA = EBIT + D&A = $70 + $30 = $100 Calculate Enterprise Value: EV = EBITDA * EV/EBITDA Multiple = $100 * 12x = $1,200",
     "topic": "Enterprise & Equity Value",
     "difficulty": "Advanced",

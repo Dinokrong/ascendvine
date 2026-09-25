@@ -432,7 +432,7 @@ const GENERAL_BRAIN_TEASERS = [
   },
   {
     "id": 1241,
-    "question": "Find the missing number in the following series and explain the pattern:3, 12, 39, __, 363",
+    "question": "Find the missing number in the following series and explain the pattern:\n3, 12, 39, __, 363",
     "answer": "Answer: 120 Pattern: 3 * 3 + 3 = 12 12 * 3 + 3 = 39 39 * 3 + 3 = 120 120 * 3 + 3 = 363 Each term is obtained by multiplying the previous term by 3 and adding 3.",
     "topic": "General Brain Teasers",
     "difficulty": "Advanced",

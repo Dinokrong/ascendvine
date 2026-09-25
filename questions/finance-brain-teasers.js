@@ -319,7 +319,7 @@ const FINANCE_BRAIN_TEASERS = [
   },
   {
     "id": 1155,
-    "question": "You are offered two choices:\n$100 today$110 in one year\nWhich option is preferable and why?\nFollow‑up: Using a 10% required return, how much would you accept today instead of receiving $100 in one year? (Round to the nearest dollar.)",
+    "question": "You are offered two choices:\n$100 today\n$110 in one year\nWhich option is preferable and why?\nFollow‑up: Using a 10% required return, how much would you accept today instead of receiving $100 in one year? (Round to the nearest dollar.)",
     "answer": "You are indifferent at exactly a 10% required return; if you can reinvest at >10% you prefer $100 today, otherwise take $110 in one year. Follow-up: Present value of $100 in one year at 10% is roughly $91. PV = 100 / (1 + 10%) ≈ 91 Trial and error can help make an informed guess: 90 * 1.1 = 99 (too low) while 92 * 1.1 = 101 (too high)",
     "topic": "Finance Brain Teasers",
     "difficulty": "Basic",

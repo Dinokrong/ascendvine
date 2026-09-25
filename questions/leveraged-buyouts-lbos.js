@@ -1312,7 +1312,7 @@ const LEVERAGED_BUYOUTS_LBOS = [
   },
   {
     "id": 1076,
-    "question": "Calculate the IRR for a leveraged buyout with the following assumptions:\nYear 0 EBITDA: $350m\nEntry Multiple: 6.0x EV/EBITDALeverage Ratio: 5.0x Debt/EBITDAYear 5 EBITDA: $400m\nExit Multiple: 6.0x EV/EBITDALeverage at Exit: 5.0x Debt/EBITDA",
+    "question": "Calculate the IRR for a leveraged buyout with the following assumptions:\nYear 0 EBITDA: $350m\nEntry Multiple: 6.0x EV/EBITDA\nLeverage Ratio: 5.0x Debt/EBITDA\nYear 5 EBITDA: $400m\nExit Multiple: 6.0x EV/EBITDA\nLeverage at Exit: 5.0x Debt/EBITDA",
     "answer": "Answer: ~3% IRR Calculation: Entry EV = $350m * 6.0x = $2,100m Entry Debt = $350m * 5.0x = $1,750m Initial Equity = $2,100m - $1,750m = $350m Exit EV = $400m * 6.0x = $2,400m Exit Debt = $400m * 5.0x = $2,000m Exit Equity Proceeds = $2,400m - $2,000m = $400m MOIC = $400m / $350m = 1.14x IRR = (1.14)^(1/5) - 1 = 2.7% ≈ 3% Note: With the same entry and exit multiples and leverage maintained, the return is driven primarily by EBITDA growth. The modest 14% growth over 5 years yields a low single-digit IRR.",
     "topic": "Leveraged Buyouts (LBOs)",
     "difficulty": "Advanced",
@@ -1324,7 +1324,7 @@ const LEVERAGED_BUYOUTS_LBOS = [
   },
   {
     "id": 1077,
-    "question": "You acquire a company with $80mm in EBITDA at a 10x multiple, funding the purchase with 60% debt. You hold the investment for 5 years.EBITDA remains flat at $80mm every year until the year of sale, when it is $90mm. Assume the company generates $30mm in free cash flow each year to pay down debt.\nIf you sell the company at the same 10x multiple, what is your approximate IRR and MoM multiple?",
+    "question": "You acquire a company with $80mm in EBITDA at a 10x multiple, funding the purchase with 60% debt. You hold the investment for 5 years.\nEBITDA remains flat at $80mm every year until the year of sale, when it is $90mm. Assume the company generates $30mm in free cash flow each year to pay down debt.\nIf you sell the company at the same 10x multiple, what is your approximate IRR and MoM multiple?",
     "answer": "Answer: ~12% IRR, ~1.8x MoM Calculation: Entry EV = $80m * 10x = $800m Entry Debt = $800m * 60% = $480m Initial Equity = $800m * 40% = $320m Exit EV = $90m * 10x = $900m Total Debt Paydown = $30m FCF * 5 years = $150m Exit Debt = $480m - $150m = $330m Exit Equity = $900m - $330m = $570m MoM = $570m / $320m ≈ 1.78x IRR ≈ (1.78)^(1/5) - 1 ≈ 12.2% Note: This is rough interview math. The returns fall around ~12% IRR with a MOIC of ~1.8x depending on exact terminal rounding.",
     "topic": "Leveraged Buyouts (LBOs)",
     "difficulty": "Advanced",
@@ -1420,7 +1420,7 @@ const LEVERAGED_BUYOUTS_LBOS = [
   },
   {
     "id": 1085,
-    "question": "Calculate the IRR based on the following assumptions for an LBO:\nYear 0 EBITDA: $350m\nEntry Multiple: 6.0x EV/EBITDALeverage Ratio: 5.0x\nYear 5 EBITDA: $400m\nExit Multiple: 6.0x EV/EBITDAAssume the same leverage ratio at exit.",
+    "question": "Calculate the IRR based on the following assumptions for an LBO:\nYear 0 EBITDA: $350m\nEntry Multiple: 6.0x EV/EBITDA\nLeverage Ratio: 5.0x\nYear 5 EBITDA: $400m\nExit Multiple: 6.0x EV/EBITDA\nAssume the same leverage ratio at exit.",
     "answer": "Answer: ~2.7% IRR Calculation: Entry EV = $350m * 6.0x = $2,100m Entry Debt = $350m * 5.0x = $1,750m Initial Equity = $2,100m - $1,750m = $350m Exit EV = $400m * 6.0x = $2,400m Exit Debt = $400m * 5.0x = $2,000m Exit Equity Proceeds = $2,400m - $2,000m = $400m MOIC = $400m / $350m = 1.14x IRR = (1.14)^(1/5) - 1 ≈ 2.7% This low IRR reflects flat multiples and modest EBITDA growth with maintained leverage, resulting in minimal equity value creation.",
     "topic": "Leveraged Buyouts (LBOs)",
     "difficulty": "Advanced",
@@ -1895,7 +1895,7 @@ const LEVERAGED_BUYOUTS_LBOS = [
   },
   {
     "id": 1125,
-    "question": "Calculate the Multiple on Invested Capital (MoM) for an LBO with the following assumptions:\nEntry & Exit Multiple: 10x EBITDAInitial EBITDA: $50m\nInitial Capital Structure: 60% Debt, 40% EquityEBITDA Growth: 15% CAGR over a 5-year hold period\nDebt Paydown: 1/3 of the initial debt balance is paid down over the hold period.",
+    "question": "Calculate the Multiple on Invested Capital (MoM) for an LBO with the following assumptions:\nEntry & Exit Multiple: 10x EBITDA\nInitial EBITDA: $50m\nInitial Capital Structure: 60% Debt, 40% EquityEBITDA Growth: 15% CAGR over a 5-year hold period\nDebt Paydown: 1/3 of the initial debt balance is paid down over the hold period.",
     "answer": "Answer: 4.03x MoM Calculation: Initial EV: $50m * 10x = $500m Initial Debt: $500m * 60% = $300m Initial Equity: $500m * 40% = $200m Exit EBITDA: $50m * (1.15)^5 = $50m * 2.011 = $100.6m Exit EV: $100.6m * 10x = $1,006m Debt Paydown: $300m * (1/3) = $100m Exit Debt: $300m - $100m = $200m Exit Equity: $1,006m - $200m = $806m Equity Proceeds: $806m MoM: $806m / $200m = 4.03x",
     "topic": "Leveraged Buyouts (LBOs)",
     "difficulty": "Advanced",
@@ -1939,7 +1939,7 @@ const LEVERAGED_BUYOUTS_LBOS = [
   },
   {
     "id": 1129,
-    "question": "Please walk me through the following paper LBO:\nEntry Assumptions:\n$100M Revenue, 20% EBITDA Margin10x LTM EV/EBITDA Purchase Multiple\nLevered 4x LTM EBITDAExit Assumptions (5-Year Hold):\n$120M Revenue, 30% EBITDA Margin\nAssume same 10x EV/EBITDA Exit Multiple\nFree cash flow generated was used to pay down 50% of the initial debt balance.\nDetermine the Cash-on-Cash multiple and the approximate IRR.",
+    "question": "Please walk me through the following paper LBO:\nEntry Assumptions:\n$100M Revenue, 20% EBITDA Margin\n10x LTM EV/EBITDA Purchase Multiple\nLevered 4x LTM EBITDA\nExit Assumptions (5-Year Hold):\n$120M Revenue, 30% EBITDA Margin\nAssume same 10x EV/EBITDA Exit Multiple\nFree cash flow generated was used to pay down 50% of the initial debt balance.\nDetermine the Cash-on-Cash multiple and the approximate IRR.",
     "answer": "Answer: 2.67x MOIC, ~22% IRR Entry: Entry EBITDA = $100M * 20% = $20M Entry EV = $20M * 10x = $200M Entry Debt = $20M * 4x = $80M Entry Equity = $200M - $80M = $120M Exit: Exit EBITDA = $120M * 30% = $36M Exit EV = $36M * 10x = $360M Debt Paydown = $80M * 50% = $40M Exit Debt = $80M - $40M = $40M Exit Equity = $360M - $40M = $320M Returns: MOIC = $320M / $120M = 2.67x IRR = (2.67x)^(1/5) - 1 = 21.7% ≈ 22%",
     "topic": "Leveraged Buyouts (LBOs)",
     "difficulty": "Advanced",

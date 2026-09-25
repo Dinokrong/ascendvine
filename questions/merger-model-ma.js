@@ -379,7 +379,7 @@ const MERGER_MODEL_MA = [
   },
   {
     "id": 348,
-    "question": "Company A has a P/E of 5x and Company B has a P/E of 8x. Company A's cost of debt is 5%, cost of cash interest is 2%, and tax rate is 50%.\nIf Company A purchases Company B using:50% stock25% debt25% cash\nIs the deal accretive or dilutive?",
+    "question": "Company A has a P/E of 5x and Company B has a P/E of 8x. Company A's cost of debt is 5%, cost of cash interest is 2%, and tax rate is 50%.\nIf Company A purchases Company B using:\n50% stock\n25% debt\n25% cash\nIs the deal accretive or dilutive?",
     "answer": "Since the weighted cost of acquisition (10.875%) is less than Company B’s yield (12.5%), the deal is accretive. Cost of equity = 20% (1 ÷ P/E of 5x). After-tax cost of debt = 2.5% (5% x (1 - 50% tax rate)). After-tax cost of cash = 1% (2% x (1 - 50% tax rate)). Weighted cost of acquisition = (0.5 x 20%) + (0.25 x 2.5%) + (0.25 x 1%) = 10% + 0.625% + 0.25% = 10.875%. Yield of Company B = 12.5% (1 ÷ P/E of 8x).",
     "topic": "Merger Model (M&A)",
     "difficulty": "Advanced",
@@ -1520,7 +1520,7 @@ const MERGER_MODEL_MA = [
   },
   {
     "id": 1003,
-    "question": "You are analyzing a potential acquisition with the following details:\nTarget Company:\nEBIT: $80 million\nAssumed Tax Rate: 25%\nAssumed Cost of Debt: 4%\nAcquirer Company:\nShares Outstanding: 200 millionP/E Multiple: 20x\nShare Price: $20\nAnswer the following:\nWhat is the maximum amount of debt that can be used to acquire the target such that the interest expense is fully covered by the target's EBIT (i.e., the deal is breakeven on a pre-tax basis)?\nUsing the value from Part 1 as the purchase price, if the deal is financed with 50% stock and 50% debt, is the transaction accretive or dilutive?",
+    "question": "You are analyzing a potential acquisition with the following details:\nTarget Company:\nEBIT: $80 million\nAssumed Tax Rate: 25%\nAssumed Cost of Debt: 4%\nAcquirer Company:\nShares Outstanding: 200 million\nP/E Multiple: 20x\nShare Price: $20\nAnswer the following:\nWhat is the maximum amount of debt that can be used to acquire the target such that the interest expense is fully covered by the target's EBIT (i.e., the deal is breakeven on a pre-tax basis)?\nUsing the value from Part 1 as the purchase price, if the deal is financed with 50% stock and 50% debt, is the transaction accretive or dilutive?",
     "answer": "Part 1: Maximum Debt for Breakeven Answer: $2,000M For breakeven pre-tax: Interest Expense = EBIT, so $80M = Debt * 4%. Debt = $80M / 4% = $2,000M. Part 2: Accretion/Dilution Analysis The deal is dilutive. Purchase Price = $2,000M (from Part 1). Stock Financing = $2,000M * 50% = $1,000M. New Shares Issued = $1,000M / $20 = 50M shares. PF Shares = 200M + 50M = 250M. Debt Financing = $1,000M. Interest Expense = $1,000M * 4% = $40M. Target EBIT = $80M. Target NI Contribution = ($80M - $40M interest) * (1 - 25%) = $30M. Acquirer Standalone NI = Market Cap / P/E = ($20 * 200M) / 20 = $200M. PF NI = $200M + $30M = $230M. PF EPS = $230M / 250M = $0.92. Standalone EPS = $200M / 200M = $1.00. The transaction is 8% dilutive.",
     "topic": "Merger Model (M&A)",
     "difficulty": "Advanced",

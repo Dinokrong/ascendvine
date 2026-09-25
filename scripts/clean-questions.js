@@ -1,4 +1,4 @@
-// Cleans the AscendVine Question Bank (questions.js).
+// Cleans the Avine Question Bank (questions.js).
 // Usage: node clean-questions.js <in questions.js> <out questions.js> <report.json>
 const fs = require('fs');
 
@@ -23,6 +23,35 @@ function reflowQuestion(text) {
   s = s.replace(/(\b[\w)%]{2,}|\d)\.(?=[A-Z][a-z]|\u0000)/g, '$1.\n');
   // "$200Share", "10%Tax", "write-upUsing", "(straight-line)Total" -> new line
   s = s.replace(/([a-z0-9%)])(?=[A-Z][a-z])/g, '$1\n');
+  // "150MGross", "EBITDAPart", "COGSFollow-up" -> new line. Needs two or more
+  // lowercase letters after the capital, so plurals like "NOLs" stay intact.
+  s = s.replace(/([0-9A-Z])(?=[A-Z][a-z]{2,})/g, '$1\n');
+  // "today$110", "50%$1,000M" -> new line
+  s = s.replace(/([a-z%)])(?=\$\d)/g, '$1\n');
+  // "25xEV/EBITDA" (a multiple, then the next line) -> new line
+  s = s.replace(/(\d(?:\.\d+)?x)(?=[A-Z])/g, '$1\n');
+  // "most?10% increase" -> new line (not clock times like "3:15")
+  s = s.replace(/([A-Za-z)][?:!])(?=\d)/g, '$1\n');
+  // "12x2Y Forward", "Margin10x LTM" -> new line
+  // (Only before labels like "2Y", so dimensions like "10x10x10" stay together.)
+  s = s.replace(/(\d(?:\.\d+)?x)(?=\d+[A-Z])/g, '$1\n');
+  s = s.replace(/([a-z])(?=\d+(?:\.\d+)?x\b)/g, '$1\n');
+  // "$1,000EV/EBITDA", "60%SG&A", "(includes all D&A)P/E", "EarningsEV / EBITDA" -> new line
+  // (Two or more capitals after a number, so "$10M/year" stays together.)
+  s = s.replace(/([0-9%])(?=[A-Z]{2,}\s?[\/&])/g, '$1\n');
+  s = s.replace(/(\))(?=[A-Z]+\s?[\/&])/g, '$1\n');
+  s = s.replace(/([a-z])(?=[A-Z]{2,}\s?[\/&])/g, '$1\n');
+  // "EV/EBITDAP/E", "Net IncomeP/E" -> new line before P/E
+  s = s.replace(/([A-Za-z])(?=P\/E\b)/g, '$1\n');
+  // "25%EPS – $2" -> new line
+  s = s.replace(/(%)(?=[A-Z]{2,}\b)/g, '$1\n');
+  // "over 10 years.2 - A tech company" -> new line before the numbered item
+  s = s.replace(/(\b[a-z]{2,})\.(?=\d+ ?[-–] )/g, '$1.\n');
+  s = s.replace(/([a-z])(?=\d+(?:\.\d+)?%)/g, '$1\n');
+  // "why.EV/EBITDA" -> new line (a word of 2+ lowercase letters, then an acronym)
+  s = s.replace(/(\b[a-z]{2,})\.(?=[A-Z]{2})/g, '$1.\n');
+  // A list of multiples that ran together: "EBITDAEV/Net Income"
+  s = s.replace(/EBITDAEV\//g, 'EBITDA\nEV/');
   s = s.replace(/\u0000(\d+)\u0001/g, (_, i) => protectedWords[Number(i)]);
   return s.replace(/[ \t]+\n/g, '\n').replace(/\n{2,}/g, '\n').trim();
 }

@@ -867,7 +867,7 @@ const VALUATION = [
   },
   {
     "id": 678,
-    "question": "A company has the following metrics:\nEBITDA Margin: 20%EV/Revenue Multiple: 3.0x\nRevenue: $30\nWhat is the company's EV/EBITDA multiple?",
+    "question": "A company has the following metrics:\nEBITDA Margin: 20%\nEV/Revenue Multiple: 3.0x\nRevenue: $30\nWhat is the company's EV/EBITDA multiple?",
     "answer": "Answer: 15x Calculation: EBITDA = Revenue * EBITDA Margin = $30 * 20% = $6. EV = Revenue * EV/Revenue = $30 * 3.0 = $90. EV/EBITDA = $90 / $6 = 15x.",
     "topic": "Valuation",
     "difficulty": "Basic",
@@ -1383,7 +1383,7 @@ const VALUATION = [
   },
   {
     "id": 721,
-    "question": "Given the following four multiples, which can you use as a valuation metric and which can you not? Why?\nEV / EarningsEV / EBITDAPrice / EBITDAPrice / Earnings",
+    "question": "Given the following four multiples, which can you use as a valuation metric and which can you not? Why?\nEV / Earnings\nEV / EBITDA\nPrice / EBITDA\nPrice / Earnings",
     "answer": "Valid Multiples: EV / EBITDA: ✓ Enterprise metric (EV) to enterprise metric (EBITDA). Price / Earnings: ✓ Equity metric (Price) to equity metric (Earnings). Invalid Multiples: EV / Earnings: ✗ Mismatch. EV is enterprise-level, Earnings is equity-level (post-interest). Price / EBITDA: ✗ Mismatch. Price is equity-level, EBITDA is enterprise-level (pre-interest). Valid multiples compare metrics at the same capital structure level (both enterprise or both equity). Mismatched multiples are conceptually flawed.",
     "topic": "Valuation",
     "difficulty": "Basic",
@@ -1856,7 +1856,7 @@ const VALUATION = [
   },
   {
     "id": 761,
-    "question": "A company provides the following financial data:\nLevered Free Cash Flow (LFCF) Yield: 10%EBITDA: $100\nCapital Expenditures: $5\nInterest Expense: $25\nDecrease in Working Capital: $10\nTax Expense: $5\nWhat is the company's market capitalization?",
+    "question": "A company provides the following financial data:\nLevered Free Cash Flow (LFCF) Yield: 10%\nEBITDA: $100\nCapital Expenditures: $5\nInterest Expense: $25\nDecrease in Working Capital: $10\nTax Expense: $5\nWhat is the company's market capitalization?",
     "answer": "Answer: $750 Calculation: LFCF = EBITDA - Cash Interest - Cash Taxes - CapEx - Change in NWC. LFCF = $100 - $25 - $5 - $5 - (-$10) = $75. Note: We add back the decrease in NWC since it represents a source of cash. Market Cap = LFCF / LFCF Yield = $75 / 10% = $750.",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -1976,7 +1976,7 @@ const VALUATION = [
   },
   {
     "id": 771,
-    "question": "A company reports the following financials:\nRevenue: $100\nGross Margin: 60%SG&A: $20 (includes all D&A)P/E Multiple: 25xEV/EBITDA Multiple: 10x\nTax Rate: 20%\nCash: $0\nDebt: $200 at 5% interest\nBonds: $200 at 10% interest\nWhat is the company's Depreciation & Amortization expense?",
+    "question": "A company reports the following financials:\nRevenue: $100\nGross Margin: 60%\nSG&A: $20 (includes all D&A)\nP/E Multiple: 25x\nEV/EBITDA Multiple: 10x\nTax Rate: 20%\nCash: $0\nDebt: $200 at 5% interest\nBonds: $200 at 10% interest\nWhat is the company's Depreciation & Amortization expense?",
     "answer": "Answer: $20 Calculation: Gross Profit = Revenue * Gross Margin = $100 * 60% = $60. EBIT = GP - SG&A = $60 - $20 = $40. Interest Expense = ($200 * 5%) + ($200 * 10%) = $10 + $20 = $30. EBT = EBIT - Interest = $40 - $30 = $10. NI = EBT * (1 - Tax Rate) = $10 * (1 - 20%) = $8. Equity Value = NI * P/E = $8 * 25x = $200. EV = Equity Value + Debt - Cash = $200 + $400 - $0 = $600. EBITDA = EV / (EV/EBITDA) = $600 / 10x = $60. Since SG&A includes D&A, EBIT = GP - SG&A already reflects D&A. EBITDA = EBIT + D&A, so D&A = EBITDA - EBIT = $60 - $40 = $20.",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -2252,7 +2252,7 @@ const VALUATION = [
   },
   {
     "id": 794,
-    "question": "Company has $120M in perpetual unlevered free cash flow; no debt initially.RFR = 4%, Beta = 1, ERP = 6%.\nPart 1: What is EV?\nPart 2: Company raises $800M debt, tax rate 25%, interest 10%. What is EV now?\nPart 3: Assume CoD is 5% and the target capital structure mix is 60% equity / 40% debt. What is WACC?",
+    "question": "Company has $120M in perpetual unlevered free cash flow; no debt initially.\nRFR = 4%, Beta = 1, ERP = 6%.\nPart 1: What is EV?\nPart 2: Company raises $800M debt, tax rate 25%, interest 10%. What is EV now?\nPart 3: Assume CoD is 5% and the target capital structure mix is 60% equity / 40% debt. What is WACC?",
     "answer": "Part 1: Cost of Equity = 4% + 1 × 6% = 10%. EV = 120 ÷ 0.10 = $1.2 billion. Part 2: Raising $800 million debt and holding the cash leaves EV unchanged at $1.2 billion (Debt and Cash offset). Part 3: WACC (60% equity, 40% debt): After‑tax Cost of Debt = 5% × (1 − 25%) = 3.75%. WACC = 0.6 × 10% + 0.4 × 3.75% = 7.5%.",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -2408,7 +2408,7 @@ const VALUATION = [
   },
   {
     "id": 807,
-    "question": "A company provides the following financial data:\nRevenue: $2,000\nGross Margin: 50%\nOperating Expenses (including D&A): $500\nTotal Debt: $1,000\nInterest Rate on Debt: 10%EV/EBITDA = 7.5x\nTax Rate: 25%\nShares Outstanding: 100P/E Multiple: 20.0x\nGiven this information, what is the company's share price?",
+    "question": "A company provides the following financial data:\nRevenue: $2,000\nGross Margin: 50%\nOperating Expenses (including D&A): $500\nTotal Debt: $1,000\nInterest Rate on Debt: 10%\nEV/EBITDA = 7.5x\nTax Rate: 25%\nShares Outstanding: 100P/E Multiple: 20.0x\nGiven this information, what is the company's share price?",
     "answer": "Answer: $60 per share Calculation: Gross Profit = $2,000 × 50% = $1,000. EBIT = $1,000 - $500 = $500. Interest Expense = $1,000 × 10% = $100. EBT = $500 - $100 = $400. Tax = $400 × 25% = $100. Net Income = $400 - $100 = $300. EPS = $300 / 100 shares = $3. Share Price = $3 × 20.0x P/E = $60. Note: The EV/EBITDA multiple of 7.5x is not needed for this calculation.",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -2564,7 +2564,7 @@ const VALUATION = [
   },
   {
     "id": 820,
-    "question": "A target company has the following characteristics:\nEV/EBITDA Multiple: 10xEBITDA: $200 million\nTotal Debt: $900 million\nCash: $100 million\nAn acquirer purchases the company at a 25% premium to its standalone equity value.\nAnswer the following:\nWhat is the total equity purchase price?\nWhat is the enterprise value of the transaction?",
+    "question": "A target company has the following characteristics:\nEV/EBITDA Multiple: 10x\nEBITDA: $200 million\nTotal Debt: $900 million\nCash: $100 million\nAn acquirer purchases the company at a 25% premium to its standalone equity value.\nAnswer the following:\nWhat is the total equity purchase price?\nWhat is the enterprise value of the transaction?",
     "answer": "Part 1: Total Equity Purchase Price Answer: $1,500M Standalone EV = 10x * $200M = $2,000M Standalone Equity Value = $2,000M - $900M + $100M = $1,200M Purchase Price = $1,200M * 1.25 = $1,500M Part 2: Enterprise Value of Transaction Answer: $2,300M Transaction EV = Equity Purchase Price + Debt - Cash Transaction EV = $1,500M + $900M - $100M = $2,300M",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -2608,7 +2608,7 @@ const VALUATION = [
   },
   {
     "id": 824,
-    "question": "Calculate the implied tax rate for a company with the following metrics:\nP/E Multiple: 20xEV/EBITDA Multiple: 10x\nMarket Cap: $200\nInterest Expense: $20\nPre-tax Cost of Debt: 5%D&A: $20\nThe company has no cash on its balance sheet.",
+    "question": "Calculate the implied tax rate for a company with the following metrics:\nP/E Multiple: 20x\nEV/EBITDA Multiple: 10x\nMarket Cap: $200\nInterest Expense: $20\nPre-tax Cost of Debt: 5%D&A: $20\nThe company has no cash on its balance sheet.",
     "answer": "Answer: 50% Calculation: NI = Market Cap / P/E = $200 / 20x = $10 Debt = Interest Expense / Cost of Debt = $20 / 5% = $400 EV = Market Cap + Debt = $200 + $400 = $600 (no cash, preferred, NCI) EBITDA = EV / (EV/EBITDA) = $600 / 10x = $60 EBIT = EBITDA - D&A = $60 - $20 = $40 Pre-tax Income (EBT) = EBIT - Interest = $40 - $20 = $20 Tax = EBT - NI = $20 - $10 = $10 Tax Rate = Tax / EBT = $10 / $20 = 50%",
     "topic": "Valuation",
     "difficulty": "Advanced",
@@ -2619,7 +2619,7 @@ const VALUATION = [
   },
   {
     "id": 825,
-    "question": "Given the following forward multiples for a company:1Y Forward EV/EBITDA = 12x2Y Forward EV/EBITDA = 10x1Y Forward P/E = 18x2Y Forward P/E = 20x\nPart 1: What is implied by the change in each multiple from Year 1 to Year 2?\nPart 2: What is the likely cause for the change in the denominators (i.e., EBITDA and Earnings) between the two periods?",
+    "question": "Given the following forward multiples for a company:\n1Y Forward EV/EBITDA = 12x\n2Y Forward EV/EBITDA = 10x\n1Y Forward P/E = 18x\n2Y Forward P/E = 20x\nPart 1: What is implied by the change in each multiple from Year 1 to Year 2?\nPart 2: What is the likely cause for the change in the denominators (i.e., EBITDA and Earnings) between the two periods?",
     "answer": "Part 1: EV/EBITDA compression (12x to 10x) implies EBITDA growth outpacing EV growth, suggesting strong operational improvement P/E expansion (18x to 20x) implies earnings growth lagging equity value growth, or market assigning higher valuation to future earnings Part 2: The divergence suggests the company is experiencing EBITDA growth but margin compression or increased expenses below the EBITDA line. Likely causes: Increased D&A from capital investments (reduces earnings relative to EBITDA) Rising interest expense from new debt (widens gap between EBITDA and earnings) Higher tax rate or one-time charges impacting net income disproportionately The company is growing EBITDA faster than net income, causing P/E to rise while EV/EBITDA falls.",
     "topic": "Valuation",
     "difficulty": "Advanced",
