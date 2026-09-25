@@ -1,0 +1,167 @@
+/* Site theme: white, clean type, italic-serif accents, Avine orange.
+   Loaded after styles.css and account.css so it only restyles. */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif:ital@1&display=swap');
+
+:root {
+  /* White, zinc grays, near-black ink, Avine's orange accent */
+  --orange: #D4882A;
+  --orange-light: #E09A45;
+  --orange-pale: #F0DFC0;
+  --orange-tint: #F5EDE0;
+  --orange-dark: #B8762A;
+  --orange-deeper: #9A6022;
+  --navy: #09090b;
+  --navy-dark: #000000;
+  --grey: #71717a;
+  --bg: #ffffff;
+  --bg-card: #fafafa;
+  --border: #e4e4e7;
+  --border-dark: rgba(9, 9, 11, .08);
+  --text: #09090b;
+  --text-muted: #71717a;
+
+  --account-bg: #ffffff;
+  --account-card: #fafafa;
+  --account-text: #09090b;
+  --account-muted: #71717a;
+  --account-border: #e4e4e7;
+  --account-accent: #B8762A;
+
+  --sans: 'Geist', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --serif: 'Instrument Serif', Georgia, serif;
+}
+
+body { font-family: var(--sans); background: #fff; }
+button, input, select, textarea { font-family: inherit; }
+
+/* ---------- Headings: medium weight, tight tracking ---------- */
+h1, h2, h3, .home-left p:not(.home-sub), .article-title {
+  font-family: var(--sans);
+  font-weight: 500 !important;
+  letter-spacing: -0.04em !important;
+}
+.home-left p:not(.home-sub) { font-size: 3.2rem; line-height: 1.02; }
+/* Emphasized words switch to an italic serif, e.g. "Emory" on Home */
+em, .home-left p em {
+  font-family: var(--serif);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  color: inherit;
+}
+.home-left p em { font-size: 1.08em; }
+.card-question { font-weight: 500; letter-spacing: -0.02em; }
+
+/* Small labels: gray, with an orange dot on the home eyebrow */
+.home-eyebrow, .sg-hero-eyebrow {
+  color: var(--text-muted) !important;
+  font-weight: 500;
+  letter-spacing: .02em !important;
+  text-transform: none;
+  font-size: .85rem;
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+}
+.home-eyebrow::before, .sg-hero-eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #D4882A;
+}
+
+/* ---------- Nav: translucent white bar, soft hover backgrounds ---------- */
+.navbar {
+  min-height: 60px;
+  background: rgba(255, 255, 255, .86);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.navbar-logo {
+  font-family: var(--sans);
+  text-transform: none;
+  letter-spacing: -0.03em;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+.nav-center { gap: .25rem; }
+.nav-center a, .nav-menu-trigger, .account-nav .nav-sign-out {
+  padding: .45rem .75rem !important;
+  border: 0 !important;
+  border-radius: 8px;
+  color: #3f3f46;
+  font-size: .875rem !important;
+}
+.nav-center a:hover, .nav-center a.active,
+.nav-menu-trigger:hover, .nav-menu:hover .nav-menu-trigger, .nav-menu-trigger.active,
+.account-nav .nav-sign-out:hover {
+  background: #f4f4f5;
+  color: var(--text);
+}
+.nav-menu-panel::before {
+  border-radius: 12px;
+  border-color: var(--border);
+  box-shadow: 0 12px 32px rgba(9, 9, 11, .08);
+  background: #fff;
+}
+.nav-center .nav-menu-panel a, .account-nav .nav-menu-panel a { border-radius: 8px; margin: 0 .35rem; }
+.nav-center .nav-menu-panel a:hover, .account-nav .nav-menu-panel a:hover { text-decoration: none; background: #f4f4f5; }
+
+/* ---------- Buttons: black, 8px corners; secondary is white outlined ---------- */
+.btn-show-answer, .btn-hide-answer, .btn-submit, .admin-action, .quiz-card-action, .account-button {
+  background: var(--text) !important;
+  color: #fff !important;
+  border: 1px solid var(--text) !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+.btn-show-answer:hover, .btn-hide-answer:hover, .admin-action:hover, .quiz-card-action:hover { background: #27272a !important; }
+.admin-action.secondary, .account-secondary, .btn-reset-filters, .grading-pdf, .grading-pdf-all {
+  background: #fff !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+.admin-action.secondary:hover, .btn-reset-filters:hover, .grading-pdf:hover, .grading-pdf-all:hover { border-color: #a1a1aa !important; }
+.admin-action.danger { background: #fff !important; color: #b42318 !important; border-color: #f3c4bf !important; }
+.arrow-btn { background: #fff; border-color: var(--border); }
+.arrow-btn:hover { border-color: #a1a1aa; background: #fff; }
+
+/* ---------- Inputs ---------- */
+.qb-select, select, input, textarea { border-color: var(--border) !important; border-radius: 8px !important; }
+
+/* ---------- Cards: white, 16px corners, soft shadow ---------- */
+.flashcard-card, .account-card, .grading-card, .leaderboard-card, .quiz-topic-card, .quiz-question-card, .group-directory-card, .gc-card-front, .gc-card-back {
+  background: #fff !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 1px 0 var(--border), 0 24px 48px rgba(9, 9, 11, .06) !important;
+}
+.qb-filterbar { background: #fafafa; }
+.qb-main { background: radial-gradient(circle at 50% 0%, #F5EDE0, transparent 60%); }
+.card-topic-badge, .gc-badge, .role-pill, .quiz-card-index {
+  border-radius: 999px !important;
+  background: #F5EDE0 !important;
+  border-color: #F0DFC0 !important;
+  color: #9A6022 !important;
+}
+.leaderboard-heading { background: #fafafa; }
+.leaderboard-rank { background: #F5EDE0 !important; color: #9A6022 !important; }
+.leaderboard-row.top-three { background: #fafafa; }
+.sg-topic-row:hover { background: #fafafa; }
+.grading-submission-status { background: var(--text) !important; border-radius: 999px !important; }
+.grading-submission-status.graded { background: #ecfdf3 !important; color: #16a34a !important; }
+
+/* ---------- Home: photo panel gets a thin frame, like Chatbase's product panel ---------- */
+.home-left { border-right-color: var(--border); }
+
+/* Phones: let the menu wrap onto two rows inside the bar */
+@media (max-width: 600px) {
+  .navbar { height: auto; padding-top: .5rem; padding-bottom: .5rem; }
+  .nav-center a, .nav-menu-trigger { padding: .35rem .55rem !important; }
+}
