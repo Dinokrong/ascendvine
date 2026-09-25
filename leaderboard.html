@@ -30,6 +30,7 @@
     </header>
 
     <div class="account-message" id="leaderboard-message" role="status" aria-live="polite"></div>
+    <section class="podium" id="podium" hidden></section>
     <section class="leaderboard-card">
       <div class="leaderboard-heading" id="leaderboard-heading"></div>
       <div id="leaderboard-rows"></div>
@@ -119,7 +120,8 @@
       const config = BOARDS[board];
       description.textContent = config.description;
       heading.innerHTML = config.columns.map(column => '<span>' + esc(column) + '</span>').join('');
-      boardTitle.textContent = config.title;
+      const words = config.title.split(' ');
+      boardTitle.innerHTML = esc(words.slice(0, -1).join(' ')) + ' <em>' + esc(words[words.length - 1]) + '</em>';
       document.title = 'Avine — ' + config.title;
       document.querySelector('.leaderboard-card').classList.toggle('practice', board === 'practice');
 
@@ -130,10 +132,22 @@
       if (result.error) throw result.error;
       const standings = result.data || [];
 
+      const podium = document.getElementById('podium');
       if (!standings.length) {
+        podium.hidden = true;
         rows.innerHTML = '<div class="leaderboard-empty">No Associates or Analysts are assigned yet.</div>';
         return;
       }
+
+      // Top three, shown above the table.
+      const PLACES = ['1st', '2nd', '3rd'];
+      podium.innerHTML = standings.slice(0, 3).map(member =>
+        '<div class="podium-place"><span class="podium-rank">' + (PLACES[Number(member.rank) - 1] || '#' + esc(member.rank)) + '</span>' +
+        '<strong>' + esc(member.display_name) + '</strong>' +
+        '<span>' + esc(roleLabel(member.role)) + (member.group_name ? ' · ' + esc(member.group_name) : '') + ' · ' +
+        esc(board === 'practice' ? formatDuration(member.active_seconds) : member.points_earned + ' pts') + '</span></div>'
+      ).join('');
+      podium.hidden = false;
 
       rows.innerHTML = standings.map(member =>
         '<div class="leaderboard-row' + (Number(member.rank) <= 3 ? ' top-three' : '') + '">' +

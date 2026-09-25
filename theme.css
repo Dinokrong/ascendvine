@@ -165,3 +165,112 @@ em, .home-left p em {
   .navbar { height: auto; padding-top: .5rem; padding-bottom: .5rem; }
   .nav-center a, .nav-menu-trigger { padding: .35rem .55rem !important; }
 }
+
+/* ================================
+   Page layouts (all pages except Home)
+================================ */
+
+/* Big page titles with an italic serif word: "Question Bank", "Study Guide", "Study Time" */
+.page-head {
+  padding: 3.25rem 2.5rem 1.75rem;
+}
+.page-head h1, .sg-hero h1, #board-title {
+  font-size: clamp(2.6rem, 5vw, 3.6rem) !important;
+  line-height: 1.02;
+  margin-top: .6rem;
+}
+.page-head h1 em, .sg-hero h1 em, #board-title em { font-size: 1.08em; }
+.page-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: .55rem;
+  color: var(--text-muted);
+  font-size: .85rem;
+  font-weight: 500;
+}
+.page-eyebrow::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+.page-eyebrow:empty { display: none; }
+
+/* Question Bank: filters on a light strip, a bigger centered card */
+.qb-filterbar { border-top: 1px solid var(--border); }
+.card-container { width: 720px; }
+.flashcard-card { padding: 2.25rem 2.5rem !important; }
+.card-question { font-size: 1.35rem; line-height: 1.45; }
+.arrow-btn { border-radius: 50% !important; }
+
+/* Study Guide: section sidebar next to the chapters */
+.sg-page { max-width: 1120px; }
+.sg-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+.sg-side {
+  position: sticky;
+  top: 84px;
+  display: grid;
+  gap: .15rem;
+}
+.sg-side a {
+  padding: .5rem .7rem;
+  border-radius: 8px;
+  color: #3f3f46;
+  font-size: .875rem;
+}
+.sg-side a:hover, .sg-side a.on { background: #f4f4f5; color: var(--text); }
+.sg-sections { min-width: 0; }
+.sg-topic-row { border-radius: 10px; padding-left: .85rem !important; padding-right: .85rem !important; }
+
+/* Leaderboard: top-three podium above the table */
+.podium {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  background: #fff;
+}
+.podium-place {
+  display: grid;
+  gap: .3rem;
+  padding: 1.4rem 1.5rem;
+  border-right: 1px solid var(--border);
+}
+.podium-place:last-child { border-right: 0; }
+.podium-rank {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--orange);
+}
+.podium-place strong { font-size: 1.1rem; font-weight: 500; letter-spacing: -0.02em; }
+.podium-place span:last-child { color: var(--text-muted); font-size: .82rem; }
+
+/* Nav dropdown: a short description under each item */
+.nav-menu-panel a small {
+  display: block;
+  margin-top: .15rem;
+  color: var(--text-muted);
+  font-size: .75rem;
+  white-space: normal;
+}
+.nav-center .nav-menu-panel { min-width: 240px; }
+
+@media (max-width: 760px) {
+  .page-head { padding: 2rem 1.25rem 1.25rem; }
+  .sg-layout { grid-template-columns: 1fr; gap: 0; }
+  .sg-side { display: none; }
+  .podium { grid-template-columns: 1fr; }
+  .podium-place { border-right: 0; border-bottom: 1px solid var(--border); }
+  .podium-place:last-child { border-bottom: 0; }
+  .flashcard-card { padding: 1.5rem 1.25rem !important; }
+}

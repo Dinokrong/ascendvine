@@ -30,9 +30,13 @@
     <!-- Hero -->
     <div class="sg-hero">
       <div class="sg-hero-eyebrow">Emory Ascend · Study Guide</div>
-      <h1>IB Interview<br>Study Guide</h1>
+      <h1>IB Interview<br>Study <em>Guide</em></h1>
       <p>A structured walkthrough of the core technical concepts, financial modeling frameworks, and industry-specific knowledge you need to ace your investment banking interviews.</p>
     </div>
+
+    <div class="sg-layout">
+      <nav class="sg-side" id="sg-side" aria-label="Study guide sections"></nav>
+      <div class="sg-sections">
 
     <!-- Essential Formulas -->
     <section class="sg-section">
@@ -162,8 +166,36 @@
       </div>
     </section>
 
+      </div>
+    </div>
   </div>
 
+  <script>
+    // Sidebar: one link per section, highlighting the section in view.
+    (function buildStudyGuideSidebar() {
+      var side = document.getElementById('sg-side');
+      var sections = document.querySelectorAll('.sg-section');
+      sections.forEach(function(section, index) {
+        var title = section.querySelector('h2');
+        if (!title) return;
+        section.id = section.id || 'section-' + (index + 1);
+        var link = document.createElement('a');
+        link.href = '#' + section.id;
+        link.textContent = title.textContent;
+        side.appendChild(link);
+      });
+      if (!('IntersectionObserver' in window)) return;
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (!entry.isIntersecting) return;
+          side.querySelectorAll('a').forEach(function(a) {
+            a.classList.toggle('on', a.getAttribute('href') === '#' + entry.target.id);
+          });
+        });
+      }, { rootMargin: '-30% 0px -60% 0px' });
+      sections.forEach(function(section) { observer.observe(section); });
+    })();
+  </script>
   <script src="app.js"></script>
 </body>
 </html>
