@@ -28,7 +28,8 @@
       }
 
       document.documentElement.style.visibility = '';
-      var board = new URLSearchParams(window.location.search).get('board') === 'practice' ? 'practice' : 'quiz';
+      var params = new URLSearchParams(window.location.search);
+      var board = params.get('board') === 'practice' ? 'practice' : params.get('view') === 'teams' ? 'teams' : 'quiz';
 
       // A nav item that shows its links underneath on hover (or tap on phones).
       function navMenu(label, links) {
@@ -52,6 +53,7 @@
       if (navCenter && !generalOnly && !navCenter.querySelector('.nav-menu')) {
         navCenter.insertAdjacentHTML('beforeend', navMenu('Leaderboard', [
           link('leaderboard.html?board=quiz', 'Quiz Scores<small>Points from graded weekly quizzes</small>', page === 'leaderboard.html' && board === 'quiz'),
+          link('leaderboard.html?board=quiz&view=teams', 'Team Scores<small>Groups ranked fairly by class year</small>', page === 'leaderboard.html' && board === 'teams'),
           link('leaderboard.html?board=practice', 'Study Time<small>Active time, streaks, and days active</small>', page === 'leaderboard.html' && board === 'practice')
         ]));
       }
