@@ -17,6 +17,8 @@
     .leaderboard-card.teams .leaderboard-heading,
     .leaderboard-card.teams .leaderboard-row { grid-template-columns: 70px minmax(200px, 1.4fr) minmax(170px, 1.2fr) 95px 95px 105px; }
     .team-person { display: flex !important; flex-direction: row !important; align-items: center; gap: .75rem; }
+    .team-person > span:last-child { display: grid; gap: .15rem; min-width: 0; text-transform: none; }
+    .team-person > span:last-child strong { color: var(--text); font-size: .9rem; }
     .team-photo { flex: none; width: 40px; height: 40px; border-radius: 10px; background: var(--orange-tint) center / cover no-repeat; display: grid; place-items: center; color: var(--orange-deeper); font-weight: 600; }
     .team-makeup { display: flex; flex-wrap: wrap; gap: .3rem; }
     .team-makeup span { border-radius: 999px; padding: .08rem .5rem; background: #f4f4f5; color: #3f3f46; font-size: .72rem; }
