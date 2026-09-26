@@ -8,6 +8,16 @@
   <link rel="stylesheet" href="account.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="theme.css">
+  <style>
+    /* AI grading suggestions */
+    .ai-suggest { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.25rem; padding: 1rem 1.15rem; border: 1px solid var(--orange-pale); border-radius: 12px; background: var(--orange-tint); }
+    .ai-suggest[hidden] { display: none; }
+    .ai-suggest div { display: grid; gap: .25rem; }
+    .ai-suggest span { color: var(--text-muted); font-size: .84rem; line-height: 1.45; }
+    .ai-suggest button { flex: none; }
+    .ai-filled { background: var(--orange-tint) !important; border-color: var(--orange) !important; }
+    @media (max-width: 640px) { .ai-suggest { flex-direction: column; align-items: stretch; } }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -32,6 +42,13 @@
 
     <div class="account-message" id="grading-message" role="status" aria-live="polite"></div>
     <div class="quiz-away-summary" id="away-summary" hidden></div>
+    <div class="ai-suggest" id="ai-suggest" hidden>
+      <div>
+        <strong>Suggest grades with AI</strong>
+        <span>Fills in points and comments for you to review. Only the questions, answer key, and answers are sent, with no names. Nothing is published until you click Publish.</span>
+      </div>
+      <button class="admin-action secondary" id="ai-suggest-button" type="button">Suggest grades</button>
+    </div>
     <section id="grading-questions" class="quiz-question-list"></section>
     <section id="grading-submit" class="grading-submit-card" hidden>
       <label>Overall feedback
@@ -189,11 +206,62 @@
       }).join('');
 
       submitCard.hidden = false;
+      document.getElementById('ai-suggest').hidden = false;
       updateScorePreview();
     }
 
     questionsContainer.addEventListener('input', event => {
       if (event.target.classList.contains('grade-points')) updateScorePreview();
+    });
+
+    // Ask the AI for suggested points and comments. Only fills fields the grader
+    // hasn't typed in yet, and marks them so they're easy to review.
+    const suggestButton = document.getElementById('ai-suggest-button');
+    suggestButton.addEventListener('click', async () => {
+      suggestButton.disabled = true;
+      suggestButton.textContent = 'Grading…';
+      try {
+        const { data, error } = await supabase.functions.invoke('suggest-grades', { body: { attempt_id: attempt.id } });
+        if (error) {
+          let detail = error.message;
+          try { detail = (await error.context.json()).error || detail; } catch (ignored) { /* keep message */ }
+          throw new Error(detail);
+        }
+        let filled = 0;
+        for (const grade of data.grades || []) {
+          const card = questionsContainer.querySelector('[data-question="' + grade.question_id + '"]');
+          if (!card) continue;
+          const points = card.querySelector('.grade-points');
+          const feedback = card.querySelector('.grade-feedback');
+          if (points.value === '' && grade.points != null) {
+            points.value = grade.points;
+            points.classList.add('ai-filled');
+            filled++;
+          }
+          if (!feedback.value.trim() && grade.feedback) {
+            feedback.value = grade.feedback;
+            feedback.classList.add('ai-filled');
+          }
+        }
+        if (!overallFeedback.value.trim() && data.overall_feedback) {
+          overallFeedback.value = data.overall_feedback;
+          overallFeedback.classList.add('ai-filled');
+        }
+        updateScorePreview();
+        showMessage(filled
+          ? 'AI suggested ' + filled + ' grade' + (filled === 1 ? '' : 's') + '. Highlighted fields are suggestions: review and edit them before publishing.'
+          : 'Every question already had points, so nothing was changed. Clear a field to get a suggestion for it.', 'success');
+      } catch (error) {
+        showMessage(error.message || 'AI grading is unavailable right now.');
+      } finally {
+        suggestButton.disabled = false;
+        suggestButton.textContent = 'Suggest grades';
+      }
+    });
+
+    // Once a grader edits a suggested field, it's theirs: drop the highlight.
+    document.addEventListener('input', event => {
+      if (event.target.classList?.contains('ai-filled')) event.target.classList.remove('ai-filled');
     });
 
     publishButton.addEventListener('click', async () => {
