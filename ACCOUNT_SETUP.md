@@ -50,6 +50,8 @@ only the groups assigned to them; Admins retain an administrative override.
      below).
    - Run `supabase/quiz-away-alerts.sql` once to record when members leave the
      quiz page mid-quiz, shown to their Senior and Vice President when grading.
+   - Run `supabase/teams-photos-profiles.sql` once to add group photos, Admin
+     profile edits, the fair team leaderboard, and class-year quiz averages.
 9. Under Authentication, enable email/password accounts.
 10. Require email confirmation.
 11. Set the production Site URL to the deployed AscendVine URL.

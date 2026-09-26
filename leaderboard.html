@@ -8,6 +8,31 @@
   <link rel="stylesheet" href="account.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="theme.css">
+  <style>
+    /* Members / Teams switch (Quiz Scores only) */
+    .view-switch { display: inline-flex; gap: .2rem; padding: .25rem; margin-bottom: 1.25rem; border: 1px solid var(--border); border-radius: 999px; background: #fafafa; }
+    .view-switch[hidden] { display: none; }
+    .view-switch button { border: 0; border-radius: 999px; padding: .45rem 1.1rem; background: none; color: var(--text-muted); font: inherit; font-size: .88rem; cursor: pointer; }
+    .view-switch button[aria-pressed="true"] { background: var(--text); color: #fff; }
+    .leaderboard-card.teams .leaderboard-heading,
+    .leaderboard-card.teams .leaderboard-row { grid-template-columns: 70px minmax(200px, 1.4fr) minmax(170px, 1.2fr) 95px 95px 105px; }
+    .team-person { display: flex !important; flex-direction: row !important; align-items: center; gap: .75rem; }
+    .team-photo { flex: none; width: 40px; height: 40px; border-radius: 10px; background: var(--orange-tint) center / cover no-repeat; display: grid; place-items: center; color: var(--orange-deeper); font-weight: 600; }
+    .team-makeup { display: flex; flex-wrap: wrap; gap: .3rem; }
+    .team-makeup span { border-radius: 999px; padding: .08rem .5rem; background: #f4f4f5; color: #3f3f46; font-size: .72rem; }
+    .team-fairness { margin-top: 1.25rem; border: 1px solid var(--border); border-radius: 16px; background: #fff; }
+    .team-fairness[hidden] { display: none; }
+    .team-fairness summary { display: flex; justify-content: space-between; padding: 1rem 1.2rem; font-weight: 500; list-style: none; cursor: pointer; }
+    .team-fairness summary::after { content: '+'; color: var(--text-muted); }
+    .team-fairness[open] summary::after { content: '–'; }
+    .team-fairness div { display: grid; gap: .6rem; padding: 0 1.2rem 1.2rem; color: var(--text-muted); font-size: .9rem; line-height: 1.6; }
+    .team-fairness ol { display: grid; gap: .35rem; padding-left: 1.2rem; }
+    .team-fairness b { color: var(--text); font-weight: 500; }
+    @media (max-width: 760px) {
+      .leaderboard-card.teams .leaderboard-heading,
+      .leaderboard-card.teams .leaderboard-row { min-width: 820px; }
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -29,12 +54,29 @@
       <label class="admin-semester-picker">Semester<select id="semester-select"></select></label>
     </header>
 
+    <div class="view-switch" id="view-switch" role="group" aria-label="Rank by" hidden>
+      <button type="button" data-view="members">Members</button>
+      <button type="button" data-view="teams">Teams</button>
+    </div>
+
     <div class="account-message" id="leaderboard-message" role="status" aria-live="polite"></div>
     <section class="podium" id="podium" hidden></section>
     <section class="leaderboard-card">
       <div class="leaderboard-heading" id="leaderboard-heading"></div>
       <div id="leaderboard-rows"></div>
     </section>
+
+    <details class="team-fairness" id="team-fairness" hidden>
+      <summary>How team scores are kept fair</summary>
+      <div>
+        <p>Teams differ in size and in how many freshmen and sophomores they have, so a team's score isn't a total:</p>
+        <ol>
+          <li><b>Compared with your own class year.</b> On each quiz, your score is compared with the average for your graduation year. <b>100 = exactly average for your year</b>; 115 = 15% above it.</li>
+          <li><b>Missed quizzes count as 0</b> once grading has started for that quiz in your group. A quiz still waiting for a grade is left out until it's graded.</li>
+          <li><b>Team score = the average of its members</b>, so a 4-person team and a 6-person team compete evenly.</li>
+        </ol>
+      </div>
+    </details>
   </main>
 
   <script type="module">
@@ -59,6 +101,20 @@
           '<strong>' + esc(member.percentage) + '%</strong>'
         ]
       },
+      teams: {
+        title: 'Quiz Scores',
+        description: 'Teams ranked by their fair team score: each member is compared with their own class year, then averaged.',
+        columns: ['Rank', 'Team', 'Makeup', 'Submitted', 'Average', 'Team score'],
+        rpc: 'get_team_leaderboard',
+        cells: team => [
+          '<div class="team-makeup"><span>' + esc(team.members) + ' members</span>' +
+            '<span>' + esc(team.analysts) + ' Analyst · ' + esc(team.associates) + ' Associate</span>' +
+            '<span>' + esc(team.freshmen) + ' Fr · ' + esc(team.sophomores) + ' So</span></div>',
+          team.counted_quizzes > 0 ? esc(team.participation) + '%' : '—',
+          team.counted_quizzes > 0 ? esc(team.average_percent) + '%' : '—',
+          '<strong>' + (team.team_score == null ? '—' : esc(team.team_score)) + '</strong>'
+        ]
+      },
       practice: {
         title: 'Study Time',
         description: 'Active time in the Question Bank. Time counts only while the page is open and in use. A streak is days in a row with at least one minute of study.',
@@ -74,7 +130,21 @@
     };
 
     let requestId = 0;
-    let board = new URLSearchParams(window.location.search).get('board') === 'practice' ? 'practice' : 'quiz';
+    const params = new URLSearchParams(window.location.search);
+    const baseBoard = params.get('board') === 'practice' ? 'practice' : 'quiz';
+    // Quiz Scores can be ranked by members or by teams.
+    let board = baseBoard === 'quiz' && params.get('view') === 'teams' ? 'teams' : baseBoard;
+    const photoUrl = path => path ? supabase.storage.from('group-photos').getPublicUrl(path).data.publicUrl : '';
+
+    const viewSwitch = document.getElementById('view-switch');
+    viewSwitch.hidden = baseBoard !== 'quiz';
+    viewSwitch.addEventListener('click', event => {
+      const button = event.target.closest('[data-view]');
+      if (!button) return;
+      board = button.dataset.view === 'teams' ? 'teams' : 'quiz';
+      history.replaceState(null, '', '?board=quiz' + (board === 'teams' ? '&view=teams' : ''));
+      refresh().catch(error => showError(error.message));
+    });
 
     function esc(value) {
       return String(value ?? '')
@@ -124,6 +194,10 @@
       boardTitle.innerHTML = esc(words.slice(0, -1).join(' ')) + ' <em>' + esc(words[words.length - 1]) + '</em>';
       document.title = 'Avine — ' + config.title;
       document.querySelector('.leaderboard-card').classList.toggle('practice', board === 'practice');
+      document.querySelector('.leaderboard-card').classList.toggle('teams', board === 'teams');
+      viewSwitch.querySelectorAll('button').forEach(button =>
+        button.setAttribute('aria-pressed', String((button.dataset.view === 'teams') === (board === 'teams'))));
+      document.getElementById('team-fairness').hidden = board !== 'teams';
 
       const thisRequest = ++requestId;
       rows.innerHTML = '';
@@ -135,7 +209,31 @@
       const podium = document.getElementById('podium');
       if (!standings.length) {
         podium.hidden = true;
-        rows.innerHTML = '<div class="leaderboard-empty">No Associates or Analysts are assigned yet.</div>';
+        rows.innerHTML = '<div class="leaderboard-empty">' +
+          (board === 'teams' ? 'No groups have been created yet.' : 'No Associates or Analysts are assigned yet.') + '</div>';
+        return;
+      }
+
+      if (board === 'teams') {
+        const PLACES = ['1st', '2nd', '3rd'];
+        const ranked = standings.filter(team => team.rank != null);
+        podium.innerHTML = ranked.slice(0, 3).map(team =>
+          '<div class="podium-place"><span class="podium-rank">' + (PLACES[Number(team.rank) - 1] || '#' + esc(team.rank)) + '</span>' +
+          '<strong>' + esc(team.group_name) + '</strong>' +
+          '<span>Senior ' + esc(team.senior_name) + ' · team score ' + esc(team.team_score) + '</span></div>'
+        ).join('');
+        podium.hidden = !ranked.length;
+        rows.innerHTML = standings.map(team => {
+          const photo = photoUrl(team.photo_path);
+          return '<div class="leaderboard-row' + (team.rank != null && Number(team.rank) <= 3 ? ' top-three' : '') + '">' +
+            '<strong class="leaderboard-rank">' + (team.rank == null ? '—' : esc(team.rank)) + '</strong>' +
+            '<div class="leaderboard-person team-person">' +
+              '<span class="team-photo"' + (photo ? ' style="background-image:url(\'' + esc(photo) + '\')"' : '') + '>' +
+                (photo ? '' : esc(team.group_name.replace(/^Group\s+/i, '').charAt(0))) + '</span>' +
+              '<span><strong>' + esc(team.group_name) + '</strong><span>Senior ' + esc(team.senior_name) + '</span></span></div>' +
+            config.cells(team).map(cell => '<span>' + cell + '</span>').join('') +
+          '</div>';
+        }).join('') + (ranked.length ? '' : '<div class="leaderboard-empty">Team scores appear once grading starts on a quiz.</div>');
         return;
       }
 

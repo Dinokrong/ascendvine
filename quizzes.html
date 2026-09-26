@@ -8,6 +8,10 @@
   <link rel="stylesheet" href="account.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="theme.css">
+  <style>
+    /* Average for the member's class year, next to the quiz status */
+    .quiz-card-meta .class-average { border-radius: 999px; padding: .05rem .5rem; background: var(--orange-tint); color: var(--orange-deeper); font-weight: 500; }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -115,6 +119,11 @@
         return;
       }
 
+      // Average graded score for the viewer's class year on each quiz (if at
+      // least 3 people in that year have been graded). Optional: skip on error.
+      const averageResult = await supabase.rpc('get_class_year_quiz_averages', { target_semester: semesterId });
+      const averages = averageResult.error ? [] : averageResult.data || [];
+
       list.innerHTML = visibleReleases.map((release, index) => {
         const quiz = quizzes.find(item => item.id === release.quiz_id);
         if (!quiz) return '';
@@ -135,7 +144,12 @@
 
         return '<article class="quiz-topic-card">' +
           '<div class="quiz-topic-copy"><span class="quiz-card-index">' + (index + 1) + '</span>' +
-          '<div><div class="quiz-card-meta"><span>' + esc(status) + '</span><span>' + esc(formatDate(release.released_at)) + '</span></div>' +
+          '<div><div class="quiz-card-meta"><span>' + esc(status) + '</span><span>' + esc(formatDate(release.released_at)) + '</span>' +
+          (() => {
+            const average = averages.find(item => item.quiz_id === quiz.id);
+            return average ? '<span class="class-average" title="Average graded score of ' + esc(average.graded_count) + ' ' +
+              esc(average.class_label.toLowerCase()) + ' members">' + esc(average.class_label) + ' average: ' + esc(average.average_percent) + '%</span>' : '';
+          })() + '</div>' +
           '<h2>' + esc(quiz.title) + '</h2><p>' + esc(quiz.description || 'Weekly open-response quiz') + '</p></div></div>' +
           action + '</article>';
       }).join('');

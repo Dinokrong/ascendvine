@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="account.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="theme.css">
-  <link rel="stylesheet" href="admin-board.css">
+  <link rel="stylesheet" href="admin-board.css?v=2">
 </head>
 <body>
   <nav class="navbar">
@@ -45,7 +45,7 @@
       <div class="board-tools">
         <input type="search" id="board-search" placeholder="Find someone…" aria-label="Find someone">
         <button class="admin-action secondary" type="button" id="new-group-toggle">+ New group</button>
-        <span class="board-hint">Drag cards between groups · click a card to move, change role, or delete</span>
+        <span class="board-hint">Drag cards between groups · click someone to edit their profile, role, or group</span>
       </div>
       <form id="create-group-form" class="group-create-form" hidden>
         <input id="group-name" type="text" minlength="2" maxlength="80" placeholder="Group name" required>
@@ -61,6 +61,34 @@
       <div id="others-list" class="others-list"></div>
     </section>
   </main>
+
+  <dialog id="member-card" class="member-card" aria-labelledby="member-card-title">
+    <form id="member-form" method="dialog">
+      <header class="member-card-head">
+        <div>
+          <span class="member-card-eyebrow" id="member-card-class"></span>
+          <h2 id="member-card-title">Member</h2>
+          <span class="member-card-email" id="member-card-email"></span>
+        </div>
+        <button type="button" class="member-card-close" id="member-card-close" aria-label="Close">×</button>
+      </header>
+      <div class="member-card-body">
+        <label>First name<input id="mc-first" type="text" maxlength="60" required></label>
+        <label>Last name<input id="mc-last" type="text" maxlength="60" required></label>
+        <label>Graduation year<input id="mc-year" type="number" min="2000" max="2100" step="1" placeholder="e.g. 2029"></label>
+        <label>Role<select id="mc-role"></select></label>
+        <label class="member-card-wide">Group<select id="mc-group"></select>
+          <small id="mc-group-note"></small></label>
+      </div>
+      <footer class="member-card-foot">
+        <button type="button" class="admin-action danger" id="mc-delete">Delete member</button>
+        <span></span>
+        <button type="button" class="admin-action secondary" id="mc-cancel">Cancel</button>
+        <button type="submit" class="admin-action" id="mc-save">Save changes</button>
+      </footer>
+    </form>
+  </dialog>
+  <input type="file" id="group-photo-input" accept="image/*" hidden>
 
   <script type="module">
     import { supabase, requireApprovedUser } from './js/auth-client.js';
@@ -153,7 +181,7 @@
           .select('user_id, role')
           .eq('semester_id', semesterId),
         supabase.from('groups')
-          .select('id, name, senior_id')
+          .select('id, name, senior_id, photo_path')
           .eq('semester_id', semesterId)
           .order('name'),
         supabase.from('group_memberships')
@@ -221,7 +249,9 @@
         const shown = all.filter(matches).sort(byRoleThenLastName);
         const counts = GROUP_ROLES.map(role => all.filter(profile => roleOf(profile.id) === role).length);
         const head = group.id
-          ? '<div class="col-title"><h3>' + esc(group.name) + '</h3>' +
+          ? '<div class="col-title">' +
+              (group.photo_path ? '<span class="col-photo" style="background-image:url(\'' + esc(photoUrl(group.photo_path)) + '\')"></span>' : '') +
+              '<h3>' + esc(group.name) + '</h3>' +
               '<span>' + all.length + ' member' + (all.length === 1 ? '' : 's') + '</span>' +
               '<button type="button" class="col-menu-button" data-group-menu="' + group.id + '" aria-label="Group options for ' + esc(group.name) + '">⋯</button></div>' +
             '<div class="col-sub">Senior · <b>' + esc(displayName(byId(group.senior_id))) + '</b></div>' +
@@ -273,11 +303,46 @@
         name + (group ? ' moved to ' + group.name + '.' : ' is now unassigned.'));
     }
 
-    function setRole(userId, role) {
-      return run('Unable to change this role.',
-        supabase.rpc('admin_set_member_role', { target_semester: semesterSelect.value, target_user: userId, target_role: role }),
-        displayName(byId(userId)) + ' is now ' + roleLabel(role) + '.');
+    // ---------- Group photos ----------
+    let photoGroup = null;
+    const photoUrl = path => path ? supabase.storage.from('group-photos').getPublicUrl(path).data.publicUrl : '';
+
+    // Shrink photos before uploading so they stay small and load fast.
+    function resizeImage(file, maxSize = 1200) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('That file could not be read as an image.'));
+        img.onload = () => {
+          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          URL.revokeObjectURL(img.src);
+          canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Unable to process that image.')), 'image/jpeg', 0.85);
+        };
+        img.src = URL.createObjectURL(file);
+      });
     }
+
+    document.getElementById('group-photo-input').addEventListener('change', async event => {
+      const file = event.target.files[0];
+      event.target.value = '';
+      if (!file || !photoGroup) return;
+      const group = groups.find(item => item.id === photoGroup);
+      try {
+        if (!file.type.startsWith('image/')) throw new Error('Please choose an image file.');
+        const blob = await resizeImage(file);
+        const path = group.id + '/' + Date.now() + '.jpg';
+        const upload = await supabase.storage.from('group-photos').upload(path, blob, { contentType: 'image/jpeg' });
+        if (upload.error) throw upload.error;
+        await run('Unable to save the group photo.',
+          supabase.rpc('set_group_photo', { target_group: group.id, photo_path: path }),
+          group.name + ' photo updated.');
+      } catch (error) {
+        showMessage(error.message || 'Unable to upload the photo.');
+      }
+    });
 
     // ---------- Menus (fixed to the page so the scrolling board can't clip them) ----------
     function closeMenus() { document.querySelectorAll('.board-menu').forEach(menu => menu.remove()); }
@@ -299,27 +364,125 @@
       menu.querySelector('button')?.focus();
     }
 
-    function openMemberMenu(card) {
-      const userId = card.dataset.user;
-      const role = roleOf(userId);
-      const current = groupOf(userId) || '';
-      const moveTo = GROUP_ROLES.includes(role)
-        ? '<h5>Move to</h5>' + [{ id: '', name: 'Unassigned' }].concat(groups).map(group =>
-            '<button type="button" data-move="' + (group.id || '') + '"' + (current === (group.id || '') ? ' class="cur"' : '') + '>' + esc(group.name) + '</button>'
-          ).join('') + '<hr>'
-        : '';
-      const roles = '<h5>Role</h5>' + ROLES.map(item =>
-        '<button type="button" data-role="' + item + '"' + (item === role ? ' class="cur"' : '') + '>' + roleLabel(item) + '</button>'
-      ).join('');
-      openMenu(card, moveTo + roles + '<hr><button type="button" class="danger" data-delete>Delete account…</button>',
-        { user: userId, email: card.dataset.email });
+    // ---------- Member card: profile, role, group, delete ----------
+    const memberDialog = document.getElementById('member-card');
+    let cardUser = null;
+
+    // "Class of 2029 · Sophomore", counting the academic year that ends in spring.
+    function classLabel(year) {
+      if (!year) return 'Graduation year not set';
+      const now = new Date();
+      const springYear = now.getMonth() >= 6 ? now.getFullYear() + 1 : now.getFullYear();
+      const names = ['Senior', 'Junior', 'Sophomore', 'Freshman'];
+      const name = names[year - springYear];
+      return 'Class of ' + year + (name ? ' · ' + name : '');
     }
+
+    function fillGroupSelect(role, current) {
+      const select = document.getElementById('mc-group');
+      const eligible = GROUP_ROLES.includes(role);
+      select.innerHTML = '<option value="">' + (eligible ? 'Unassigned' : 'Not in a group') + '</option>' +
+        groups.map(group => '<option value="' + group.id + '"' + (group.id === current ? ' selected' : '') + '>' + esc(group.name) + '</option>').join('');
+      select.disabled = !eligible;
+      if (!eligible) select.value = '';
+      document.getElementById('mc-group-note').textContent = eligible
+        ? ''
+        : 'Only Vice Presidents, Associates, and Analysts join groups.';
+    }
+
+    function openMemberCard(card) {
+      closeMenus();
+      const profile = byId(card.dataset.user);
+      if (!profile) return;
+      cardUser = profile.id;
+      const role = roleOf(profile.id);
+      document.getElementById('member-card-title').textContent = displayName(profile);
+      document.getElementById('member-card-email').textContent = profile.email;
+      document.getElementById('member-card-class').textContent = classLabel(profile.graduation_year);
+      document.getElementById('mc-first').value = profile.first_name || '';
+      document.getElementById('mc-last').value = profile.last_name || '';
+      document.getElementById('mc-year').value = profile.graduation_year || '';
+      document.getElementById('mc-role').innerHTML = (role ? '' : '<option value="" selected>No role this semester</option>') + roleOptions(role);
+      fillGroupSelect(role, groupOf(profile.id));
+      memberDialog.showModal();
+    }
+
+    document.getElementById('mc-role').addEventListener('change', event => {
+      fillGroupSelect(event.target.value, groupOf(cardUser));
+    });
+    document.getElementById('mc-year').addEventListener('input', event => {
+      document.getElementById('member-card-class').textContent = classLabel(Number(event.target.value) || null);
+    });
+    ['member-card-close', 'mc-cancel'].forEach(id =>
+      document.getElementById(id).addEventListener('click', () => memberDialog.close()));
+    memberDialog.addEventListener('click', event => { if (event.target === memberDialog) memberDialog.close(); });
+
+    document.getElementById('member-form').addEventListener('submit', async event => {
+      event.preventDefault();
+      const profile = byId(cardUser);
+      const first = document.getElementById('mc-first').value.trim();
+      const last = document.getElementById('mc-last').value.trim();
+      const yearValue = document.getElementById('mc-year').value;
+      const year = yearValue ? Number(yearValue) : null;
+      const role = document.getElementById('mc-role').value;
+      const group = document.getElementById('mc-group').value || null;
+      const save = document.getElementById('mc-save');
+      const changes = [];
+
+      try {
+        save.disabled = true;
+        save.textContent = 'Saving…';
+        if (first !== (profile.first_name || '') || last !== (profile.last_name || '') || year !== (profile.graduation_year || null)) {
+          const result = await supabase.rpc('admin_update_profile', {
+            target_user: profile.id, first_name: first, last_name: last, graduation_year: year
+          });
+          if (result.error) throw result.error;
+          changes.push('profile');
+        }
+        if (role && role !== roleOf(profile.id)) {
+          const result = await supabase.rpc('admin_set_member_role', {
+            target_semester: semesterSelect.value, target_user: profile.id, target_role: role
+          });
+          if (result.error) throw result.error;
+          changes.push('role');
+        }
+        if (GROUP_ROLES.includes(role) && group !== (groupOf(profile.id) || null)) {
+          const result = group
+            ? await supabase.rpc('admin_assign_group_member', { target_group: group, target_user: profile.id })
+            : await supabase.rpc('admin_remove_group_member', { target_semester: semesterSelect.value, target_user: profile.id });
+          if (result.error) throw result.error;
+          changes.push('group');
+        }
+        memberDialog.close();
+        showMessage(changes.length
+          ? (first + ' ' + last).trim() + ': ' + changes.join(', ') + ' updated.'
+          : 'No changes to save.', 'success');
+        if (changes.length) await refresh();
+      } catch (error) {
+        showMessage(error.message || 'Unable to save these changes.');
+        await refresh();
+      } finally {
+        save.disabled = false;
+        save.textContent = 'Save changes';
+      }
+    });
+
+    document.getElementById('mc-delete').addEventListener('click', async () => {
+      const profile = byId(cardUser);
+      try {
+        memberDialog.close();
+        if (await permanentlyDeleteAccount({ dataset: { user: profile.id, email: profile.email } })) await refresh();
+      } catch (error) {
+        showMessage(error.message || 'Unable to delete this account.');
+      }
+    });
 
     function openGroupMenu(button) {
       const group = groups.find(item => item.id === button.dataset.groupMenu);
       const seniors = memberships.filter(item => item.role === 'senior').map(item => byId(item.user_id)).filter(Boolean);
       openMenu(button,
-        '<h5>' + esc(group.name) + '</h5><button type="button" data-rename>Rename…</button><hr><h5>Senior</h5>' +
+        '<h5>' + esc(group.name) + '</h5><button type="button" data-rename>Rename…</button>' +
+        '<button type="button" data-photo>' + (group.photo_path ? 'Change photo…' : 'Add photo…') + '</button><hr><h5>Senior</h5>' +
         seniors.map(senior => '<button type="button" data-senior="' + senior.id + '"' + (senior.id === group.senior_id ? ' class="cur"' : '') + '>' + esc(displayName(senior)) + '</button>').join('') +
         '<hr><button type="button" class="danger" data-delete-group>Delete group…</button>',
         { group: group.id });
@@ -329,21 +492,13 @@
       const option = event.target.closest('.board-menu button');
       if (option) {
         const menu = option.closest('.board-menu');
-        if (menu.dataset.user) {
-          const userId = menu.dataset.user;
-          if (option.dataset.move !== undefined) return moveToGroup(userId, option.dataset.move || null);
-          if (option.dataset.role) return setRole(userId, option.dataset.role);
-          if (option.hasAttribute('data-delete')) {
-            closeMenus();
-            try {
-              if (await permanentlyDeleteAccount({ dataset: { user: userId, email: menu.dataset.email } })) await refresh();
-            } catch (error) {
-              showMessage(error.message || 'Unable to delete this account.');
-            }
-          }
+        const group = groups.find(item => item.id === menu.dataset.group);
+        if (option.hasAttribute('data-photo')) {
+          closeMenus();
+          photoGroup = group.id;
+          document.getElementById('group-photo-input').click();
           return;
         }
-        const group = groups.find(item => item.id === menu.dataset.group);
         if (option.hasAttribute('data-rename')) {
           closeMenus();
           const name = window.prompt('Rename ' + group.name + ' to:', group.name);
@@ -369,7 +524,7 @@
       const groupButton = event.target.closest('[data-group-menu]');
       if (groupButton) return openGroupMenu(groupButton);
       const card = event.target.closest('.board-card');
-      if (card) return openMemberMenu(card);
+      if (card) return openMemberCard(card);
       if (!event.target.closest('.board-menu')) closeMenus();
     });
 
@@ -378,7 +533,7 @@
       const card = event.target.closest?.('.board-card');
       if (card && (event.key === 'Enter' || event.key === ' ')) {
         event.preventDefault();
-        openMemberMenu(card);
+        openMemberCard(card);
       }
     });
     window.addEventListener('resize', closeMenus);
