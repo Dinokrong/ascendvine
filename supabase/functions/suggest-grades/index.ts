@@ -44,7 +44,7 @@ For each question:
    - 0%: blank, off-topic, or wrong throughout.
 4. Round points to the nearest 0.25. Never go above the maximum or below 0.
 
-Feedback to the member: one or two short sentences. Say what they got right, then what cost them points. If they missed the core point, name it plainly. Do not paste the whole answer key.
+Feedback to the member: if the answer earns full points, leave feedback as an empty string "". Otherwise write one or two short sentences: say what they got right, then what cost them points. If they missed the core point, name it plainly. Do not paste the whole answer key.
 Also write one or two sentences of overall feedback for the whole quiz.
 
 Reply with JSON only, in exactly this shape:
@@ -153,7 +153,8 @@ Deno.serve(async (req) => {
     const max = Number(q.max_points);
     const raw = Number(g?.points);
     const points = Number.isFinite(raw) ? Math.min(max, Math.max(0, Math.round(raw * 4) / 4)) : null;
-    const feedback = typeof g?.feedback === "string" ? g.feedback.trim().slice(0, 600) : "";
+    // Full marks need no comment.
+    const feedback = points === max ? "" : typeof g?.feedback === "string" ? g.feedback.trim().slice(0, 600) : "";
     return { question_id: q.id, points, feedback };
   });
   const overall = typeof parsed.overall_feedback === "string" ? parsed.overall_feedback.trim().slice(0, 800) : "";
