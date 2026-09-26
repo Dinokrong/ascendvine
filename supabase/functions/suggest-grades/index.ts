@@ -7,7 +7,7 @@
 //   AI_BASE_URL   OpenAI-compatible API address. Default: DeepInfra
 //                 (https://api.deepinfra.com/v1/openai)
 //   AI_MODEL      model name sent with each request. Default:
-//                 deepseek-ai/DeepSeek-V4-Flash-0731 (DeepInfra's cheapest DeepSeek)
+//                 zai-org/GLM-4.7-Flash (DeepInfra's cheapest GLM)
 //
 // Only the question, answer key, points possible, and the member's answer are
 // sent to the AI. No names or emails.
@@ -62,7 +62,7 @@ Deno.serve(async (req) => {
     return reply(500, { error: "AI grading is not set up: add a DEEPSEEK_API_KEY secret in Supabase." });
   }
   const baseUrl = (Deno.env.get("AI_BASE_URL") ?? "https://api.deepinfra.com/v1/openai").replace(/\/+$/, "");
-  const model = Deno.env.get("AI_MODEL") ?? "deepseek-ai/DeepSeek-V4-Flash-0731";
+  const model = Deno.env.get("AI_MODEL") ?? "zai-org/GLM-4.7-Flash";
 
   let attemptId = "";
   try {
@@ -145,7 +145,10 @@ Deno.serve(async (req) => {
 
   let parsed: { grades?: { question_id?: string; points?: unknown; feedback?: unknown }[]; overall_feedback?: unknown };
   try {
-    parsed = JSON.parse(content.replace(/^```(?:json)?\s*|\s*```$/g, ""));
+    // Some models wrap the JSON in extra text or code fences: take the outermost object.
+    const start = content.indexOf("{");
+    const end = content.lastIndexOf("}");
+    parsed = JSON.parse(start >= 0 && end > start ? content.slice(start, end + 1) : content);
   } catch {
     return reply(502, { error: "The AI's reply wasn't in the expected format. Try again." });
   }
