@@ -17,6 +17,10 @@
     .leaderboard-card.teams .leaderboard-heading,
     .leaderboard-card.teams .leaderboard-row { grid-template-columns: 70px minmax(200px, 1.4fr) minmax(170px, 1.2fr) 95px 95px 105px; }
     .team-person { display: flex !important; flex-direction: row !important; align-items: center; gap: .75rem; }
+    /* Teams view: the 1st-place team's photo fills the page background, washed out so text stays readable. */
+    .team-backdrop { position: fixed; inset: 0; z-index: -1; background: center / cover no-repeat; }
+    .team-backdrop::after { content: ''; position: absolute; inset: 0; background: rgba(255, 255, 255, .62); }
+    .team-backdrop[hidden] { display: none; }
     .team-person > span:last-child { display: grid; gap: .15rem; min-width: 0; text-transform: none; }
     .team-person > span:last-child strong { color: var(--text); font-size: .9rem; }
     .team-photo { flex: none; width: 40px; height: 40px; border-radius: 10px; background: var(--orange-tint) center / cover no-repeat; display: grid; place-items: center; color: var(--orange-deeper); font-weight: 600; }
@@ -46,6 +50,7 @@
     <div class="nav-right account-nav"><a href="profile.html">Profile</a></div>
   </nav>
 
+  <div class="team-backdrop" id="team-backdrop" hidden></div>
   <main class="quiz-topic-page">
     <header class="quiz-topic-header">
       <div>
@@ -200,6 +205,8 @@
       viewSwitch.querySelectorAll('button').forEach(button =>
         button.setAttribute('aria-pressed', String((button.dataset.view === 'teams') === (board === 'teams'))));
       document.getElementById('team-fairness').hidden = board !== 'teams';
+      const backdrop = document.getElementById('team-backdrop');
+      backdrop.hidden = true;
 
       const thisRequest = ++requestId;
       rows.innerHTML = '';
@@ -225,6 +232,9 @@
           '<span>Senior ' + esc(team.senior_name) + ' · team score ' + esc(team.team_score) + '</span></div>'
         ).join('');
         podium.hidden = !ranked.length;
+        const leaderPhoto = ranked.length && Number(ranked[0].rank) === 1 ? photoUrl(ranked[0].photo_path) : '';
+        backdrop.style.backgroundImage = leaderPhoto ? 'url("' + leaderPhoto + '")' : '';
+        backdrop.hidden = !leaderPhoto;
         rows.innerHTML = standings.map(team => {
           const photo = photoUrl(team.photo_path);
           return '<div class="leaderboard-row' + (team.rank != null && Number(team.rank) <= 3 ? ' top-three' : '') + '">' +
