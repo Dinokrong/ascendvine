@@ -10,14 +10,18 @@
   <link rel="stylesheet" href="theme.css">
   <style>
     /* Group photo banner */
-    .group-photo { position: relative; height: 180px; margin-bottom: 1rem; border-radius: 12px; background: #f4f4f5 center / cover no-repeat; }
-    .group-photo.empty { display: grid; place-items: center; height: 110px; border: 1.5px dashed var(--border); background: #fafafa; }
-    .group-photo-actions { position: absolute; right: .7rem; bottom: .7rem; display: flex; gap: .4rem; }
-    .group-photo.empty .group-photo-actions { position: static; }
-    .group-photo button { border: 0; border-radius: 8px; padding: .45rem .8rem; background: rgba(255, 255, 255, .94); color: var(--text); font: inherit; font-size: .82rem; font-weight: 500; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 0, 0, .12); }
-    .group-photo.empty button { background: var(--text); color: #fff; box-shadow: none; }
-    .group-photo button.remove { background: rgba(0, 0, 0, .5); color: #fff; }
-    .group-photo button:disabled { opacity: .6; cursor: wait; }
+    .group-banner { display: flex; align-items: center; gap: 1.1rem; margin-bottom: 1rem; padding: 1rem; border-radius: 14px; background: var(--orange-tint); }
+    .group-photo { flex: none; display: grid; place-items: center; width: 104px; aspect-ratio: 1; border-radius: 12px; background: #fff center / cover no-repeat; color: var(--orange-deeper, var(--orange-dark)); font-size: 2.4rem; font-weight: 600; }
+    .group-banner-text { flex: 1; min-width: 0; }
+    .group-banner-text > span { display: block; color: var(--account-muted); font-size: .7rem; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; }
+    .group-banner-text h2 { margin: .2rem 0 .15rem; font-size: 1.5rem; overflow-wrap: anywhere; }
+    .group-banner-text p { margin: 0; color: var(--account-muted); font-size: .88rem; }
+    .group-banner-text p strong { color: var(--text); font-weight: 500; }
+    .group-photo-actions { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .7rem; }
+    .group-photo-actions button { border: 1px solid var(--border); border-radius: 8px; padding: .35rem .7rem; background: #fff; color: var(--text); font: inherit; font-size: .8rem; font-weight: 500; cursor: pointer; }
+    .group-photo-actions button.primary { border-color: var(--text); background: var(--text); color: #fff; }
+    .group-photo-actions button:disabled { opacity: .6; cursor: wait; }
+    @media (max-width: 520px) { .group-photo { width: 76px; font-size: 1.8rem; } .group-banner-text h2 { font-size: 1.25rem; } }
   </style>
 </head>
 <body>
@@ -155,16 +159,19 @@
 
         const canEditPhoto = viewerIsAdmin || group.senior_id === currentUser.id;
         const photo = group.photo_path ? supabase.storage.from('group-photos').getPublicUrl(group.photo_path).data.publicUrl : '';
-        const photoBlock = photo
-          ? '<div class="group-photo" style="background-image:url(\'' + esc(photo) + '\')" role="img" aria-label="' + esc(group.name) + ' group photo">' +
-              (canEditPhoto ? '<div class="group-photo-actions"><button type="button" class="remove" data-remove-photo="' + group.id + '">Remove</button>' +
-                '<button type="button" data-upload-photo="' + group.id + '">Change photo</button></div>' : '') + '</div>'
-          : canEditPhoto
-            ? '<div class="group-photo empty"><div class="group-photo-actions"><button type="button" data-upload-photo="' + group.id + '">Add a group photo</button></div></div>'
-            : '';
-        return '<article class="group-directory-card">' + photoBlock +
-          '<div class="group-directory-header"><div><span>Senior-led group</span><h2>' + esc(group.name) + '</h2></div>' +
-          '<div class="group-senior"><small>Senior</small><strong>' + esc(nameOf(senior)) + '</strong></div></div>' +
+        const photoActions = !canEditPhoto ? '' : '<div class="group-photo-actions">' +
+          (photo
+            ? '<button type="button" data-upload-photo="' + group.id + '">Change photo</button>' +
+              '<button type="button" data-remove-photo="' + group.id + '">Remove</button>'
+            : '<button type="button" class="primary" data-upload-photo="' + group.id + '">Add a group photo</button>') +
+          '</div>';
+        return '<article class="group-directory-card">' +
+          '<div class="group-banner">' +
+            '<div class="group-photo"' + (photo ? ' style="background-image:url(\'' + esc(photo) + '\')" role="img" aria-label="' + esc(group.name) + ' group photo">'
+              : ' aria-hidden="true">' + esc(group.name.replace(/^Group\s+/i, '').charAt(0).toUpperCase())) + '</div>' +
+            '<div class="group-banner-text"><span>Senior-led group</span><h2>' + esc(group.name) + '</h2>' +
+              '<p>Senior <strong>' + esc(nameOf(senior)) + '</strong></p>' + photoActions + '</div>' +
+          '</div>' +
           '<div class="group-member-list">' +
             (members.length ? members.map(item =>
               '<div class="group-person' + (item.profile.id === currentUser.id ? ' current-user' : '') + '">' +
@@ -185,17 +192,17 @@
       message.className = 'account-message visible success';
     }
 
-    // Shrink photos before uploading so they stay small and load fast.
-    function resizeImage(file, maxSize = 1200) {
+    // Crop photos to a centered square and shrink them before uploading.
+    function resizeImage(file, maxSize = 600) {
       return new Promise((resolve, reject) => {
         const img = new Image();
         img.onerror = () => reject(new Error('That file could not be read as an image.'));
         img.onload = () => {
-          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+          const side = Math.min(img.width, img.height);
           const canvas = document.createElement('canvas');
-          canvas.width = Math.round(img.width * scale);
-          canvas.height = Math.round(img.height * scale);
-          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          canvas.width = canvas.height = Math.min(maxSize, side);
+          canvas.getContext('2d').drawImage(img, (img.width - side) / 2, (img.height - side) / 2, side, side,
+            0, 0, canvas.width, canvas.height);
           URL.revokeObjectURL(img.src);
           canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Unable to process that image.')), 'image/jpeg', 0.85);
         };
