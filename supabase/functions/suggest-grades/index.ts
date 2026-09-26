@@ -3,9 +3,11 @@
 // its form and the grader still clicks Publish.
 //
 // Settings (Supabase → Edge Functions → Secrets):
-//   DEEPSEEK_API_KEY  (or AI_API_KEY)  the API key. Required.
-//   AI_BASE_URL   OpenAI-compatible API address. Default: https://api.deepseek.com
-//   AI_MODEL      model name sent with each request. Default: deepseek-chat
+//   DEEPSEEK_API_KEY  (or AI_API_KEY)  the DeepInfra API key. Required.
+//   AI_BASE_URL   OpenAI-compatible API address. Default: DeepInfra
+//                 (https://api.deepinfra.com/v1/openai)
+//   AI_MODEL      model name sent with each request. Default:
+//                 deepseek-ai/DeepSeek-V4-Flash-0731 (DeepInfra's cheapest DeepSeek)
 //
 // Only the question, answer key, points possible, and the member's answer are
 // sent to the AI. No names or emails.
@@ -56,8 +58,8 @@ Deno.serve(async (req) => {
   if (!apiKey) {
     return reply(500, { error: "AI grading is not set up: add a DEEPSEEK_API_KEY secret in Supabase." });
   }
-  const baseUrl = (Deno.env.get("AI_BASE_URL") ?? "https://api.deepseek.com").replace(/\/+$/, "");
-  const model = Deno.env.get("AI_MODEL") ?? "deepseek-chat";
+  const baseUrl = (Deno.env.get("AI_BASE_URL") ?? "https://api.deepinfra.com/v1/openai").replace(/\/+$/, "");
+  const model = Deno.env.get("AI_MODEL") ?? "deepseek-ai/DeepSeek-V4-Flash-0731";
 
   let attemptId = "";
   try {
