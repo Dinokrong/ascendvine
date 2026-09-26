@@ -8,6 +8,17 @@
   <link rel="stylesheet" href="account.css">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="theme.css">
+  <style>
+    /* Group photo banner */
+    .group-photo { position: relative; height: 180px; margin-bottom: 1rem; border-radius: 12px; background: #f4f4f5 center / cover no-repeat; }
+    .group-photo.empty { display: grid; place-items: center; height: 110px; border: 1.5px dashed var(--border); background: #fafafa; }
+    .group-photo-actions { position: absolute; right: .7rem; bottom: .7rem; display: flex; gap: .4rem; }
+    .group-photo.empty .group-photo-actions { position: static; }
+    .group-photo button { border: 0; border-radius: 8px; padding: .45rem .8rem; background: rgba(255, 255, 255, .94); color: var(--text); font: inherit; font-size: .82rem; font-weight: 500; cursor: pointer; box-shadow: 0 4px 14px rgba(0, 0, 0, .12); }
+    .group-photo.empty button { background: var(--text); color: #fff; box-shadow: none; }
+    .group-photo button.remove { background: rgba(0, 0, 0, .5); color: #fff; }
+    .group-photo button:disabled { opacity: .6; cursor: wait; }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -34,6 +45,7 @@
 
     <div class="account-message" id="group-message" role="status" aria-live="polite"></div>
     <section id="groups-grid" class="group-directory"></section>
+    <input type="file" id="group-photo-input" accept="image/*" hidden>
   </main>
 
   <script type="module">
@@ -91,7 +103,7 @@
       const semesterId = semesterSelect.value;
       const [groupResult, memberResult, roleResult] = await Promise.all([
         supabase.from('groups')
-          .select('id, name, senior_id')
+          .select('id, name, senior_id, photo_path')
           .eq('semester_id', semesterId)
           .order('name'),
         supabase.from('group_memberships')
@@ -107,6 +119,7 @@
       }
 
       const groups = groupResult.data || [];
+      const viewerIsAdmin = (roleResult.data || []).some(item => item.user_id === currentUser.id && item.role === 'admin');
       const groupMemberships = memberResult.data || [];
       const roles = roleResult.data || [];
       const ids = [...new Set([
@@ -140,7 +153,16 @@
           .filter(item => item.profile)
           .sort(byRoleThenLastName);
 
-        return '<article class="group-directory-card">' +
+        const canEditPhoto = viewerIsAdmin || group.senior_id === currentUser.id;
+        const photo = group.photo_path ? supabase.storage.from('group-photos').getPublicUrl(group.photo_path).data.publicUrl : '';
+        const photoBlock = photo
+          ? '<div class="group-photo" style="background-image:url(\'' + esc(photo) + '\')" role="img" aria-label="' + esc(group.name) + ' group photo">' +
+              (canEditPhoto ? '<div class="group-photo-actions"><button type="button" class="remove" data-remove-photo="' + group.id + '">Remove</button>' +
+                '<button type="button" data-upload-photo="' + group.id + '">Change photo</button></div>' : '') + '</div>'
+          : canEditPhoto
+            ? '<div class="group-photo empty"><div class="group-photo-actions"><button type="button" data-upload-photo="' + group.id + '">Add a group photo</button></div></div>'
+            : '';
+        return '<article class="group-directory-card">' + photoBlock +
           '<div class="group-directory-header"><div><span>Senior-led group</span><h2>' + esc(group.name) + '</h2></div>' +
           '<div class="group-senior"><small>Senior</small><strong>' + esc(nameOf(senior)) + '</strong></div></div>' +
           '<div class="group-member-list">' +
@@ -154,6 +176,73 @@
         '</article>';
       }).join('');
     }
+
+    // ---------- Group photo upload (group's Senior or an Admin) ----------
+    let photoGroup = null;
+
+    function showSuccess(text) {
+      message.textContent = text;
+      message.className = 'account-message visible success';
+    }
+
+    // Shrink photos before uploading so they stay small and load fast.
+    function resizeImage(file, maxSize = 1200) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onerror = () => reject(new Error('That file could not be read as an image.'));
+        img.onload = () => {
+          const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+          const canvas = document.createElement('canvas');
+          canvas.width = Math.round(img.width * scale);
+          canvas.height = Math.round(img.height * scale);
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+          URL.revokeObjectURL(img.src);
+          canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Unable to process that image.')), 'image/jpeg', 0.85);
+        };
+        img.src = URL.createObjectURL(file);
+      });
+    }
+
+    grid.addEventListener('click', async event => {
+      const upload = event.target.closest('[data-upload-photo]');
+      if (upload) {
+        photoGroup = upload.dataset.uploadPhoto;
+        document.getElementById('group-photo-input').click();
+        return;
+      }
+      const remove = event.target.closest('[data-remove-photo]');
+      if (!remove || !window.confirm('Remove this group photo?')) return;
+      try {
+        remove.disabled = true;
+        const result = await supabase.rpc('set_group_photo', { target_group: remove.dataset.removePhoto, photo_path: null });
+        if (result.error) throw result.error;
+        showSuccess('Group photo removed.');
+        await refresh();
+      } catch (error) {
+        showError(error.message || 'Unable to remove the photo.');
+        remove.disabled = false;
+      }
+    });
+
+    document.getElementById('group-photo-input').addEventListener('change', async event => {
+      const file = event.target.files[0];
+      event.target.value = '';
+      if (!file || !photoGroup) return;
+      grid.querySelectorAll('[data-upload-photo]').forEach(button => { button.disabled = true; button.textContent = 'Uploading…'; });
+      try {
+        if (!file.type.startsWith('image/')) throw new Error('Please choose an image file.');
+        const blob = await resizeImage(file);
+        const path = photoGroup + '/' + Date.now() + '.jpg';
+        const upload = await supabase.storage.from('group-photos').upload(path, blob, { contentType: 'image/jpeg' });
+        if (upload.error) throw upload.error;
+        const result = await supabase.rpc('set_group_photo', { target_group: photoGroup, photo_path: path });
+        if (result.error) throw result.error;
+        showSuccess('Group photo updated.');
+      } catch (error) {
+        showError(error.message || 'Unable to upload the photo.');
+      }
+      await refresh();
+    });
 
     semesterSelect.addEventListener('change', () => refresh().catch(error => showError(error.message)));
 
