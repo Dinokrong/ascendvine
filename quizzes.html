@@ -148,7 +148,7 @@
           (() => {
             const average = averages.find(item => item.quiz_id === quiz.id);
             return average ? '<span class="class-average" title="Average graded score of ' + esc(average.graded_count) + ' ' +
-              esc(average.class_label.toLowerCase()) + ' members">' + esc(average.class_label) + ' average: ' + esc(average.average_percent) + '%</span>' : '';
+              esc(average.class_label.toLowerCase()) + ' members">' + esc(average.class_label) + ' average: ' + esc(Number(average.average_points)) + ' / ' + esc(Number(average.points_possible)) + '</span>' : '';
           })() + '</div>' +
           '<h2>' + esc(quiz.title) + '</h2><p>' + esc(quiz.description || 'Weekly open-response quiz') + '</p></div></div>' +
           action + '</article>';
